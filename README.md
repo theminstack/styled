@@ -37,6 +37,8 @@ The TSS API is also similar enough to the original API for the `vscode-styled-co
 Create a custom theme (hook, provider, and type) with default values.
 
 ```tsx
+import { createTheme } from 'tss';
+
 export const [useTheme, ThemeProvider] = createTheme({
   colorInputBorder: 'black',
   colorInputBorderFocus: 'blue',
@@ -48,21 +50,16 @@ export type Theme = ReturnType<typeof useTheme>;
 Create a styled text `<input>` element.
 
 ```tsx
-// Uses the InferProps utility type to extend the intrinsic <input>
-// element attributes.
+import { styled, InferProps } from 'tss';
+
 export interface ITextInputProps extends InferProps<'input'> {
-  // Adds new configuration properties.
   theme?: ThemeType;
   $size?: 'small' | 'large';
-  // Narrows the allowed input types.
   type?: 'text' | 'password' | 'email' | 'date' | 'datetime-local' | 'month' | 'number';
 }
 
 export const TextInput = styled('input', 'TextInput')
-  // Overrides the default input attributes with our custom styled
-  // component props.
   .props<ITextInputProps>()
-  // Provides default prop values.
   .use(() => ({
     theme: useTheme(),
     $size: 'small' as const,
