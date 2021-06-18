@@ -67,7 +67,7 @@ export const TextInput = styled('input', 'TextInput')
   }))`
     color: inherit;
     background: transparent;
-    width: ${(props) => (props.$size === 'small' ? '32rem' : '16rem')};
+    width: ${(props) => props.$size === 'small' ? '32rem' : '16rem'};
     border-width: 0 0 1px 0;
     border-color: ${(props) => props.theme.colorInputBorder};
     &:focus {
