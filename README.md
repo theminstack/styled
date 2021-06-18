@@ -67,11 +67,11 @@ export const TextInput = styled('input', 'TextInput')
   }))`
     color: inherit;
     background: transparent;
-    width: ${({ $size }) => ($size === 'small' ? '32rem' : '16rem')};
+    width: ${(props) => (props.$size === 'small' ? '32rem' : '16rem')};
     border-width: 0 0 1px 0;
-    border-color: ${({ theme }) => theme.colorInputBorder};
+    border-color: ${(props) => props.theme.colorInputBorder};
     &:focus {
-      border-color: ${({ theme }) => theme.colorInputBorderFocus};
+      border-color: ${(props) => props.theme.colorInputBorderFocus};
     }
   `;
 ```
