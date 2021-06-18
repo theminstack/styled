@@ -15,11 +15,17 @@
     "test": "del-cli coverage && eslint src && jest"
   },
   "keywords": [
-    "react",
+    "component",
     "css",
     "css-in-js",
+    "react",
+    "sass",
+    "scss",
     "styled-components",
-    "styling"
+    "styles",
+    "styling",
+    "theme",
+    "typescript"
   ],
   "author": "Chris Ackerman",
   "license": "ISC",
