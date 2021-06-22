@@ -77,9 +77,9 @@ test('deduplicates styles and removes styles that are no longer used (injection 
   expect(document.head).toMatchInlineSnapshot(`
 <head>
   <style
-    data-tss="_g0zrt6"
+    data-tss="_ikj0kj"
   >
-    ._g0zrt6 {
+    ._ikj0kj {
   color: red;
 }
 
@@ -97,17 +97,17 @@ test('deduplicates styles and removes styles that are no longer used (injection 
   expect(document.head).toMatchInlineSnapshot(`
 <head>
   <style
-    data-tss="_g0zrt6"
+    data-tss="_ikj0kj"
   >
-    ._g0zrt6 {
+    ._ikj0kj {
   color: red;
 }
 
   </style>
   <style
-    data-tss="_cilhif"
+    data-tss="_dpgp4e"
   >
-    ._cilhif {
+    ._dpgp4e {
   color: blue;
 }
 
@@ -124,9 +124,9 @@ test('deduplicates styles and removes styles that are no longer used (injection 
   expect(document.head).toMatchInlineSnapshot(`
 <head>
   <style
-    data-tss="_g0zrt6"
+    data-tss="_ikj0kj"
   >
-    ._g0zrt6 {
+    ._ikj0kj {
   color: red;
 }
 
@@ -156,7 +156,7 @@ test('treats styled "style" elements as global styles (injection order matters)'
   expect(document.head).toMatchInlineSnapshot(`
 <head>
   <style
-    data-tss="_g0zrt6"
+    data-tss="_rvszkf"
   >
     :root {
   color: red;

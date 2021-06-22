@@ -3,7 +3,7 @@ import { IStyleConfig } from '../types/IStyleConfig';
 import { StyleConfigContext } from './StyleConfigContext';
 
 /**
- * TSS configuration hook.
+ * The tsstyled get configuration hook.
  */
 export function useStyleConfig(): IStyleConfig {
   return useContext(StyleConfigContext);

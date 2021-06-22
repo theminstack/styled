@@ -6,12 +6,12 @@ React visual primitives with first-class TypeScript support and a tiny footprint
 
 The [styled-components](https://styled-components.com/docs/basics#motivation) library is incredibly popular. The "visual primitives" (ie. atomic components with styles included as code) pattern combined with tagged templates, is both powerful and reasonably intuitive. However, it was created many years ago, well before TypeScript had gained the popularity it has now. Types have now been added by the community, but the API wasn't designed with types in mind, and some of the design choices are just not compatible with strong typing.
 
-TSS implements the same patterns, and adds the following enhancements over the original styled-components library:
+This library implements the same patterns, and adds the following enhancements over the original styled-components library:
 
 - First-class TypeScript support with a modified API for stronger types.
 - Zero dependencies and a smaller bundle size.
 
-### TSS vs styled-components
+### tsstyled vs styled-components
 
 Most styled-components capabilities (basic and advanced) are supported, with some notable differences and omissions:
 
@@ -31,7 +31,7 @@ Most styled-components capabilities (basic and advanced) are supported, with som
 - No automatic vendor prefixing is performed, because it drastically increases the library size and it's [unnecessary](http://shouldiprefix.com/) for most common styling scenarios.
 - No tooling is required for testing, because when `process.env.NODE_ENV` is set to "test" (eg. during a Jest test) dynamic class names are stabilized and `<style>` elements are inlined.
 
-The TSS API is also similar enough to the original API for the `vscode-styled-components` plugin to provide syntax support.
+The tsstyled API is also similar enough to the original API for the `vscode-styled-components` plugin to provide syntax support.
 
 ## Basic Examples
 
@@ -108,6 +108,6 @@ export const GlobalStyle = styled('style')`
 
 ## Server Side Rendering (SSR)
 
-No configuration is required to make SSR to work. When rendered without a browser context (ie. a `document` global), styles are rendered inline. On the client, TSS will pull the inlined styles into the document `<head>` _before_ React rehydration occurs.
+No configuration is required to make SSR to work. When rendered without a browser context (ie. a `document` global), styles are rendered inline. On the client, tsstyled will pull the inlined styles into the document `<head>` _before_ React rehydration occurs.
 
 For more advanced scenarios, you can implement the `IStyleManager` interface and use a `<StyledConfig serverManager={customManager}>...</StyledConfig>` wrapper to capture all rendered styles.

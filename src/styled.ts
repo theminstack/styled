@@ -27,7 +27,11 @@ function getStyledComponent(
 ) {
   const isGlobal = type === 'style';
   const staticClassName = !isGlobal && displayName != null ? getId(displayName) : undefined;
-  const staticClassNameSelector = `.${staticClassName}`;
+  const staticClassNameSelector = staticClassName != null ? `.${staticClassName}` : undefined;
+
+  if (displayName == null) {
+    displayName = typeof type === 'string' ? `$$styled('${type}')` : `$$styled(${type.displayName || type.name || ''})`;
+  }
 
   return assign(
     (props: AnyProps): ReactElement | null => {
@@ -59,13 +63,10 @@ function getStyledComponent(
       return createElement(Fragment, {}, style, element);
     },
     {
-      ...(displayName != null
+      displayName,
+      ...(staticClassNameSelector != null
         ? { [styledSelectorMarker]: true as const, toString: () => staticClassNameSelector }
         : {}),
-      displayName:
-        displayName || typeof type === 'string'
-          ? `$$styled('${type}')`
-          : `$$styled(${type.displayName || type.name || ''})`,
     },
   );
 }

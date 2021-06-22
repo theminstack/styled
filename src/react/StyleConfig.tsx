@@ -8,7 +8,7 @@ export interface IStyleConfigProps extends Partial<IStyleConfig> {
 }
 
 /**
- * TSS configuration provider.
+ * The tsstyled configuration context provider.
  */
 export function StyleConfig({ children, ...config }: IStyleConfigProps): ReactElement {
   const parentConfig = useStyleConfig();
