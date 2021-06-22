@@ -2,7 +2,10 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
-    "target": "ES2015",
+    "types": ["react", "jest", "@testing-library/jest-dom"],
+    "lib": ["dom", "es5"],
+    "target": "ES5",
+    "module": "ESNext",
     "moduleResolution": "node",
     "jsx": "react",
     "strict": true,
@@ -12,7 +15,7 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "declaration": true,
-    "emitDeclarationOnly": true,
+    "emitDeclarationOnly": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules/**/*", "lib/**/*"]

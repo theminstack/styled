@@ -95,7 +95,7 @@ const TextInput = styled('input', 'TextInput')
     }
   `;
 
-const SignatureInput = styled(TextInput)
+const SignatureInput = styled(TextInput, 'SignatureInput')
   .props<Omit<ITextInputProps, 'type'>>()
   .set(() => ({ type: 'text' }))`
     font-family: cursive;

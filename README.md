@@ -1,4 +1,4 @@
-# TSS
+# tsstyled
 
 React visual primitives with first-class TypeScript support and a tiny footprint.
 
@@ -24,6 +24,7 @@ Most styled-components capabilities (basic and advanced) are supported, with som
   - Primitive valued properties are passed through _unless_ the property names starts with `$`.
   - Function valued properties are passed through _only if_ the property name starts with `on`.
   - Object valued properties are passed through _only if_ the property name is `style`.
+- The [component-as-selector](https://styled-components.com/docs/advanced#referring-to-other-components) pattern only works when a component is given an explicit display name.
 - No [theme](https://styled-components.com/docs/advanced#theming) is _automatically_ injected into styled components, because custom themes can be _manually_ injected by using a theme hook with the `use` method.
 - No [keyframes](https://styled-components.com/docs/basics#animations) utility is included, because the `@keyframes` at-rule can be used in any styled template string, and the `getId` utility can be used if animation name collisions are a concern.
 - No [createGlobalStyle](https://styled-components.com/docs/api#createglobalstyle) utility is included, because global styles can be created by calling `styled('style')` which produces a global style component.
@@ -37,7 +38,7 @@ The TSS API is also similar enough to the original API for the `vscode-styled-co
 Create a custom theme (hook, provider, and type) with default values.
 
 ```tsx
-import { createTheme } from 'tss';
+import { createTheme } from 'tsstyled';
 
 export const [useTheme, ThemeProvider] = createTheme({
   colorInputBorder: 'black',
@@ -50,7 +51,7 @@ export type Theme = ReturnType<typeof useTheme>;
 Create a styled text `<input>` element.
 
 ```tsx
-import { styled, InferProps } from 'tss';
+import { styled, InferProps } from 'tsstyled';
 
 export interface ITextInputProps extends InferProps<'input'> {
   theme?: ThemeType;
@@ -84,11 +85,11 @@ export const SignatureInput = styled(TextInput)`
 `;
 ```
 
-Styled components can be used as selectors template values, where they will resolve to a selector for the component's dynamically generated unique class.
+Styled components which are given an explicit display name can be used as selectors template values, where they will resolve to a selector for the component's statically generated unique class.
 
 ```tsx
 export const Form = styled('form')`
-  ${TextInput}, ${SignatureInput} {
+  ${TextInput} {
     margin: 1em;
   }
 `;

@@ -6,7 +6,7 @@ module.exports = {
   clearMocks: true,
   errorOnDeprecated: true,
   collectCoverage: true,
-  collectCoverageFrom: ['src/**/*.{ts,tsx}', '!**/node_modules/**', '!**/index.{ts,tsx}'],
+  collectCoverageFrom: ['src/**/*.{ts,tsx}', '!**/node_modules/**', '!**/index.{ts,tsx}', '!**/types/**', '!**/constants.*', '!**/_**'],
   coverageDirectory: 'coverage',
   coverageReporters: ['text-summary', 'json-summary', 'html'],
   coverageThreshold: {

@@ -6,11 +6,16 @@ import { IStyledTemplate } from './IStyledTemplate';
 import { Id } from './Utilities';
 
 export interface IStyled {
-  <TTag extends HTMLTag | string>(tag: TTag, displayName?: string): IStyledTemplate<InferProps<TTag>>;
+  (tag: 'style', displayName?: string): IStyledTemplate<false, IStylableComponentProps>;
+  <TTag extends HTMLTag | string>(tag: TTag): IStyledTemplate<false, InferProps<TTag>>;
+  <TTag extends HTMLTag | string>(tag: TTag, displayName: string): IStyledTemplate<true, InferProps<TTag>>;
   <TProps extends IStylableComponentProps, _ extends 'IKnowWhatIAmDoing'>(
     component: StylableComponent<TProps>,
-    displayName?: string,
-  ): IStyledTemplate<Id<TProps>>;
+  ): IStyledTemplate<false, Id<TProps>>;
+  <TProps extends IStylableComponentProps, _ extends 'IKnowWhatIAmDoing'>(
+    component: StylableComponent<TProps>,
+    displayName: string,
+  ): IStyledTemplate<true, Id<TProps>>;
   /**
    * @deprecated A component must accept a `className` string prop
    * to support styling.

@@ -1,7 +1,9 @@
 import version from '../version.json';
 import { getHash } from './getHash';
 import { isTest } from '../constants';
-import { idCounters } from '../globals';
+import { getCssIdentifier } from './getCssIdentifier';
+
+export const _idCounts: Record<string, number | undefined> = Object.create(null);
 
 /**
  * Get a stable ID string which is safe to use as a CSS class name.
@@ -11,9 +13,9 @@ import { idCounters } from '../globals';
  * This value is **NOT** unique per invocation like it would be at
  * runtime._
  */
-export function getId(name = 'tss'): string {
-  return `${name.replace(/[^a-z0-9_-]+/gi, '-').replace(/(^-|-$)/g, '')}-${getHash(
-    ...(isTest ? [] : [version, (idCounters[name] = (idCounters[name] ?? 0) + 1)]),
-    name,
+export function getId(namespace: string): string {
+  return `${getCssIdentifier(namespace)}-${getHash(
+    ...(isTest ? [] : [version, (_idCounts[namespace] = (_idCounts[namespace] ?? 0) + 1)]),
+    namespace,
   )}`;
 }

@@ -1,17 +1,17 @@
 import { getCssText } from './getCssText';
-import { getTokens } from './getTokens';
+import { getStyleTokens } from './getStyleTokens';
 import { defaultStyleFormatter } from '../DefaultStyleFormatter';
 
 it('should render simple css', () => {
   expect(
     getCssText(
-      defaultStyleFormatter,
-      getTokens(`
+      getStyleTokens(`
         .foo,
         .bar {
           color: red;
         }
       `),
+      defaultStyleFormatter,
       undefined,
     ),
   ).toMatchInlineSnapshot(`
@@ -26,10 +26,10 @@ it('should render simple css', () => {
 it('should include un-terminated rules', () => {
   expect(
     getCssText(
-      defaultStyleFormatter,
-      getTokens(`
+      getStyleTokens(`
         .foo {
           color: blue`),
+      defaultStyleFormatter,
       undefined,
     ),
   ).toMatchInlineSnapshot(`
@@ -43,8 +43,7 @@ it('should include un-terminated rules', () => {
 it('should render nested css', () => {
   expect(
     getCssText(
-      defaultStyleFormatter,
-      getTokens(`
+      getStyleTokens(`
         color: white;
         .foo {
           color: red;
@@ -55,6 +54,7 @@ it('should render nested css', () => {
         }
         color: black;
       `),
+      defaultStyleFormatter,
       undefined,
     ),
   ).toMatchInlineSnapshot(`
@@ -80,8 +80,7 @@ it('should render nested css', () => {
 it('should replace & placeholders', () => {
   expect(
     getCssText(
-      defaultStyleFormatter,
-      getTokens(`
+      getStyleTokens(`
         .foo {
           .bar & {
             color: red;
@@ -91,6 +90,7 @@ it('should replace & placeholders', () => {
           }
         }
       `),
+      defaultStyleFormatter,
       undefined,
     ),
   ).toMatchInlineSnapshot(`
@@ -107,8 +107,7 @@ it('should replace & placeholders', () => {
 it('should hoist at-rules', () => {
   expect(
     getCssText(
-      defaultStyleFormatter,
-      getTokens(`
+      getStyleTokens(`
         .foo {
           color: red;
           @media screen {
@@ -121,6 +120,7 @@ it('should hoist at-rules', () => {
           color: green;
         }
       `),
+      defaultStyleFormatter,
       undefined,
     ),
   ).toMatchInlineSnapshot(`
@@ -148,8 +148,7 @@ it('should hoist at-rules', () => {
 it('should correctly handle nested at-rules', () => {
   expect(
     getCssText(
-      defaultStyleFormatter,
-      getTokens(`
+      getStyleTokens(`
         @charset "utf-8";
         @namespace foo;
         @import url('foo');
@@ -179,6 +178,7 @@ it('should correctly handle nested at-rules', () => {
           }
         }
       `),
+      defaultStyleFormatter,
       undefined,
     ),
   ).toMatchInlineSnapshot(`
@@ -225,8 +225,7 @@ it('should correctly handle nested at-rules', () => {
 it('should merge comma separated selectors', () => {
   expect(
     getCssText(
-      defaultStyleFormatter,
-      getTokens(`
+      getStyleTokens(`
         .foo,
         .bar {
           .baz {
@@ -240,6 +239,7 @@ it('should merge comma separated selectors', () => {
           }
         }
       `),
+      defaultStyleFormatter,
       undefined,
     ),
   ).toMatchInlineSnapshot(`
@@ -258,8 +258,7 @@ it('should merge comma separated selectors', () => {
 it('should print other at-rule properties', () => {
   expect(
     getCssText(
-      defaultStyleFormatter,
-      getTokens(`
+      getStyleTokens(`
         @foo bar baz;
         @font-feature-values Font {
           @styleset {
@@ -267,6 +266,7 @@ it('should print other at-rule properties', () => {
           }
         }
       `),
+      defaultStyleFormatter,
       undefined,
     ),
   ).toMatchInlineSnapshot(`
@@ -284,8 +284,7 @@ it('should print other at-rule properties', () => {
 it('should not inherit parent selectors inside non-conditional-group at rules', () => {
   expect(
     getCssText(
-      defaultStyleFormatter,
-      getTokens(`
+      getStyleTokens(`
         @keyframes foo {
           from {
             color: black;
@@ -306,6 +305,7 @@ it('should not inherit parent selectors inside non-conditional-group at rules', 
           }
         }
       `),
+      defaultStyleFormatter,
       'foo',
     ),
   ).toMatchInlineSnapshot(`
@@ -337,8 +337,7 @@ it('should not inherit parent selectors inside non-conditional-group at rules', 
 it('should support @font-face rules', () => {
   expect(
     getCssText(
-      defaultStyleFormatter,
-      getTokens(`
+      getStyleTokens(`
         @font-face {
           font-family: 'Foo';
           font-style: normal;
@@ -354,6 +353,7 @@ it('should support @font-face rules', () => {
           src: url('bar.woff2') format('woff2'), url('bar.woff') format('woff');
         }
       `),
+      defaultStyleFormatter,
       undefined,
     ),
   ).toMatchInlineSnapshot(`
@@ -378,8 +378,7 @@ it('should support @font-face rules', () => {
 it('should not inherit parent selectors inside non-conditional-group at rules', () => {
   expect(
     getCssText(
-      defaultStyleFormatter,
-      getTokens(`
+      getStyleTokens(`
         .bar {
           &:hover {
             color: red;
@@ -389,6 +388,7 @@ it('should not inherit parent selectors inside non-conditional-group at rules', 
           }
         }
       `),
+      defaultStyleFormatter,
       'foo',
     ),
   ).toMatchInlineSnapshot(`

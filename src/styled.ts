@@ -1,55 +1,122 @@
-import { createElement, ReactElement } from 'react';
-import { styledComponentMarker } from './constants';
-import { getId } from './utils/getId';
+import { createElement, Fragment, ReactElement } from 'react';
+import { styledSelectorMarker } from './constants';
+import { IStylableComponentProps } from './types/IStylableComponentProps';
 import { IStyled } from './types/IStyled';
 import { IStyledTemplate } from './types/IStyledTemplate';
 import { IStyledTemplateBase } from './types/IStyledTemplateBase';
 import { StylableComponent } from './types/StylableComponent';
 import { StyleValue } from './types/StyleValue';
+import { getId } from './utils/getId';
+import { getStyleText } from './utils/getStyleText';
+import { defaults } from './utils/defaults';
+import { merge } from './utils/merge';
+import { assign } from './utils/assign';
+import { useStyleTokens } from './react/useStyleTokens';
+import { useCssText } from './react/useCssText';
+import { Stylesheet } from './react/Stylesheet';
+import { isStyledComponent } from './utils/isStyledComponent';
 
-export const styled: IStyled = (type: string | StylableComponent<any>, displayName?: string): IStyledTemplate<any> => {
-  return getStyledTemplate(type, displayName);
-};
+type AnyProps = IStylableComponentProps & Record<string, unknown>;
 
-function getStyledTemplate(
-  type: string | StylableComponent<any>,
+function getStyledComponent(
+  type: string | (StylableComponent<AnyProps> & { displayName?: string; name?: string }),
   displayName: string | undefined,
-): IStyledTemplate<any> {
-  return Object.assign(getStyledTemplateBase(type, displayName), {
-    props() {
-      return getStyledTemplateBase(type, displayName);
+  mapFunctions: ((props: AnyProps) => AnyProps)[],
+  template: TemplateStringsArray,
+  values: StyleValue<AnyProps>[],
+) {
+  const isGlobal = type === 'style';
+  const staticClassName = !isGlobal && displayName != null ? getId(displayName) : undefined;
+  const staticClassNameSelector = `.${staticClassName}`;
+
+  return assign(
+    (props: AnyProps): ReactElement | null => {
+      props = mapFunctions.reduce((acc, cb) => cb(acc), { ...props });
+
+      const isGlobal = type === 'style';
+      const styleText = getStyleText(template, values, props);
+      const { styleTokens, dynamicClassName, otherClassNames } = useStyleTokens(
+        styleText,
+        props.className,
+        displayName,
+      );
+      const cssText = useCssText(styleTokens, isGlobal ? undefined : dynamicClassName);
+      const style = isStyledComponent(type)
+        ? null
+        : createElement(Stylesheet, { className: dynamicClassName, cssText });
+
+      if (isGlobal) {
+        return style;
+      }
+
+      const element = createElement(type, {
+        ...props,
+        className: [...otherClassNames, ...(staticClassName != null ? [staticClassName] : []), dynamicClassName].join(
+          ' ',
+        ),
+      });
+
+      return createElement(Fragment, {}, style, element);
     },
-  });
+    {
+      ...(displayName != null
+        ? { [styledSelectorMarker]: true as const, toString: () => staticClassNameSelector }
+        : {}),
+      displayName:
+        displayName || typeof type === 'string'
+          ? `$$styled('${type}')`
+          : `$$styled(${type.displayName || type.name || ''})`,
+    },
+  );
 }
 
 function getStyledTemplateBase(
-  type: string | StylableComponent<any>,
+  type: string | StylableComponent<AnyProps>,
   displayName: string | undefined,
-): IStyledTemplateBase<any> {
-  return Object.assign(
-    (template: TemplateStringsArray, ...values: StyleValue<any>[]) => {
-      const idClassNameSelector = `.${getId(displayName)}`;
-
-      return Object.assign(
-        (props: any): ReactElement => {
-          return createElement(type, props);
-        },
-        {
-          [styledComponentMarker]: true as const,
-          toString: () => idClassNameSelector,
-        },
-      );
+  mapFunctions: ((props: AnyProps) => AnyProps)[],
+): IStyledTemplateBase<boolean, any> {
+  return assign(
+    (template: TemplateStringsArray, ...values: StyleValue<AnyProps>[]) => {
+      return getStyledComponent(type, displayName, mapFunctions, template, values);
     },
     {
-      use() {
-        return getStyledTemplateBase(type, displayName);
+      use: (cb: (props: AnyProps) => AnyProps): IStyledTemplateBase<boolean, any> => {
+        return getStyledTemplateBase(type, displayName, [...mapFunctions, (props) => defaults(props, cb(props))]);
       },
-      set() {
-        return getStyledTemplateBase(type, displayName);
+      set: (cb: (props: AnyProps) => AnyProps): IStyledTemplateBase<boolean, any> => {
+        return getStyledTemplateBase(type, displayName, [...mapFunctions, (props) => merge(props, cb(props))]);
       },
-      map() {
-        return getStyledTemplateBase(type, displayName);
+      map: (cb: (props: AnyProps) => AnyProps): IStyledTemplateBase<boolean, any> => {
+        return getStyledTemplateBase(type, displayName, [...mapFunctions, cb]);
       },
     },
   );
 }
+
+/**
+ * Styled component factory.
+ *
+ * ```tsx
+ * const StyledComponent = styled(MyComponent)`
+ *   color: blue;
+ * `;
+ *
+ * const StyledDiv = styled('div')`
+ *   color: blue;
+ * `;
+ *
+ * const GlobalStyle = styled('style')`
+ *   color: blue;
+ * `;
+ * ```
+ */
+export const styled: IStyled = (
+  type: string | StylableComponent<AnyProps>,
+  displayName?: string,
+): IStyledTemplate<boolean, any> => {
+  return assign(getStyledTemplateBase(type, displayName, []), {
+    props(cb?: (props: AnyProps) => AnyProps): IStyledTemplateBase<boolean, any> {
+      return getStyledTemplateBase(type, displayName, cb ? [cb] : []);
+    },
+  });
+};

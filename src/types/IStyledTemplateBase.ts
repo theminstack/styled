@@ -1,9 +1,18 @@
 import { IStyledComponent } from './IStyledComponent';
+import { IStyledSelector } from './IStyledSelector';
 import { StyleValue } from './StyleValue';
 import { Defaults, Id, Merge } from './Utilities';
 
-export interface IStyledTemplateBase<TOuterProps, TInnerProps = TOuterProps, TExtendedProps = TInnerProps> {
-  (template: TemplateStringsArray, ...values: StyleValue<TExtendedProps>[]): IStyledComponent<TOuterProps>;
+export interface IStyledTemplateBase<
+  TSelector extends boolean,
+  TOuterProps,
+  TInnerProps = TOuterProps,
+  TExtendedProps = TInnerProps,
+> {
+  (template: TemplateStringsArray, ...values: StyleValue<TExtendedProps>[]): (TSelector extends true
+    ? IStyledSelector
+    : unknown) &
+    IStyledComponent<TOuterProps>;
 
   /**
    * Use prop default values. As the name implies, this callback is
@@ -16,7 +25,7 @@ export interface IStyledTemplateBase<TOuterProps, TInnerProps = TOuterProps, TEx
    */
   use<TNewInnerProps extends Partial<TInnerProps> & Record<string, any>>(
     cb: (props: TExtendedProps) => Partial<TInnerProps> & TNewInnerProps,
-  ): IStyledTemplateBase<TOuterProps, TInnerProps, Defaults<[TExtendedProps, TNewInnerProps]>>;
+  ): IStyledTemplateBase<TSelector, TOuterProps, TInnerProps, Defaults<[TExtendedProps, TNewInnerProps]>>;
 
   /**
    * Partially set props. This is effectively a "merge" with
@@ -33,7 +42,7 @@ export interface IStyledTemplateBase<TOuterProps, TInnerProps = TOuterProps, TEx
    */
   set<TNewInnerProps extends Partial<TInnerProps> & Record<string, any>>(
     cb: (props: TExtendedProps) => Partial<TInnerProps> & TNewInnerProps,
-  ): IStyledTemplateBase<TOuterProps, TInnerProps, Merge<[TExtendedProps, TNewInnerProps]>>;
+  ): IStyledTemplateBase<TSelector, TOuterProps, TInnerProps, Merge<[TExtendedProps, TNewInnerProps]>>;
 
   /**
    * Transform all props based on previous props. The new props must
@@ -48,5 +57,5 @@ export interface IStyledTemplateBase<TOuterProps, TInnerProps = TOuterProps, TEx
    */
   map<TNewInnerProps extends Partial<TInnerProps> & Record<string, any>>(
     cb: (props: TExtendedProps) => Partial<TInnerProps> & TNewInnerProps,
-  ): IStyledTemplateBase<TOuterProps, TInnerProps, Id<TNewInnerProps>>;
+  ): IStyledTemplateBase<TSelector, TOuterProps, TInnerProps, Id<TNewInnerProps>>;
 }

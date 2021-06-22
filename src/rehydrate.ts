@@ -1,24 +1,17 @@
-import { isBrowser, styleElementCacheKeyAttr } from './constants';
+import { isClient, styledElementAttribute } from './constants';
 
 /**
  * Move all SSR inlined `<style>` elements from the `<body>` to the
  * `<head>`.
  *
- * _This is a no-op if used outside of a browser context._
+ * _This is a no-op if not used on the client (browser)._
  */
 export function rehydrate(): void {
-  if (!isBrowser) {
+  if (!isClient) {
     return;
   }
 
-  const cacheKeys: Record<string, true> = Object.create(null);
-
-  document.body.querySelectorAll<HTMLStyleElement>('style[' + styleElementCacheKeyAttr + ']').forEach((element) => {
-    const cacheKey = element.getAttribute(styleElementCacheKeyAttr) as string;
-
-    if (!cacheKeys[cacheKey]) {
-      document.head.appendChild(element);
-      cacheKeys[cacheKey] = true;
-    }
+  document.body.querySelectorAll<HTMLStyleElement>('style[' + styledElementAttribute + ']').forEach((element) => {
+    document.head.appendChild(element);
   });
 }

@@ -29,7 +29,7 @@ const blockTemplate: IBlock = {
 /**
  * Get a formatted CSS text string.
  */
-export function getCssText(formatter: IStyleFormatter, tokens: Tokens, className: string | undefined): string {
+export function getCssText(styleTokens: Tokens, formatter: IStyleFormatter, className: string | undefined): string {
   const rootSelectors = [className ? '.' + className : ':root'];
   const blocks: IBlock[] = [
     {
@@ -49,8 +49,8 @@ export function getCssText(formatter: IStyleFormatter, tokens: Tokens, className
   let result = '';
 
   function openBlock() {
-    if (tokens[indexStart] === '@' && indexEnd - indexStart > 2) {
-      const [isKnown, isConditionalGroup] = tokens[indexStart + 1]?.match(reAtRuleBlockNames) ?? [];
+    if (styleTokens[indexStart] === '@' && indexEnd - indexStart > 2) {
+      const [isKnown, isConditionalGroup] = styleTokens[indexStart + 1]?.match(reAtRuleBlockNames) ?? [];
       const at = getTokenValues(indexStart, indexEnd);
 
       if (isKnown) {
@@ -131,10 +131,10 @@ export function getCssText(formatter: IStyleFormatter, tokens: Tokens, className
   }
 
   function property() {
-    const isAt = tokens[indexStart] === '@';
+    const isAt = styleTokens[indexStart] === '@';
 
     if (isAt) {
-      const name = indexEnd - indexStart >= 2 && tokens[indexStart + 1];
+      const name = indexEnd - indexStart >= 2 && styleTokens[indexStart + 1];
       const rule = formatter.property('', null, getTokenValues(indexStart, indexEnd));
 
       switch (name) {
@@ -190,8 +190,8 @@ export function getCssText(formatter: IStyleFormatter, tokens: Tokens, className
     let value = '';
 
     for (let i = start; i < end; ++i) {
-      if (tokens[i] !== ',') {
-        value += tokens[i];
+      if (styleTokens[i] !== ',') {
+        value += styleTokens[i];
       } else {
         value && values.push(value);
         value = '';
@@ -203,8 +203,8 @@ export function getCssText(formatter: IStyleFormatter, tokens: Tokens, className
     return values;
   }
 
-  for (indexStart = 0, indexEnd = 0; indexEnd < tokens.length; ++indexEnd) {
-    switch (tokens[indexEnd]) {
+  for (indexStart = 0, indexEnd = 0; indexEnd < styleTokens.length; ++indexEnd) {
+    switch (styleTokens[indexEnd]) {
       case ':':
         indexColon = indexColon ?? indexEnd;
         continue;

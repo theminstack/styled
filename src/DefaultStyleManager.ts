@@ -1,28 +1,22 @@
-import { styleElementCacheKeyAttr } from './constants';
 import { IStyleManager } from './types/IStyleManager';
+import { DomElement } from './utils/getDomElement';
 
 /**
  * Default style manager.
  */
 export class DefaultStyleManager implements IStyleManager {
-  readonly _cache = new Map<string, HTMLStyleElement>();
+  readonly _cache: Record<string, DomElement<'style'> | undefined> = Object.create(null);
 
-  register(cacheKey: string, cssText: string, replacedCacheKey: string | undefined): void {
-    const style = document.createElement('style');
-    const replacedStyle = replacedCacheKey != null ? this._cache.get(replacedCacheKey) : null;
-
-    style.setAttribute(styleElementCacheKeyAttr, cacheKey);
-    style.textContent = cssText;
-    document.head.insertBefore(style, replacedStyle?.nextSibling ?? null);
-    this._cache.set(cacheKey, style);
+  add(key: string, style: DomElement<'style'>): void {
+    this._cache[key] = style.mount(document.head);
   }
 
-  unregister(cacheKey: string): void {
-    const style = this._cache.get(cacheKey);
+  remove(key: string): void {
+    const style = this._cache[key];
 
     if (style) {
-      this._cache.delete(cacheKey);
-      style.remove();
+      delete this._cache[key];
+      style.parentNode?.removeChild(style);
     }
   }
 }

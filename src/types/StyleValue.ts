@@ -1,5 +1,5 @@
 import { StylePrimitive } from './StylePrimitive';
 import { StylePrimitiveFactory } from './StylePrimitiveFactory';
-import { IStyledComponentStatic } from './IStyledComponentStatic';
+import { IStyledSelector } from './IStyledSelector';
 
-export type StyleValue<TProps> = StylePrimitive | StylePrimitiveFactory<TProps> | IStyledComponentStatic;
+export type StyleValue<TProps> = StylePrimitive | StylePrimitiveFactory<TProps> | IStyledSelector;

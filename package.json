@@ -1,5 +1,5 @@
 {
-  "name": "tss",
+  "name": "tsstyled",
   "version": "1.0.0-prerelease.0",
   "main": "lib/cjs.js",
   "module": "lib/esm.js",
@@ -11,8 +11,9 @@
     }
   },
   "scripts": {
-    "prepack": "del-cli lib dist && tsc && rollup -c rollup.config.js",
-    "test": "del-cli coverage && eslint src && jest"
+    "prepack": "npm run build",
+    "build": "del-cli lib dist && tsc && rollup -c rollup.config.js",
+    "test": "del-cli coverage && tsc --emitDeclarationOnly false --noEmit true && eslint src && jest"
   },
   "keywords": [
     "component",
@@ -38,6 +39,8 @@
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@rollup/plugin-typescript": "^8.2.1",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^11.2.7",
     "@tinysource/eslint-config": "^1.0.3",
     "@types/jest": "^26.0.23",
     "@types/react": "^16.14.8",
@@ -52,6 +55,7 @@
     "rollup-plugin-dts": "^3.0.2",
     "rollup-plugin-terser": "^7.0.2",
     "ts-jest": "^27.0.3",
+    "tslib": "^2.3.0",
     "typescript": "^4.3.4"
   },
   "peerDependencies": {

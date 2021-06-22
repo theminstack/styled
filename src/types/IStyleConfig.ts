@@ -9,10 +9,10 @@ export interface IStyleConfig {
    * A style manager adds style elements when styles are
    * registered, and removes them when they are unregistered.
    *
-   * No style manager (null) is used by default for SSR, which will
-   * cause all dynamic <style> elements to be injected inline. The
+   * No style manager (`null`) is used by default for SSR, which will
+   * cause all dynamic `<style>` elements to be injected inline. The
    * inlined styles will be hoisted to the document <head> on the
-   * client when rehydrating the SSR rendered page.
+   * client before React rehydration.
    */
   readonly serverManager: IStyleManager | null;
 

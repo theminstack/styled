@@ -1,24 +1,22 @@
+import { DomElement } from '../utils/getDomElement';
+
 /**
- * A style manager adds style elements when styles are registered,
- * and removes them when they are unregistered.
+ * A style manager adds style elements when new styles are used,
+ * and removes them when they are no longer used.
  *
  * Using a custom style manager allows control over how style
  * elements are injected into the DOM.
  */
 export interface IStyleManager {
   /**
-   * Called when a new style element should be added to the DOM.
-   *
-   * The `replacedCacheKey` is the key of the style that the new
-   * style is derived from, which should be used to insert the new
-   * style in proximity to the previous style, so that precedence is
-   * not drastically affected when a style is mutated.
+   * Called when a unique style is used. Guaranteed not to be called
+   * twice for the same ID before a call to `remove` the key.
    */
-  register(cacheKey: string, cssText: string, replacedCacheKey: string | undefined): void;
+  add(key: string, style: DomElement<'style'>): void;
 
   /**
-   * Called when an existing style element should be removed from
-   * the DOM.
+   * Called when a unique style is no longer in use. Guaranteed not
+   * be called more than once per matching `add` call.
    */
-  unregister(cacheKey: string): void;
+  remove(key: string): void;
 }

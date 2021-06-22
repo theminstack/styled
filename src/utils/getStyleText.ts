@@ -7,11 +7,24 @@ import { isStyledComponent } from './isStyledComponent';
  * functions are invoked with the props object and the return value
  * is used as the final template value.
  */
-export function getStyleText(template: TemplateStringsArray, values: unknown[], props: {} = {}): string {
-  return String.raw(
-    template,
-    ...values.map((value) =>
-      typeof value == null ? '' : typeof value === 'function' && !isStyledComponent(value) ? value(props) : value,
-    ),
-  );
+export function getStyleText(
+  template: TemplateStringsArray,
+  values: unknown[],
+  props: Record<string, unknown>,
+): string {
+  return template.raw
+    .reduce<string[]>((acc, segment, i) => {
+      acc.push(segment);
+
+      if (i < values.length) {
+        const value = values[i];
+
+        acc.push(
+          typeof value == null ? '' : typeof value === 'function' && !isStyledComponent(value) ? value(props) : value,
+        );
+      }
+
+      return acc;
+    }, [])
+    .join('');
 }
