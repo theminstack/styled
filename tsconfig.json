@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
+    "rootDir": ".",
+    "outDir": "out",
     "types": ["react", "jest", "@testing-library/jest-dom"],
     "lib": ["dom", "es5"],
     "target": "ES5",
@@ -17,6 +17,5 @@
     "declaration": true,
     "emitDeclarationOnly": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules/**/*", "lib/**/*"]
+  "include": ["src/**/*"]
 }

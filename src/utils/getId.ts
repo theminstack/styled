@@ -1,7 +1,7 @@
-import version from '../version.json';
 import { getHash } from './getHash';
-import { isTest } from '../constants';
 import { getCssIdentifier } from './getCssIdentifier';
+import { isTest } from '../constants';
+import { version } from '../../package.json';
 
 export const _idCounts: Record<string, number | undefined> = Object.create(null);
 

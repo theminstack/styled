@@ -26,7 +26,7 @@ const config = [
     plugins: [resolve(), commonjs(), typescript(), json(), terser()],
   },
   {
-    input: 'dist/index.d.ts',
+    input: 'out/src/index.d.ts',
     output: [{ file: 'lib/index.d.ts', format: 'esm' }],
     plugins: [dts()],
   },
