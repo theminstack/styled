@@ -1,4 +1,8 @@
 /* eslint-disable */
+
+// This file is not part of the library. It's a sandbox for
+// experimentation during development.
+
 import React, { Component, ReactNode } from 'react';
 import { styled, createTheme, InferProps } from '.';
 import { Defaults, Merge } from './types/Utilities';

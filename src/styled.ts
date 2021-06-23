@@ -53,6 +53,17 @@ function getStyledComponent(
         return style;
       }
 
+      if (typeof type === 'string') {
+        for (const prop of Object.keys(props)) {
+          if (
+            prop[0] === '$' ||
+            (typeof props[prop] !== 'string' && typeof props[prop] !== 'number' && typeof props[prop] !== 'boolean')
+          ) {
+            delete props[prop];
+          }
+        }
+      }
+
       const element = createElement(type, {
         ...props,
         className: [...otherClassNames, ...(staticClassName != null ? [staticClassName] : []), dynamicClassName].join(

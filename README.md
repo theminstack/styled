@@ -9,7 +9,7 @@ The [styled-components](https://styled-components.com/docs/basics#motivation) li
 This library implements the same patterns, and adds the following enhancements over the original styled-components library:
 
 - First-class TypeScript support with a modified API for stronger types.
-- Zero dependencies and a smaller bundle size.
+- Zero dependencies and a smaller [bundle size](https://bundlephobia.com/package/tsstyled).
 
 ### tsstyled vs styled-components
 

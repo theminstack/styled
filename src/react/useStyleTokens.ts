@@ -58,7 +58,7 @@ export function useStyleTokens(
 
     // If the style cache entry is new, schedule a cleanup in case
     // the render is aborted.
-    if (_styleTokensCache[dynamicClassName]?.refCount === 0) {
+    if ((_styleTokensCache[dynamicClassName] as CacheItem).refCount === 0) {
       abortedRenderCleanup = requestAnimationFrame(() => {
         if (_styleTokensCache[dynamicClassName]?.refCount === 0) {
           delete _styleTokensCache[dynamicClassName];

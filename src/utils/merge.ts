@@ -13,7 +13,7 @@ export function merge(a: Record<string, unknown>, b: Record<string, unknown>): R
   return Object.keys(b).reduce(
     (acc, key) => {
       const value = b[key];
-      return value === undefined ? acc : { [key]: value };
+      return value === undefined ? acc : { ...acc, [key]: value };
     },
     { ...a },
   );

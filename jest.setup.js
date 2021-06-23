@@ -1,9 +1,9 @@
 require('@testing-library/jest-dom/extend-expect');
 
-const { _keyCounts } = require('./src/react/useStyle');
-const { _styleTokensCache } = require('./src/react/useStyleTokens');
-
 beforeEach(() => {
+  const { _keyCounts } = require('./src/react/useStyle');
+  const { _styleTokensCache } = require('./src/react/useStyleTokens');
+
   while (document.head.lastChild) {
     document.head.removeChild(document.head.lastChild);
   }
@@ -14,8 +14,6 @@ beforeEach(() => {
     delete _styleTokensCache[key];
   });
   jest.useFakeTimers();
-  jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
-    setTimeout(cb, 0);
-  });
+  jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => setTimeout(cb, 0));
   jest.spyOn(window, 'cancelAnimationFrame').mockImplementation((handle) => clearTimeout(handle));
 });

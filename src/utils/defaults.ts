@@ -17,7 +17,7 @@ export function defaults(a: Record<string, unknown>, b: Record<string, unknown>)
   return Object.keys(b).reduce(
     (acc, key) => {
       const value = b[key];
-      return value === undefined || a[key] !== undefined ? acc : { [key]: value };
+      return value === undefined || a[key] !== undefined ? acc : { ...acc, [key]: value };
     },
     { ...a },
   );
