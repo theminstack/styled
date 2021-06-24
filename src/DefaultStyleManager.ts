@@ -1,14 +1,18 @@
+import { styledElementAttribute } from './constants';
+import { IStyle } from './types/IStyle';
 import { IStyleManager } from './types/IStyleManager';
-import { DomElement } from './utils/getDomElement';
 
 /**
  * Default style manager.
  */
 export class DefaultStyleManager implements IStyleManager {
-  readonly _cache: Record<string, DomElement<'style'> | undefined> = Object.create(null);
+  private readonly _cache: Record<string, HTMLStyleElement | undefined> = Object.create(null);
 
-  add(key: string, style: DomElement<'style'>): void {
-    this._cache[key] = style.mount(document.head);
+  add({ key, cssText }: IStyle): void {
+    const style = document.createElement('style');
+    style.setAttribute(styledElementAttribute, key);
+    style.textContent = cssText;
+    this._cache[key] = document.head.appendChild(style);
   }
 
   remove(key: string): void {

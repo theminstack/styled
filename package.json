@@ -11,9 +11,10 @@
     }
   },
   "scripts": {
+    "test": "del-cli coverage && tsc --emitDeclarationOnly false --noEmit true && eslint src && jest",
+    "build": "del-cli out lib docs && tsc && rollup -c rollup.config.js && npm run typedoc",
     "prepack": "npm run build",
-    "build": "del-cli lib dist && tsc && rollup -c rollup.config.js",
-    "test": "del-cli coverage && tsc --emitDeclarationOnly false --noEmit true && eslint src && jest"
+    "typedoc": "del-cli \"docs/*/\" \"docs/*.html\" && typedoc src/index.ts --out docs --excludePrivate --excludeInternal --excludeExternals --disableOutputCheck --disableSources --theme \"./typedoc-dark\" --highlightTheme dark-plus"
   },
   "keywords": [
     "component",
@@ -56,6 +57,7 @@
     "rollup-plugin-terser": "^7.0.2",
     "ts-jest": "^27.0.3",
     "tslib": "^2.3.0",
+    "typedoc": "^0.21.0",
     "typescript": "^4.3.4"
   },
   "peerDependencies": {

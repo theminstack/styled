@@ -3,8 +3,11 @@ import { render } from '@testing-library/react';
 import { styled } from './styled';
 import { defaultStyleManager } from './DefaultStyleManager';
 import { StyleConfig } from './react/StyleConfig';
+import { ServerStyleManager } from './ServerStyleManager';
 
+(window as any).__webpack_nonce__ = 'webpack-test-nonce';
 jest.mock('./constants', () => ({ ...jest.requireActual('./constants'), isClient: false }));
+jest.mock('../package.json', () => ({ version: '1.0.0-test' }));
 
 test('inlined style', () => {
   const A = styled('div')`
@@ -68,5 +71,73 @@ test('SSR custom style manager', () => {
   );
 
   expect(spyAdd).toHaveBeenCalledTimes(1);
-  expect(spyAdd).toHaveBeenLastCalledWith(expect.stringMatching(/^_[a-z0-9]+$/i), expect.any(HTMLStyleElement));
+  expect(spyAdd).toHaveBeenLastCalledWith(
+    expect.objectContaining({
+      key: expect.stringMatching(/^_[a-z0-9]+$/i),
+      cssText: expect.stringContaining('color: blue;'),
+    }),
+  );
+});
+
+test('ServerStyleManager captures styles', () => {
+  const manager = new ServerStyleManager();
+  const A = styled('div')`
+    color: red;
+  `;
+  const B = styled('div')`
+    color: blue;
+  `;
+
+  render(
+    <StyleConfig serverManager={manager}>
+      <A />
+      <B />
+    </StyleConfig>,
+  );
+
+  const styleElement = manager.getStyleElement();
+
+  expect(styleElement.props).toMatchInlineSnapshot(`
+Object {
+  "children": "._ikj0kj {
+  color: red;
+}
+
+._dpgp4e {
+  color: blue;
+}
+",
+  "data-tss": "",
+  "data-tss-nonce": "webpack-test-nonce",
+  "data-tss-version": "1.0.0-test",
+}
+`);
+  expect(manager.getStyleData()).toMatchInlineSnapshot(`
+Array [
+  Object {
+    "cssText": "._ikj0kj {
+  color: red;
+}
+",
+    "key": "_ikj0kj",
+  },
+  Object {
+    "cssText": "._dpgp4e {
+  color: blue;
+}
+",
+    "key": "_dpgp4e",
+  },
+]
+`);
+  expect(manager.getStyleTag()).toMatchInlineSnapshot(`
+"<style data-tss data-tss-version=\\"1.0.0-test\\" data-tss-nonce=\\"webpack-test-nonce\\">._ikj0kj {
+  color: red;
+}
+
+._dpgp4e {
+  color: blue;
+}
+</style>"
+`);
 });

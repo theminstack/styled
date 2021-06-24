@@ -1,25 +1,18 @@
 import { createElement, ReactElement, useLayoutEffect } from 'react';
-import { isClient, styledElementAttribute } from '../constants';
-import { DomElement, getDomElement } from '../utils/getDomElement';
 import { useStyleConfig } from './useStyleConfig';
+import { isClient, styledElementAttribute } from '../constants';
+import { IStyle } from '../types/IStyle';
 
 export const _keyCounts: Record<string, number | undefined> = Object.create(null);
 
-function getStyleElement(key: string, cssText: string): DomElement<'style'> {
-  return getDomElement('style', (el) => {
-    el.setAttribute(styledElementAttribute, key);
-    el.textContent = cssText;
-  });
-}
-
-function useClientStyle(key: string, cssText: string): null {
+function useClientStyle({ key, cssText }: IStyle): null {
   const { clientManager: manager } = useStyleConfig();
 
   useLayoutEffect(() => {
     const refCount = (_keyCounts[key] = (_keyCounts[key] ?? 0) + 1);
 
     if (refCount === 1) {
-      manager.add(key, getStyleElement(key, cssText));
+      manager.add({ key, cssText });
     }
 
     return () => {
@@ -36,7 +29,7 @@ function useClientStyle(key: string, cssText: string): null {
   return null;
 }
 
-function useServerStyle(key: string, cssText: string): ReactElement | null {
+function useServerStyle({ key, cssText }: IStyle): ReactElement | null {
   const { serverManager: manager } = useStyleConfig();
   const refCount = (_keyCounts[key] = (_keyCounts[key] ?? 0) + 1);
 
@@ -45,7 +38,7 @@ function useServerStyle(key: string, cssText: string): ReactElement | null {
   }
 
   if (manager) {
-    manager.add(key, getStyleElement(key, cssText));
+    manager.add({ key, cssText });
     return null;
   }
 
@@ -54,7 +47,7 @@ function useServerStyle(key: string, cssText: string): ReactElement | null {
 
 /**
  * Inject a unique `<style>` element. My return the element for
- * inlining during SSR. Tracks use of unique style (by ID) so that
+ * inlining during SSR. Tracks use of unique style (by key) so that
  * they are only mounted once, and unmounted when no longer used.
  */
 export const useStyle = isClient ? useClientStyle : useServerStyle;

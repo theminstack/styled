@@ -7,7 +7,7 @@
  */
 export interface IStyleFormatter {
   /**
-   * Return an indented CSS property string. The key will be null
+   * Return an indented CSS prop string. The key will be null
    * for at-rules (`@`).
    */
   property(indent: string, key: string | null, values: string[]): string;

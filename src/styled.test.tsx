@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { createRef, forwardRef } from 'react';
 import { render } from '@testing-library/react';
 import { styled } from './styled';
 import { _keyCounts } from './react/useStyle';
-import { styledSelectorMarker } from './constants';
+import { styledComponentMarker } from './constants';
 import { assign } from './utils/assign';
 
 declare const Symbol: (...args: any[]) => symbol;
@@ -182,9 +182,9 @@ test('only styled components with a display name should support "component selec
   const A = styled('div', 'A')``;
   const B = styled('div')``;
 
-  expect(A[styledSelectorMarker]).toBe(true);
+  expect(A[styledComponentMarker]).toBe(true);
   expect(`${A}`).toMatchInlineSnapshot(`".A-3t2c"`);
-  expect(styledSelectorMarker in B).toBe(false);
+  expect(B[styledComponentMarker]).toBe(false);
 });
 
 test('default display names', () => {
@@ -197,7 +197,7 @@ test('default display names', () => {
   expect(styled(() => null)``.displayName).toMatchInlineSnapshot(`"$$styled()"`);
 });
 
-test('property mapping methods', () => {
+test('prop mapping methods', () => {
   const A = styled('div')
     .props((props: { foo: string; ignored: boolean; optional?: string }) => ({
       bar: props.foo,
@@ -246,4 +246,30 @@ test('property mapping methods', () => {
   />
 </div>
 `);
+});
+
+test('ref forwarding', () => {
+  const A = forwardRef<string, { className?: string }>(function A(props, ref) {
+    if (typeof ref === 'function') {
+      ref('refValue');
+    } else if (ref != null) {
+      ref.current = 'refValue';
+    }
+    return null;
+  });
+  const B = styled(A)``;
+  const C = styled('div')``;
+
+  const refB = createRef<string>();
+  const refC = createRef<HTMLDivElement>();
+
+  render(
+    <>
+      <B ref={refB} />
+      <C ref={refC} />
+    </>,
+  );
+
+  expect(refB.current).toBe('refValue');
+  expect(refC.current).toBeInstanceOf(HTMLDivElement);
 });

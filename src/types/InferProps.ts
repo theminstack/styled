@@ -1,5 +1,5 @@
 import { InferComponentProps } from './InferComponentProps';
-import { InferHTMLTagProps } from './InferHTMLTagProps';
+import { InferHtmlTagProps } from './InferHtmlTagProps';
 
 /**
  * Type helper for inferring a properties type from an HTML tag
@@ -10,4 +10,4 @@ import { InferHTMLTagProps } from './InferHTMLTagProps';
  * type CustomComponentProps = InferProps<CustomComponentProps>;
  * ```
  */
-export type InferProps<TType> = TType extends string ? InferHTMLTagProps<TType> : InferComponentProps<TType>;
+export type InferProps<TType> = TType extends string ? InferHtmlTagProps<TType> : InferComponentProps<TType>;

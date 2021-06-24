@@ -3,13 +3,14 @@
 // This file is not part of the library. It's a sandbox for
 // experimentation during development.
 
-import React, { Component, ReactNode } from 'react';
+import React, { Component, createRef, LegacyRef, ReactNode } from 'react';
 import { styled, createTheme, InferProps } from '.';
+import { css } from './css';
 import { Defaults, Merge } from './types/Utilities';
 
 // Styled
 
-function Foo(props: { className?: string; bar: number }): null {
+function Foo(props: { className?: string; bar: number; ref?: LegacyRef<string> }): null {
   return null;
 }
 
@@ -23,6 +24,7 @@ class Baz extends Component<{ className?: string }> {
   }
 }
 
+const refA = createRef<HTMLAnchorElement>();
 const A = styled('a')
   .use<{ z?: number }>((props) => ({ z: 1 }))
   .use((props) => ({ className: '' }))
@@ -32,7 +34,9 @@ const A = styled('a')
   .map((props) => ({ z: 1 }))`
     color: blue;
   `;
+<A ref={refA} />;
 
+const refB = createRef<string>();
 const B = styled(Foo, 'Foo')
   .use<{ z?: number }>((props) => ({ z: 1 }))
   .use((props) => ({ className: '', z: '' }))
@@ -43,6 +47,7 @@ const B = styled(Foo, 'Foo')
   .map((props) => ({ bar: 1, className: '' }))`
     color: blue;
   `;
+<B bar={1} ref={refB} />;
 
 const C = styled(Baz, 'Baz')
   .use<{ z?: number }>((props) => ({ z: 1 }))
@@ -64,8 +69,8 @@ styled(Foo)
 styled(Foo).set<{ a: number }>(() => ({ a: 1 }));
 styled(Foo).map<{ className?: string; bar: number }>(() => ({ className: '', bar: 1, a: '' }));
 styled(Foo).map<{ bar: number }>((props) => ({ ...props }));
-styled(Bar, '');
-styled<{ className?: string; bar: number }>(Foo);
+// styled(Bar, '');
+// styled<{ className?: string; bar: number }>(Foo);
 
 // Theming
 
@@ -83,7 +88,7 @@ interface ITextInputProps extends InferProps<'input'> {
 }
 
 const TextInput = styled('input', 'TextInput')
-  .props<ITextInputProps>()
+  .props<ITextInputProps>((props) => ({ ...props }))
   .use(() => ({
     theme: useTheme(),
     $size: 'small' as const,
@@ -149,5 +154,11 @@ interface IBar0 {
   f: number;
 }
 
-type DefaultsFoo = Defaults<[IFoo0, IBar0]>;
-type MergeFoo = Merge<[IFoo0, IBar0]>;
+type DefaultsFoo = Defaults<IFoo0, IBar0>;
+type MergeFoo = Merge<IFoo0, IBar0>;
+
+const font = css<{ scale?: number }>`
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 400;
+  font-size: ${(props) => props.scale ?? 1}rem;
+`;

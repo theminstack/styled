@@ -1,7 +1,7 @@
-import { Id } from './Utilities';
+import { Flat } from './Utilities';
 
 export type InferComponentProps<T> = T extends new (props: infer P) => any
-  ? Id<P>
+  ? Flat<P>
   : T extends (props: infer P) => any
-  ? Id<P>
+  ? Flat<P>
   : unknown;

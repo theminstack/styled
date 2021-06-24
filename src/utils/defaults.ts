@@ -2,7 +2,7 @@ import { Defaults } from '../types/Utilities';
 
 /**
  * Returns an object with all the properties of `a`, replaced by the
- * the defined properties of `b` where the property of `a` was
+ * the defined properties of `b` where the same prop in `a` was
  * undefined.
  *
  * ```ts
@@ -12,7 +12,7 @@ import { Defaults } from '../types/Utilities';
 export function defaults<A extends Record<string, unknown>, B extends Record<string, unknown>>(
   a: A,
   b: B,
-): Defaults<[A, B]>;
+): Defaults<A, B>;
 export function defaults(a: Record<string, unknown>, b: Record<string, unknown>): Record<string, unknown> {
   return Object.keys(b).reduce(
     (acc, key) => {

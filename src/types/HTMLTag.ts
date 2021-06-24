@@ -1,3 +1,6 @@
 import { ReactHTML } from 'react';
 
-export type HTMLTag = keyof ReactHTML;
+/**
+ * HTML tag names type.
+ */
+export type HtmlTag = Exclude<keyof ReactHTML, 'style'>;

@@ -9,6 +9,25 @@ export type ThemeProvider<TTheme> = (props: IThemeProviderProps<TTheme>) => Reac
 
 /**
  * Create a theme hook and provider component.
+ *
+ * ```tsx
+ * const [useTheme, ThemeProvider] = createTheme({
+ *   color: 'red',
+ * });
+ *
+ * const Foo = styled('div')
+ *   .use(() => ({
+ *     theme: useTheme()
+ *   })`
+ *     color: ${(props) => props.theme.color};
+ *   `;
+ *
+ * render(
+ *   <ThemeProvider value={{ color: 'blue' }}>
+ *     <Foo />
+ *   </ThemeProvider>
+ * );
+ * ```
  */
 export function createTheme<TTheme extends Record<string, any>>(
   defaultValue: TTheme,
@@ -16,7 +35,8 @@ export function createTheme<TTheme extends Record<string, any>>(
   const Context = createContext(defaultValue);
   const useTheme = () => useContext(Context);
 
-  function Provider({ value, children }: IThemeProviderProps<TTheme>): ReactElement {
+  function Provider(props: IThemeProviderProps<TTheme>): ReactElement {
+    const { value, children } = props;
     const theme = useTheme();
 
     return createElement(Context.Provider, { value: typeof value === 'function' ? value(theme) : value }, children);

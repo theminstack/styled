@@ -1,4 +1,4 @@
-import { DomElement } from '../utils/getDomElement';
+import { IStyle } from './IStyle';
 
 /**
  * A style manager adds style elements when new styles are used,
@@ -10,9 +10,9 @@ import { DomElement } from '../utils/getDomElement';
 export interface IStyleManager {
   /**
    * Called when a unique style is used. Guaranteed not to be called
-   * twice for the same ID before a call to `remove` the key.
+   * twice for the same key before a call to `remove` the key.
    */
-  add(key: string, style: DomElement<'style'>): void;
+  add(style: IStyle): void;
 
   /**
    * Called when a unique style is no longer in use. Guaranteed not

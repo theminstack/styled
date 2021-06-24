@@ -8,9 +8,10 @@ export interface IStyleConfigProps extends Partial<IStyleConfig> {
 }
 
 /**
- * The tsstyled configuration context provider.
+ * React context provider for custom `tsstyled` configurations.
  */
-export function StyleConfig({ children, ...config }: IStyleConfigProps): ReactElement {
+export function StyleConfig(props: IStyleConfigProps): ReactElement {
+  const { children, ...config } = props;
   const parentConfig = useStyleConfig();
   const value = useMemo<IStyleConfig>(() => {
     return {

@@ -1,11 +1,8 @@
-import { isStyledComponent } from './isStyledComponent';
+import { isStyledSelector } from './isStyledSelector';
 
 /**
  * Convert a tagged template array and values into a single style
- * string with all function values resolved. Styled component
- * values are resolved to their ID class selector string. Other
- * functions are invoked with the props object and the return value
- * is used as the final template value.
+ * string with all function values resolved.
  */
 export function getStyleText(
   template: TemplateStringsArray,
@@ -20,7 +17,7 @@ export function getStyleText(
         const value = values[i];
 
         acc.push(
-          typeof value == null ? '' : typeof value === 'function' && !isStyledComponent(value) ? value(props) : value,
+          typeof value == null ? '' : typeof value === 'function' && !isStyledSelector(value) ? value(props) : value,
         );
       }
 
