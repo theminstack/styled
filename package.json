@@ -72,5 +72,16 @@
   "eslintConfig": {
     "root": true,
     "extends": "@tinysource"
-  }
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shakeskeyboarde/tsstyled.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Shakeskeyboarde/tsstyled/issues"
+  },
+  "homepage": "https://tsstyled.com"
 }
