@@ -1,5 +1,10 @@
 # tsstyled
 
+[![npm-version](https://badgen.net/npm/v/tsstyled)](https://www.npmjs.com/package/tsstyled)
+[![bundle-size](https://badgen.net/bundlephobia/minzip/tsstyled@latest)](https://bundlephobia.com/result?p=tsstyled@latest)
+[![bundle-deps](https://badgen.net/bundlephobia/dependency-count/tsstyled@latest)](https://bundlephobia.com/result?p=tsstyled@latest)
+[![github-stars](https://badgen.net/github/stars/Shakeskeyboarde/tsstyled)](https://github.com/Shakeskeyboarde/tsstyled)
+
 React visual primitives with first-class TypeScript support and a tiny footprint.
 
 - [The Basics](#the-basics)

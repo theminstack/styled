@@ -1,6 +1,6 @@
 {
   "name": "tsstyled",
-  "version": "1.0.0-prerelease.1",
+  "version": "1.0.0-prerelease.2",
   "main": "lib/cjs.js",
   "module": "lib/esm.js",
   "types": "lib/index.d.ts",
@@ -13,7 +13,7 @@
   "scripts": {
     "test": "del-cli coverage && tsc --emitDeclarationOnly false --noEmit true && eslint src && jest",
     "build": "del-cli out lib \"docs/*\" \"!docs/CNAME\" && tsc && rollup -c rollup.config.js && npm run typedoc",
-    "prepack": "npm run build",
+    "prepack": "npm i && npm run test && npm run build",
     "typedoc": "del-cli \"docs/*/\" \"docs/*.html\" && typedoc src/index.ts --out docs --excludePrivate --excludeInternal --excludeExternals --disableOutputCheck --disableSources --theme \"./typedoc-dark\" --highlightTheme dark-plus"
   },
   "keywords": [
