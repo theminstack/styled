@@ -4,7 +4,7 @@ import { Flat } from './Utilities';
 /**
  * Styled template function with static utility methods for modifying
  * the styled component's prop values and replacing the default
- * component properties type.
+ * component props type.
  */
 export interface IStyledTemplate<TStatic, TProps> extends IStyledTemplateMod<TStatic, TProps, TProps, TProps> {
   /**

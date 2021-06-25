@@ -29,8 +29,8 @@ export interface IStyledTemplateMod<TStatic, TOuterProps, TInnerProps = TOuterPr
    * Partially set props. This is effectively a "merge" with
    * undefined value skipping.
    *
-   * _Be careful that you do not **unconditionally** overwrite
-   * properties passed in to the styled component!_
+   * _Be careful that you do not **unconditionally** overwrite props
+   * passed in to the styled component!_
    *
    * - Try the {@link IStyledTemplate.use use} method if you want to
    * provide default prop values (when the current value is

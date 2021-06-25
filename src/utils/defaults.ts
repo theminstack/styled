@@ -1,9 +1,8 @@
 import { Defaults } from '../types/Utilities';
 
 /**
- * Returns an object with all the properties of `a`, replaced by the
- * the defined properties of `b` where the same prop in `a` was
- * undefined.
+ * Returns an object with all the props of `a`, replaced by the
+ * defined props of `b` where the same prop in `a` was undefined.
  *
  * ```ts
  * merge({ foo: 1, bar: undefined }, { foo: 0, bar: 2 }); // { foo: 1, bar: 2 }

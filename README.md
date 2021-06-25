@@ -1,9 +1,10 @@
 # tsstyled
 
+[![homepage](https://badgen.net/badge/https%3A%2F%2F/tsstyled.com)](https://tsstyled.com)
+[![github-stars](https://badgen.net/github/stars/Shakeskeyboarde/tsstyled)](https://github.com/Shakeskeyboarde/tsstyled)
 [![npm-version](https://badgen.net/npm/v/tsstyled)](https://www.npmjs.com/package/tsstyled)
 [![bundle-size](https://badgen.net/bundlephobia/minzip/tsstyled@latest)](https://bundlephobia.com/result?p=tsstyled@latest)
 [![bundle-deps](https://badgen.net/bundlephobia/dependency-count/tsstyled@latest)](https://bundlephobia.com/result?p=tsstyled@latest)
-[![github-stars](https://badgen.net/github/stars/Shakeskeyboarde/tsstyled)](https://github.com/Shakeskeyboarde/tsstyled)
 
 React visual primitives with first-class TypeScript support and a tiny footprint.
 
@@ -32,7 +33,7 @@ React visual primitives with first-class TypeScript support and a tiny footprint
 
 ### Style HTML elements
 
-Use string tag names to create simple HTML elements with styling. The styled component supports all of the same properties (included refs) that the HTML element supports.
+Use string tag names to create simple HTML elements with styling. The styled component supports all of the same props (included refs) that the HTML element supports.
 
 ```tsx
 import { styled } from 'tsstyled';
@@ -57,7 +58,7 @@ const StyledBase = styled(Base)`
 
 ### Override props type
 
-The props type of a styled component can be replaced using the `props` method. If they new props type is not compatible (assignable) to the original props type, then you must provide a map function to convert the new properties to those expected by the wrapped component.
+The props type of a styled component can be replaced using the `props` method. If they new props type is not compatible (assignable) to the original props type, then you must provide a map function to convert the new props to those expected by the wrapped component.
 
 **NOTE**: The `props` method must always be the first styled method used. It is not available after using the `use`, `set`, or `map` methods.
 
@@ -76,7 +77,7 @@ const StyledDiv = styled('div').props<IStyledDivProps>((props) => ({
 
 ### Default prop values
 
-Default prop values can be provided for undefined props with the `use` method. Properties returned by the callback will only be set if the current prop value is undefined. This method is an alternative to using the `map` method with `Object.assign({}, defaults, props)` or `{ ...defaults, ...props }`, which allow undefined props to overwrite and hide default values.
+Default prop values can be provided for undefined props with the `use` method. Props returned by the callback will only be set if the current prop value is undefined. This method is an alternative to using the `map` method with `Object.assign({}, defaults, props)` or `{ ...defaults, ...props }`, which allow undefined props to overwrite and hide default values.
 
 ```tsx
 const StyledDiv = styled('div').use((props) => ({
@@ -89,7 +90,7 @@ const StyledDiv = styled('div').use((props) => ({
 
 ### Add or update prop values
 
-Prop values can be added and modified (but not removed or set to undefined) with the `set` method. Properties returned by the callback will be set as long as the new value is defined. This method is an alternative to using the `map` method with `Object.assign({}, props, source)` or `{ ...props, ...source }`, which allow undefined source values to overwrite and hide prop values.
+Prop values can be added and modified (but not removed or set to undefined) with the `set` method. Props returned by the callback will be set as long as the new value is defined. This method is an alternative to using the `map` method with `Object.assign({}, props, source)` or `{ ...props, ...source }`, which can allow undefined source values to overwrite and hide defined prop values.
 
 ```tsx
 const StyledDiv = styled('div').set((props) => ({
@@ -102,9 +103,9 @@ const StyledDiv = styled('div').set((props) => ({
 
 ### Map prop values
 
-Prop values can be completely rewritten using the `map` method. Properties returned by the callback replace the current properties without condition.
+Prop values can be completely rewritten using the `map` method. Props returned by the callback replace the current props without condition.
 
-**NOTE**: Try to use the `use` or `set` methods first, unless you need to remove or set properties to undefined. They provide better type support for their respective scenarios.
+**NOTE**: Try to use the `use` or `set` methods first, unless you need to remove or set props to undefined. They provide better type support for their respective scenarios.
 
 ```tsx
 const StyledDiv = styled('div').set((props) => ({
@@ -119,7 +120,7 @@ const StyledDiv = styled('div').set((props) => ({
 
 ### Global styles
 
-A global stylesheet can be added by styling a `style` component. A styled `styled` element is always hoists them to the document head.
+A global stylesheet can be added by styling a `style` component.
 
 ```tsx
 const GlobalStyle = styled('style')`
@@ -291,7 +292,7 @@ const StyledDiv = styled('div')`
 
 ## Server Side Rendering (SSR)
 
-No configuration is required to make SSR to work. When rendered without a browser context (ie. a `document` global), styles are rendered inline, before the the first element that uses a style. On the client, `tsstyled` will pull the inlined styles into the document `<head>` _before_ React rehydration occurs.
+No configuration is required to make SSR work. When rendered without a browser context (ie. a `document` global), styles are rendered inline, before the first element that uses a style. On the client, `tsstyled` will pull the inlined styles into the document `<head>` _before_ React rehydration occurs.
 
 If the default SSR support using inlined styles doesn't work for your scenario, you can use the `ServerStyleManager` and the `StyleConfig` component to capture styles rendered during SSR.
 
@@ -328,9 +329,9 @@ Most styled-components capabilities (basic and advanced) are supported, with som
 - The [style object](https://styled-components.com/docs/advanced#style-objects) syntax is not supported.
 - The [as](https://styled-components.com/docs/api#as-polymorphic-prop) polymorphic prop is not supported, because automatically adding it makes correct typing nearly impossible.
 - The attributes passed through to simple HTML elements (eg. `div`) are not [filtered based on known HTML attributes](https://styled-components.com/docs/basics#passed-props), and instead are filtered based on the following rules:
-  - Primitive valued properties are passed through _unless_ the prop names starts with `$`.
-  - Function valued properties are passed through _only if_ the prop name starts with `on`.
-  - Object valued properties are passed through _only if_ the prop name is `style`.
+  - Primitive valued props are passed through _unless_ the prop names starts with `$`.
+  - Function valued props are passed through _only if_ the prop name starts with `on`.
+  - Object valued props are passed through _only if_ the prop name is `style`.
 - The [component selector](https://styled-components.com/docs/advanced#referring-to-other-components) pattern only works when a component is given an _explicit_ display name, because making every component selectable adds transfer size to SSR, and requiring a unique name mitigates some potential SSR vs client rendering order gotchas.
 - No [theme](https://styled-components.com/docs/advanced#theming) is _automatically_ injected into styled components, because custom themes can be _manually_ injected by using a theme hook with the `use` method.
 - No [keyframes](https://styled-components.com/docs/basics#animations) utility is included, because the `@keyframes` at-rule can be used in any styled template string, and the `getId` utility can be used if animation name collisions are a concern.

@@ -138,8 +138,8 @@
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Type helper for inferring a properties type from an HTML tag
-							string or React element.</p>
+							<p>Type helper for inferring a props type from an HTML tag string or
+							React element.</p>
 						</div>
 						<pre><code class="language-ts"><span style="color: #569CD6">type</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">HTMLAnchorProps</span><span style="color: #D4D4D4"> = </span><span style="color: #4EC9B0">InferProps</span><span style="color: #D4D4D4">&lt;</span><span style="color: #CE9178">&#039;a&#039;</span><span style="color: #D4D4D4">&gt;;</span>
 <span style="color: #569CD6">type</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">CustomComponentProps</span><span style="color: #D4D4D4"> = </span><span style="color: #4EC9B0">InferProps</span><span style="color: #D4D4D4">&lt;</span><span style="color: #4EC9B0">CustomComponentProps</span><span style="color: #D4D4D4">&gt;;</span>
@@ -396,8 +396,8 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Create a style helper function which may accept properties and
-									returns style text.</p>
+									<p>Create a style helper function which may accept props and returns
+									style text.</p>
 								</div>
 								<pre><code class="language-ts"><span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">shadow</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">css</span><span style="color: #CE9178">&lt;{ </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4">?:</span><span style="color: #CE9178"> </span><span style="color: #4EC9B0">string</span><span style="color: #CE9178"> }&gt;`</span>
 <span style="color: #CE9178">  box-shadow: 5px 5px 10px </span><span style="color: #569CD6">${</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">) </span><span style="color: #569CD6">=&gt;</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4"> ?? </span><span style="color: #CE9178">&#039;black&#039;</span><span style="color: #569CD6">}</span><span style="color: #CE9178">;</span>
@@ -633,9 +633,9 @@
 								</div>
 								<p><em>Do not explicitly set the generic parameters of this function,
 										unless you are sure you know what you are doing. Explicitly
-										overriding the properties type of the styled component this way
-										can lead to properties of the wrong type being passed to the
-								wrapped component. Use the <code>props</code> method instead.</em></p>
+										overriding the props type of the styled component this way can
+										lead to props of the wrong type being passed to the wrapped
+								component. Use the <code>props</code> method instead.</em></p>
 								<pre><code class="language-tsx"><span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">Foo</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">SomeComponent</span><span style="color: #D4D4D4">)</span><span style="color: #CE9178">`</span>
 <span style="color: #CE9178">  color: blue;</span>
 <span style="color: #CE9178">`</span><span style="color: #D4D4D4">;</span>
@@ -667,10 +667,10 @@
 								</div>
 								<p><em>Do not explicitly set the generic parameters of this function,
 										unless you are sure you know what you are doing. Explicitly
-										overriding the properties type of the styled component this way
-										can lead to properties of the wrong type being passed to the
-										wrapped component. Use the
-								<a href="interfaces/istyledtemplate.html#props">props</a> method instead.</em></p>
+										overriding the props type of the styled component this way can
+										lead to props of the wrong type being passed to the wrapped
+										component. Use the <a href="interfaces/istyledtemplate.html#props">props</a> method
+								instead.</em></p>
 								<pre><code class="language-tsx"><span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">Foo</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">SomeComponent</span><span style="color: #D4D4D4">, </span><span style="color: #CE9178">&#039;Foo&#039;</span><span style="color: #D4D4D4">)</span><span style="color: #CE9178">`</span>
 <span style="color: #CE9178">  color: blue;</span>
 <span style="color: #CE9178">`</span><span style="color: #D4D4D4">;</span>

@@ -158,9 +158,9 @@ export function styled(tag: 'style', displayName?: string): IStyledTemplate<{}, 
  *
  * _Do not explicitly set the generic parameters of this function,
  * unless you are sure you know what you are doing. Explicitly
- * overriding the properties type of the styled component this way
- * can lead to properties of the wrong type being passed to the
- * wrapped component. Use the `props` method instead._
+ * overriding the props type of the styled component this way can
+ * lead to props of the wrong type being passed to the wrapped
+ * component. Use the `props` method instead._
  *
  * ```tsx
  * const Foo = styled(SomeComponent)`
@@ -176,10 +176,10 @@ export function styled<TProps extends IStylableComponentProps, _ extends 'IKnowW
  *
  * _Do not explicitly set the generic parameters of this function,
  * unless you are sure you know what you are doing. Explicitly
- * overriding the properties type of the styled component this way
- * can lead to properties of the wrong type being passed to the
- * wrapped component. Use the
- * {@link IStyledTemplate.props props} method instead._
+ * overriding the props type of the styled component this way can
+ * lead to props of the wrong type being passed to the wrapped
+ * component. Use the {@link IStyledTemplate.props props} method
+ * instead._
  *
  * ```tsx
  * const Foo = styled(SomeComponent, 'Foo')`

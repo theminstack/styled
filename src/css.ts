@@ -3,8 +3,8 @@ import { StyleHelper } from './types/StyleHelper';
 import { StyleValue } from './types/StyleValue';
 
 /**
- * Create a style helper function which may accept properties and
- * returns style text.
+ * Create a style helper function which may accept props and returns
+ * style text.
  *
  * ```ts
  * const shadow = css<{ color?: string }>`

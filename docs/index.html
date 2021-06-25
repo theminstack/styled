@@ -58,10 +58,11 @@
 				<a href="#tsstyled" id="tsstyled" style="color: inherit; text-decoration: none;">
 					<h1>tsstyled</h1>
 				</a>
-				<p><a href="https://www.npmjs.com/package/tsstyled"><img src="https://badgen.net/npm/v/tsstyled" alt="npm-version"></a>
+				<p><a href="https://tsstyled.com"><img src="https://badgen.net/badge/https%3A%2F%2F/tsstyled.com" alt="homepage"></a>
+					<a href="https://github.com/Shakeskeyboarde/tsstyled"><img src="https://badgen.net/github/stars/Shakeskeyboarde/tsstyled" alt="github-stars"></a>
+					<a href="https://www.npmjs.com/package/tsstyled"><img src="https://badgen.net/npm/v/tsstyled" alt="npm-version"></a>
 					<a href="https://bundlephobia.com/result?p=tsstyled@latest"><img src="https://badgen.net/bundlephobia/minzip/tsstyled@latest" alt="bundle-size"></a>
-					<a href="https://bundlephobia.com/result?p=tsstyled@latest"><img src="https://badgen.net/bundlephobia/dependency-count/tsstyled@latest" alt="bundle-deps"></a>
-				<a href="https://github.com/Shakeskeyboarde/tsstyled"><img src="https://badgen.net/github/stars/Shakeskeyboarde/tsstyled" alt="github-stars"></a></p>
+				<a href="https://bundlephobia.com/result?p=tsstyled@latest"><img src="https://badgen.net/bundlephobia/dependency-count/tsstyled@latest" alt="bundle-deps"></a></p>
 				<p>React visual primitives with first-class TypeScript support and a tiny footprint.</p>
 				<ul>
 					<li><a href="#the-basics">The Basics</a><ul>
@@ -99,7 +100,7 @@
 				<a href="#style-html-elements" id="style-html-elements" style="color: inherit; text-decoration: none;">
 					<h3>Style HTML elements</h3>
 				</a>
-				<p>Use string tag names to create simple HTML elements with styling. The styled component supports all of the same properties (included refs) that the HTML element supports.</p>
+				<p>Use string tag names to create simple HTML elements with styling. The styled component supports all of the same props (included refs) that the HTML element supports.</p>
 				<pre><code class="language-tsx"><span style="color: #C586C0">import</span><span style="color: #D4D4D4"> { </span><span style="color: #9CDCFE">styled</span><span style="color: #D4D4D4"> } </span><span style="color: #C586C0">from</span><span style="color: #D4D4D4"> </span><span style="color: #CE9178">&#039;tsstyled&#039;</span><span style="color: #D4D4D4">;</span>
 
 <span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">StyledDiv</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">)</span><span style="color: #CE9178">`</span>
@@ -120,7 +121,7 @@
 				<a href="#override-props-type" id="override-props-type" style="color: inherit; text-decoration: none;">
 					<h3>Override props type</h3>
 				</a>
-				<p>The props type of a styled component can be replaced using the <code>props</code> method. If they new props type is not compatible (assignable) to the original props type, then you must provide a map function to convert the new properties to those expected by the wrapped component.</p>
+				<p>The props type of a styled component can be replaced using the <code>props</code> method. If they new props type is not compatible (assignable) to the original props type, then you must provide a map function to convert the new props to those expected by the wrapped component.</p>
 				<p><strong>NOTE</strong>: The <code>props</code> method must always be the first styled method used. It is not available after using the <code>use</code>, <code>set</code>, or <code>map</code> methods.</p>
 				<pre><code class="language-tsx"><span style="color: #569CD6">interface</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">IStyledDivProps</span><span style="color: #D4D4D4"> {</span>
 <span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">description</span><span style="color: #D4D4D4">?: </span><span style="color: #4EC9B0">string</span><span style="color: #D4D4D4">;</span>
@@ -136,7 +137,7 @@
 				<a href="#default-prop-values" id="default-prop-values" style="color: inherit; text-decoration: none;">
 					<h3>Default prop values</h3>
 				</a>
-				<p>Default prop values can be provided for undefined props with the <code>use</code> method. Properties returned by the callback will only be set if the current prop value is undefined. This method is an alternative to using the <code>map</code> method with <code>Object.assign({}, defaults, props)</code> or <code>{ ...defaults, ...props }</code>, which allow undefined props to overwrite and hide default values.</p>
+				<p>Default prop values can be provided for undefined props with the <code>use</code> method. Props returned by the callback will only be set if the current prop value is undefined. This method is an alternative to using the <code>map</code> method with <code>Object.assign({}, defaults, props)</code> or <code>{ ...defaults, ...props }</code>, which allow undefined props to overwrite and hide default values.</p>
 				<pre><code class="language-tsx"><span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">StyledDiv</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">).</span><span style="color: #DCDCAA">use</span><span style="color: #D4D4D4">((</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">) </span><span style="color: #569CD6">=&gt;</span><span style="color: #D4D4D4"> ({</span>
 <span style="color: #D4D4D4">  </span><span style="color: #6A9955">// Use the component ID as the default class name.</span>
 <span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">className:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">id</span><span style="color: #D4D4D4">,</span>
@@ -147,7 +148,7 @@
 				<a href="#add-or-update-prop-values" id="add-or-update-prop-values" style="color: inherit; text-decoration: none;">
 					<h3>Add or update prop values</h3>
 				</a>
-				<p>Prop values can be added and modified (but not removed or set to undefined) with the <code>set</code> method. Properties returned by the callback will be set as long as the new value is defined. This method is an alternative to using the <code>map</code> method with <code>Object.assign({}, props, source)</code> or <code>{ ...props, ...source }</code>, which allow undefined source values to overwrite and hide prop values.</p>
+				<p>Prop values can be added and modified (but not removed or set to undefined) with the <code>set</code> method. Props returned by the callback will be set as long as the new value is defined. This method is an alternative to using the <code>map</code> method with <code>Object.assign({}, props, source)</code> or <code>{ ...props, ...source }</code>, which can allow undefined source values to overwrite and hide defined prop values.</p>
 				<pre><code class="language-tsx"><span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">StyledDiv</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">).</span><span style="color: #DCDCAA">set</span><span style="color: #D4D4D4">((</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">) </span><span style="color: #569CD6">=&gt;</span><span style="color: #D4D4D4"> ({</span>
 <span style="color: #D4D4D4">  </span><span style="color: #6A9955">// Add a prefix to the existing class name.</span>
 <span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">className:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">className</span><span style="color: #D4D4D4"> &amp;&amp; </span><span style="color: #CE9178">`prefix-</span><span style="color: #569CD6">${</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">className</span><span style="color: #569CD6">}</span><span style="color: #CE9178">`</span><span style="color: #D4D4D4">,</span>
@@ -158,8 +159,8 @@
 				<a href="#map-prop-values" id="map-prop-values" style="color: inherit; text-decoration: none;">
 					<h3>Map prop values</h3>
 				</a>
-				<p>Prop values can be completely rewritten using the <code>map</code> method. Properties returned by the callback replace the current properties without condition.</p>
-				<p><strong>NOTE</strong>: Try to use the <code>use</code> or <code>set</code> methods first, unless you need to remove or set properties to undefined. They provide better type support for their respective scenarios.</p>
+				<p>Prop values can be completely rewritten using the <code>map</code> method. Props returned by the callback replace the current props without condition.</p>
+				<p><strong>NOTE</strong>: Try to use the <code>use</code> or <code>set</code> methods first, unless you need to remove or set props to undefined. They provide better type support for their respective scenarios.</p>
 				<pre><code class="language-tsx"><span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">StyledDiv</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">).</span><span style="color: #DCDCAA">set</span><span style="color: #D4D4D4">((</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">) </span><span style="color: #569CD6">=&gt;</span><span style="color: #D4D4D4"> ({</span>
 <span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">id:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">id</span><span style="color: #D4D4D4">,</span>
 <span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">className:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">className</span><span style="color: #D4D4D4">,</span>
@@ -172,7 +173,7 @@
 				<a href="#global-styles" id="global-styles" style="color: inherit; text-decoration: none;">
 					<h3>Global styles</h3>
 				</a>
-				<p>A global stylesheet can be added by styling a <code>style</code> component. A styled <code>styled</code> element is always hoists them to the document head.</p>
+				<p>A global stylesheet can be added by styling a <code>style</code> component.</p>
 				<pre><code class="language-tsx"><span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">GlobalStyle</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;style&#039;</span><span style="color: #D4D4D4">)</span><span style="color: #CE9178">`</span>
 <span style="color: #CE9178">  body, html {</span>
 <span style="color: #CE9178">    margin: 0;</span>
@@ -328,7 +329,7 @@
 				<a href="#server-side-rendering-ssr" id="server-side-rendering-ssr" style="color: inherit; text-decoration: none;">
 					<h2>Server Side Rendering (SSR)</h2>
 				</a>
-				<p>No configuration is required to make SSR to work. When rendered without a browser context (ie. a <code>document</code> global), styles are rendered inline, before the the first element that uses a style. On the client, <code>tsstyled</code> will pull the inlined styles into the document <code>&lt;head&gt;</code> <em>before</em> React rehydration occurs.</p>
+				<p>No configuration is required to make SSR work. When rendered without a browser context (ie. a <code>document</code> global), styles are rendered inline, before the first element that uses a style. On the client, <code>tsstyled</code> will pull the inlined styles into the document <code>&lt;head&gt;</code> <em>before</em> React rehydration occurs.</p>
 				<p>If the default SSR support using inlined styles doesn&#39;t work for your scenario, you can use the <code>ServerStyleManager</code> and the <code>StyleConfig</code> component to capture styles rendered during SSR.</p>
 				<pre><code class="language-tsx"><span style="color: #C586C0">import</span><span style="color: #D4D4D4"> { </span><span style="color: #9CDCFE">ServerStyleManager</span><span style="color: #D4D4D4">, </span><span style="color: #9CDCFE">StyleConfig</span><span style="color: #D4D4D4"> } </span><span style="color: #C586C0">from</span><span style="color: #D4D4D4"> </span><span style="color: #CE9178">&#039;tsstyled&#039;</span><span style="color: #D4D4D4">;</span>
 
@@ -361,9 +362,9 @@
 					<li>The <a href="https://styled-components.com/docs/advanced#style-objects">style object</a> syntax is not supported.</li>
 					<li>The <a href="https://styled-components.com/docs/api#as-polymorphic-prop">as</a> polymorphic prop is not supported, because automatically adding it makes correct typing nearly impossible.</li>
 					<li>The attributes passed through to simple HTML elements (eg. <code>div</code>) are not <a href="https://styled-components.com/docs/basics#passed-props">filtered based on known HTML attributes</a>, and instead are filtered based on the following rules:<ul>
-							<li>Primitive valued properties are passed through <em>unless</em> the prop names starts with <code>$</code>.</li>
-							<li>Function valued properties are passed through <em>only if</em> the prop name starts with <code>on</code>.</li>
-							<li>Object valued properties are passed through <em>only if</em> the prop name is <code>style</code>.</li>
+							<li>Primitive valued props are passed through <em>unless</em> the prop names starts with <code>$</code>.</li>
+							<li>Function valued props are passed through <em>only if</em> the prop name starts with <code>on</code>.</li>
+							<li>Object valued props are passed through <em>only if</em> the prop name is <code>style</code>.</li>
 						</ul>
 					</li>
 					<li>The <a href="https://styled-components.com/docs/advanced#referring-to-other-components">component selector</a> pattern only works when a component is given an <em>explicit</em> display name, because making every component selectable adds transfer size to SSR, and requiring a unique name mitigates some potential SSR vs client rendering order gotchas.</li>

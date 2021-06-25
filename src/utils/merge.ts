@@ -1,8 +1,8 @@
 import { Merge } from '../types/Utilities';
 
 /**
- * Returns a new object with all of the properties of `a`, replaced
- * by the defined properties of `b`.
+ * Returns a new object with all of the props of `a`, replaced by
+ * the defined props of `b`.
  *
  * ```ts
  * merge({ foo: 1, bar: undefined, baz: 3 }, { foo: 0, bar: 2, baz: undefined }); // { foo: 0, bar: 2, baz: 3 }
