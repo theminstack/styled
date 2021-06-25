@@ -59,7 +59,12 @@ function getStyledComponent(
         for (const prop of Object.keys(props)) {
           if (
             prop[0] === '$' ||
-            (typeof props[prop] !== 'string' && typeof props[prop] !== 'number' && typeof props[prop] !== 'boolean')
+            (prop !== 'style' &&
+              prop !== 'children' &&
+              typeof props[prop] !== 'string' &&
+              typeof props[prop] !== 'number' &&
+              typeof props[prop] !== 'boolean' &&
+              !(prop.slice(0, 2) === 'on' && typeof props[prop] === 'function'))
           ) {
             delete props[prop];
           }

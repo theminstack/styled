@@ -2,8 +2,9 @@ import { getHash } from './getHash';
 import { getCssIdentifier } from './getCssIdentifier';
 import { isTest } from '../constants';
 import { version } from '../../package.json';
+import { RefManagerVoid } from './RefManagerVoid';
 
-export const _idCounts: Record<string, number | undefined> = Object.create(null);
+export const _refs = new RefManagerVoid();
 
 /**
  * Get a stable ID string which is safe to use as a CSS class name.
@@ -15,7 +16,7 @@ export const _idCounts: Record<string, number | undefined> = Object.create(null)
  */
 export function getId(namespace: string): string {
   return `${getCssIdentifier(namespace)}-${getHash(
-    ...(isTest ? [] : [version, (_idCounts[namespace] = (_idCounts[namespace] ?? 0) + 1)]),
+    ...(isTest ? [] : [version, _refs.require(namespace).count]),
     namespace,
   )}`;
 }

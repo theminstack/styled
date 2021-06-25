@@ -3,10 +3,9 @@ import { isClient } from '../constants';
 import { Tokens } from '../types/Tokens';
 import { getDynamicClassName } from '../utils/getDynamicClassName';
 import { getStyleTokens } from '../utils/getStyleTokens';
+import { RefManager } from '../utils/RefManager';
 
-type CacheItem = { styleTokens: Tokens; refCount: number };
-
-export const _styleTokensCache: Record<string, CacheItem | undefined> = Object.create(null);
+export const _refs = new RefManager<Tokens>();
 
 /**
  * Get the tokens and class name for a style, including tokens
@@ -27,7 +26,7 @@ export function useStyleTokens(
             return acc;
           }
 
-          const classTokens = _styleTokensCache[singleClassName]?.styleTokens;
+          const classTokens = _refs.get(singleClassName)?.value;
 
           return classTokens
             ? { otherClassNames: acc.otherClassNames, styleTokens: [...acc.styleTokens, ...classTokens] }
@@ -47,44 +46,28 @@ export function useStyleTokens(
   // this side effect is idempotent, and an additional step is
   // taken to revert the change (using requestAnimationFrame),
   // if React does not commit the change.
-  if (!_styleTokensCache[dynamicClassName]) {
-    _styleTokensCache[dynamicClassName] = { styleTokens, refCount: 0 };
-  }
+  const ref = _refs.require(dynamicClassName, () => styleTokens);
 
   // Use ref counting on the client. For SSR, styles are only
   // mounted (never unmounted), so ref counting is not necessary.
   if (isClient) {
-    let abortedRenderCleanup: number | undefined;
-
-    // If the style cache entry is new, schedule a cleanup in case
-    // the render is aborted.
-    if ((_styleTokensCache[dynamicClassName] as CacheItem).refCount === 0) {
-      abortedRenderCleanup = requestAnimationFrame(() => {
-        if (_styleTokensCache[dynamicClassName]?.refCount === 0) {
-          delete _styleTokensCache[dynamicClassName];
-        }
-      });
+    // Make sure the cache item has at least one ref until the next
+    // animation frame. This will also remove the cache entry if
+    // the render was never committed.
+    if (ref.count === 0) {
+      ref.inc();
+      requestAnimationFrame(ref.dec);
     }
-
-    // When the render is committed, cancel the aborted render
-    // cleanup.
-    useLayoutEffect(() => {
-      if (abortedRenderCleanup != null) {
-        cancelAnimationFrame(abortedRenderCleanup);
-      }
-    }, [abortedRenderCleanup]);
 
     // Increment the ref count for the given style on mount, and
     // decrement it on unmount.
     useLayoutEffect(() => {
-      (_styleTokensCache[dynamicClassName] as CacheItem).refCount++;
+      ref.inc();
 
       return () => {
-        if (--(_styleTokensCache[dynamicClassName] as CacheItem).refCount <= 0) {
-          delete _styleTokensCache[dynamicClassName];
-        }
+        ref.dec();
       };
-    }, [dynamicClassName]);
+    }, [ref]);
   }
 
   return { styleTokens, dynamicClassName, otherClassNames };

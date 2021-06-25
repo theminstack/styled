@@ -2,24 +2,23 @@ import { createElement, ReactElement, useLayoutEffect } from 'react';
 import { useStyleConfig } from './useStyleConfig';
 import { isClient, styledElementAttribute } from '../constants';
 import { IStyle } from '../types/IStyle';
+import { RefManagerVoid } from '../utils/RefManagerVoid';
 
-export const _keyCounts: Record<string, number | undefined> = Object.create(null);
+export const _refs = new RefManagerVoid();
 
 function useClientStyle({ key, cssText }: IStyle): null {
   const { clientManager: manager } = useStyleConfig();
 
   useLayoutEffect(() => {
-    const refCount = (_keyCounts[key] = (_keyCounts[key] ?? 0) + 1);
+    const ref = _refs.require(key);
 
-    if (refCount === 1) {
+    if (ref.inc() === 1) {
       manager.add({ key, cssText });
     }
 
     return () => {
       requestAnimationFrame(() => {
-        const refCount = (_keyCounts[key] = Math.max(0, (_keyCounts[key] ?? 0) - 1));
-
-        if (refCount === 0) {
+        if (ref.dec() === 0) {
           manager.remove(key);
         }
       });
@@ -31,9 +30,9 @@ function useClientStyle({ key, cssText }: IStyle): null {
 
 function useServerStyle({ key, cssText }: IStyle): ReactElement | null {
   const { serverManager: manager } = useStyleConfig();
-  const refCount = (_keyCounts[key] = (_keyCounts[key] ?? 0) + 1);
+  const ref = _refs.require(key);
 
-  if (refCount !== 1) {
+  if (ref.inc() !== 1) {
     return null;
   }
 

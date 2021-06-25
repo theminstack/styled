@@ -1,7 +1,6 @@
 import React, { createRef, forwardRef } from 'react';
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import { styled } from './styled';
-import { _keyCounts } from './react/useStyle';
 import { styledComponentMarker } from './constants';
 import { assign } from './utils/assign';
 
@@ -272,4 +271,68 @@ test('ref forwarding', () => {
 
   expect(refB.current).toBe('refValue');
   expect(refC.current).toBeInstanceOf(HTMLDivElement);
+});
+
+test('HTML element props are filtered', () => {
+  const A = styled('div').props<any>()``;
+  const onClick = jest.fn();
+  const { container } = render(
+    <A $data={'$'} obj={{}} style={{}} onClick={onClick} str={'s'} num={1} readOnly={true}>
+      child
+    </A>,
+  );
+
+  fireEvent(
+    container.firstChild as ChildNode,
+    new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+    }),
+  );
+
+  expect(container.firstChild).toMatchInlineSnapshot(`
+<div
+  class="_1f8sca4"
+  num="1"
+  readonly=""
+  str="s"
+>
+  child
+</div>
+`);
+  expect(onClick).toHaveBeenCalledTimes(1);
+});
+
+test('React component props are not filtered', () => {
+  function A({ onClick, children, ...props }: any) {
+    return (
+      <div onClick={onClick}>
+        {JSON.stringify(props)}
+        {children}
+      </div>
+    );
+  }
+  const B = styled(A)``;
+  const onClick = jest.fn();
+  const { container } = render(
+    <B $data={'$'} obj={{}} style={{}} onClick={onClick} str={'s'} num={1} readOnly={true}>
+      child
+    </B>,
+  );
+
+  fireEvent(
+    container.firstChild as ChildNode,
+    new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+    }),
+  );
+
+  expect(container.firstChild).toMatchInlineSnapshot(`
+<div>
+  {"$data":"$","obj":{},"style":{},"str":"s","num":1,"readOnly":true,"className":"_1emgcpi"}
+  child
+</div>
+`);
+  expect(onClick).toHaveBeenCalledTimes(1);
 });
