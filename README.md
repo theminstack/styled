@@ -21,6 +21,13 @@ React visual primitives with first-class TypeScript support and a tiny footprint
   - [Create a theme](#create-a-theme)
   - [Use a theme](#use-a-theme)
   - [Override theme values](#override-theme-values)
+- [Style syntax](#style-syntax)
+  - [Simple CSS](#simple-css)
+  - [Child selectors](#child-selectors)
+  - [Nesting](#nesting)
+  - [Parent selector references](#parent-selector-references)
+  - [At-rules](#at-rules)
+  - [Comments](#comments)
 - [Style helpers](#style-helpers)
   - [Static helpers](#static-helpers)
   - [Parametric helpers](#parametric-helpers)
@@ -45,7 +52,7 @@ const StyledDiv = styled('div')`
 
 ### Style React components
 
-Any component which accepts a `className` prop can be styled, just like an HTML tag.
+Any component which accepts a `className` prop can be styled, just like an HTML tag. The styled component supports all of the same props (including refs) that the base component supports.
 
 ```tsx
 const Base = (props: { className?: string }): ReactElement => {
@@ -58,7 +65,7 @@ const StyledBase = styled(Base)`
 
 ### Override props type
 
-The props type of a styled component can be replaced using the `props` method. If they new props type is not compatible (assignable) to the original props type, then you must provide a map function to convert the new props to those expected by the wrapped component.
+The props type of a styled component can be replaced using the `props` method. If the new props type is not compatible (assignable) to the original props type, then you must provide a map function to convert the new props to those expected by the base component.
 
 **NOTE**: The `props` method must always be the first styled method used. It is not available after using the `use`, `set`, or `map` methods.
 
@@ -68,7 +75,7 @@ interface IStyledDivProps {
 }
 
 const StyledDiv = styled('div').props<IStyledDivProps>((props) => ({
-  // Pass the description to the wrapped component as its children.
+  // Pass the description to the base component as its only child.
   children: props.description,
 }))`
   color: red;
@@ -77,7 +84,7 @@ const StyledDiv = styled('div').props<IStyledDivProps>((props) => ({
 
 ### Default prop values
 
-Default prop values can be provided for undefined props with the `use` method. Props returned by the callback will only be set if the current prop value is undefined. This method is an alternative to using the `map` method with `Object.assign({}, defaults, props)` or `{ ...defaults, ...props }`, which allow undefined props to overwrite and hide default values.
+Default prop values can be provided for undefined props with the `use` method. Props returned by the callback will only be set if the current prop value is undefined. This method is an alternative to using the `map` method with `Object.assign({}, defaultProps, props)` or `{ ...defaultProps, ...props }`, which allows explicitly undefined props to overwrite and hide default props.
 
 ```tsx
 const StyledDiv = styled('div').use((props) => ({
@@ -90,7 +97,7 @@ const StyledDiv = styled('div').use((props) => ({
 
 ### Add or update prop values
 
-Prop values can be added and modified (but not removed or set to undefined) with the `set` method. Props returned by the callback will be set as long as the new value is defined. This method is an alternative to using the `map` method with `Object.assign({}, props, source)` or `{ ...props, ...source }`, which can allow undefined source values to overwrite and hide defined prop values.
+Prop values can be added and modified (but not removed or set to undefined) with the `set` method. Props returned by the callback will be set as long as the new value is defined. This method is an alternative to using the `map` method with `Object.assign({}, props, newProps)` or `{ ...props, ...newProps }`, which can allow explicitly undefined new prop values to overwrite and hide defined prop values.
 
 ```tsx
 const StyledDiv = styled('div').set((props) => ({
@@ -105,7 +112,7 @@ const StyledDiv = styled('div').set((props) => ({
 
 Prop values can be completely rewritten using the `map` method. Props returned by the callback replace the current props without condition.
 
-**NOTE**: Try to use the `use` or `set` methods first, unless you need to remove or set props to undefined. They provide better type support for their respective scenarios.
+**NOTE**: Please give preference to the `use` and `set` methods. They provide better type support for their respective scenarios. Only use `map` when you need to _remove_ properties from the current props object.
 
 ```tsx
 const StyledDiv = styled('div').set((props) => ({
@@ -225,6 +232,166 @@ render(
     <ThemedDiv>Greetings from the dark side.</ThemedDiv>
   </ThemeInvertedProvider>
 );
+```
+
+## Style syntax
+
+Style syntax is CSS-like, and all CSS properties, selectors, and at-rules are supported. In addition, SCSS-like nesting is supported with parent selector references (`&`).
+
+### Simple CSS
+
+If you just want to style one element, use CSS properties at the top-level (no surrounding block).
+
+```tsx
+const StyledDiv = styled('div')`
+  color: red;
+`;
+```
+
+These CSS properties will be wrapped in a block with a selector for the styled dynamic class.
+
+```css
+._s7y13d {
+  color: red;
+}
+```
+
+### Child selectors
+
+You can use CSS selectors and blocks to style children of the styled component.
+
+```tsx
+const StyledDiv = styled('div')`
+  color: red;
+  .child {
+    color: blue;
+  }
+`
+```
+
+The styled dynamic class will be automatically prepended to all selectors to make them "scoped".
+
+```css
+._s7y13d {
+  color: red;
+}
+._s7y13d .child {
+  color: blue;
+}
+```
+
+### Nesting
+
+You can nest blocks to create more complex selectors.
+
+```tsx
+const StyledDiv = styled('div')`
+  color: red;
+  .child {
+    color: blue;
+    .grandchild {
+      color: green;
+    }
+  }
+`;
+```
+
+Just like the styled dynamic class is prepended to top-level selectors, so too are parent selectors prepended to child selectors.
+
+```css
+._s7y13d {
+  color: red;
+}
+._s7y13d .child {
+  color: blue;
+}
+._s7y13d .child .grandchild {
+  color: green;
+}
+```
+
+### Parent selector references
+
+As noted above, the parent selector is automatically prepended to child selectors. This behavior can be _overridden_ by using a parent selector reference (`&`) to inject the parent selector _anywhere_ in your child selector. This includes injecting the parent selector multiple times to increase specificity, and is necessary when using pseudo selectors like `:hover` which you will probably want to apply directly to the styled component instead of to its children.
+
+```tsx
+const StyledDiv = styled('div')`
+  && {
+    color: red;
+  }
+  &:hover {
+    color: blue;
+  }
+  .parent & {
+    color: green;
+  }
+`
+```
+
+For any selector that contains an `&`, the parent selector will replace the `&` characters, and the parent selector will not be automatically prepended.
+
+```css
+._s7y13d._s7y13d {
+  color: red;
+}
+._s7y13d:hover {
+  color: blue;
+}
+.parent ._s7y13d {
+  color green;
+}
+```
+
+### At-rules
+
+All CSS at-rules are supported (except `@charset` which isn't allowed inside `<style>` tags). Conditional group rules (ie. `@media` and `@supports`) which can have nested selector blocks, can themselves be nested, and can have deeply nested child selectors which use parent selector references.
+
+```tsx
+const StyledDiv = styled('div')`
+  @media screen and (min-width: 900px) {
+    color: red
+  }
+  .child {
+    @media screen and (min-width: 600px) {
+      .grandchild {
+        color: blue;
+        .adopted & {
+          color: green;
+        }
+      }
+    }
+  }
+`;
+```
+
+The at-rules will be hoisted as necessary, and parent selectors will be handled the same way they would be without the intervening at-rule.
+
+```css
+@media screen and (min-width: 900px) {
+  ._s7y13d {
+    color: red;
+  }
+}
+@media screen and (min-width: 600px) {
+  ._s7y13d .child .grandchild {
+    color: blue;
+  }
+  .adopted ._s7y13d .child .grandchild {
+    color: green;
+  }
+}
+```
+
+### Comments
+
+Styles can contain both block (`/* */`) and line comments (`//`). Comments are never included in stylesheets.
+
+```tsx
+const StyledDiv = styled('div')`
+  // This is a comment.
+  /* And so is...
+     this. */
+`;
 ```
 
 ## Style helpers

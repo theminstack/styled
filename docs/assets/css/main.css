@@ -1630,7 +1630,6 @@ code, pre {
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   padding: 0.2em;
   margin: 0;
-  font-size: 14px;
 }
 
 code {
@@ -1639,6 +1638,8 @@ code {
   border-radius: 4px;
   box-shadow: 0 2px 2px black;
   margin: 0 0.1em;
+  padding: 0.1em 0.2em;
+  font-size: 15px;
 }
 
 pre {

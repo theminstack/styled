@@ -82,6 +82,15 @@
 							<li><a href="#override-theme-values">Override theme values</a></li>
 						</ul>
 					</li>
+					<li><a href="#style-syntax">Style syntax</a><ul>
+							<li><a href="#simple-css">Simple CSS</a></li>
+							<li><a href="#child-selectors">Child selectors</a></li>
+							<li><a href="#nesting">Nesting</a></li>
+							<li><a href="#parent-selector-references">Parent selector references</a></li>
+							<li><a href="#at-rules">At-rules</a></li>
+							<li><a href="#comments">Comments</a></li>
+						</ul>
+					</li>
 					<li><a href="#style-helpers">Style helpers</a><ul>
 							<li><a href="#static-helpers">Static helpers</a></li>
 							<li><a href="#parametric-helpers">Parametric helpers</a></li>
@@ -110,7 +119,7 @@
 				<a href="#style-react-components" id="style-react-components" style="color: inherit; text-decoration: none;">
 					<h3>Style React components</h3>
 				</a>
-				<p>Any component which accepts a <code>className</code> prop can be styled, just like an HTML tag.</p>
+				<p>Any component which accepts a <code>className</code> prop can be styled, just like an HTML tag. The styled component supports all of the same props (including refs) that the base component supports.</p>
 				<pre><code class="language-tsx"><span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #DCDCAA">Base</span><span style="color: #D4D4D4"> = (</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">: { </span><span style="color: #9CDCFE">className</span><span style="color: #D4D4D4">?: </span><span style="color: #4EC9B0">string</span><span style="color: #D4D4D4"> }): </span><span style="color: #4EC9B0">ReactElement</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">=&gt;</span><span style="color: #D4D4D4"> {</span>
 <span style="color: #D4D4D4">  </span><span style="color: #C586C0">return</span><span style="color: #D4D4D4"> </span><span style="color: #808080">&lt;</span><span style="color: #569CD6">div</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">className</span><span style="color: #D4D4D4">=</span><span style="color: #569CD6">{</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">className</span><span style="color: #569CD6">}</span><span style="color: #808080">&gt;</span><span style="color: #D4D4D4">Foo</span><span style="color: #808080">&lt;/</span><span style="color: #569CD6">div</span><span style="color: #808080">&gt;</span><span style="color: #D4D4D4">;</span>
 <span style="color: #D4D4D4">};</span>
@@ -121,14 +130,14 @@
 				<a href="#override-props-type" id="override-props-type" style="color: inherit; text-decoration: none;">
 					<h3>Override props type</h3>
 				</a>
-				<p>The props type of a styled component can be replaced using the <code>props</code> method. If they new props type is not compatible (assignable) to the original props type, then you must provide a map function to convert the new props to those expected by the wrapped component.</p>
+				<p>The props type of a styled component can be replaced using the <code>props</code> method. If the new props type is not compatible (assignable) to the original props type, then you must provide a map function to convert the new props to those expected by the base component.</p>
 				<p><strong>NOTE</strong>: The <code>props</code> method must always be the first styled method used. It is not available after using the <code>use</code>, <code>set</code>, or <code>map</code> methods.</p>
 				<pre><code class="language-tsx"><span style="color: #569CD6">interface</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">IStyledDivProps</span><span style="color: #D4D4D4"> {</span>
 <span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">description</span><span style="color: #D4D4D4">?: </span><span style="color: #4EC9B0">string</span><span style="color: #D4D4D4">;</span>
 <span style="color: #D4D4D4">}</span>
 
 <span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">StyledDiv</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">).</span><span style="color: #DCDCAA">props</span><span style="color: #D4D4D4">&lt;</span><span style="color: #4EC9B0">IStyledDivProps</span><span style="color: #D4D4D4">&gt;((</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">) </span><span style="color: #569CD6">=&gt;</span><span style="color: #D4D4D4"> ({</span>
-<span style="color: #D4D4D4">  </span><span style="color: #6A9955">// Pass the description to the wrapped component as its children.</span>
+<span style="color: #D4D4D4">  </span><span style="color: #6A9955">// Pass the description to the base component as its only child.</span>
 <span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">children:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">description</span><span style="color: #D4D4D4">,</span>
 <span style="color: #D4D4D4">}))</span><span style="color: #CE9178">`</span>
 <span style="color: #CE9178">  color: red;</span>
@@ -137,7 +146,7 @@
 				<a href="#default-prop-values" id="default-prop-values" style="color: inherit; text-decoration: none;">
 					<h3>Default prop values</h3>
 				</a>
-				<p>Default prop values can be provided for undefined props with the <code>use</code> method. Props returned by the callback will only be set if the current prop value is undefined. This method is an alternative to using the <code>map</code> method with <code>Object.assign({}, defaults, props)</code> or <code>{ ...defaults, ...props }</code>, which allow undefined props to overwrite and hide default values.</p>
+				<p>Default prop values can be provided for undefined props with the <code>use</code> method. Props returned by the callback will only be set if the current prop value is undefined. This method is an alternative to using the <code>map</code> method with <code>Object.assign({}, defaultProps, props)</code> or <code>{ ...defaultProps, ...props }</code>, which allows explicitly undefined props to overwrite and hide default props.</p>
 				<pre><code class="language-tsx"><span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">StyledDiv</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">).</span><span style="color: #DCDCAA">use</span><span style="color: #D4D4D4">((</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">) </span><span style="color: #569CD6">=&gt;</span><span style="color: #D4D4D4"> ({</span>
 <span style="color: #D4D4D4">  </span><span style="color: #6A9955">// Use the component ID as the default class name.</span>
 <span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">className:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">id</span><span style="color: #D4D4D4">,</span>
@@ -148,7 +157,7 @@
 				<a href="#add-or-update-prop-values" id="add-or-update-prop-values" style="color: inherit; text-decoration: none;">
 					<h3>Add or update prop values</h3>
 				</a>
-				<p>Prop values can be added and modified (but not removed or set to undefined) with the <code>set</code> method. Props returned by the callback will be set as long as the new value is defined. This method is an alternative to using the <code>map</code> method with <code>Object.assign({}, props, source)</code> or <code>{ ...props, ...source }</code>, which can allow undefined source values to overwrite and hide defined prop values.</p>
+				<p>Prop values can be added and modified (but not removed or set to undefined) with the <code>set</code> method. Props returned by the callback will be set as long as the new value is defined. This method is an alternative to using the <code>map</code> method with <code>Object.assign({}, props, newProps)</code> or <code>{ ...props, ...newProps }</code>, which can allow explicitly undefined new prop values to overwrite and hide defined prop values.</p>
 				<pre><code class="language-tsx"><span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">StyledDiv</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">).</span><span style="color: #DCDCAA">set</span><span style="color: #D4D4D4">((</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">) </span><span style="color: #569CD6">=&gt;</span><span style="color: #D4D4D4"> ({</span>
 <span style="color: #D4D4D4">  </span><span style="color: #6A9955">// Add a prefix to the existing class name.</span>
 <span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">className:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">className</span><span style="color: #D4D4D4"> &amp;&amp; </span><span style="color: #CE9178">`prefix-</span><span style="color: #569CD6">${</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">className</span><span style="color: #569CD6">}</span><span style="color: #CE9178">`</span><span style="color: #D4D4D4">,</span>
@@ -160,7 +169,7 @@
 					<h3>Map prop values</h3>
 				</a>
 				<p>Prop values can be completely rewritten using the <code>map</code> method. Props returned by the callback replace the current props without condition.</p>
-				<p><strong>NOTE</strong>: Try to use the <code>use</code> or <code>set</code> methods first, unless you need to remove or set props to undefined. They provide better type support for their respective scenarios.</p>
+				<p><strong>NOTE</strong>: Please give preference to the <code>use</code> and <code>set</code> methods. They provide better type support for their respective scenarios. Only use <code>map</code> when you need to <em>remove</em> properties from the current props object.</p>
 				<pre><code class="language-tsx"><span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">StyledDiv</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">).</span><span style="color: #DCDCAA">set</span><span style="color: #D4D4D4">((</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">) </span><span style="color: #569CD6">=&gt;</span><span style="color: #D4D4D4"> ({</span>
 <span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">id:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">id</span><span style="color: #D4D4D4">,</span>
 <span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">className:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">className</span><span style="color: #D4D4D4">,</span>
@@ -268,6 +277,139 @@
 <span style="color: #D4D4D4">    </span><span style="color: #808080">&lt;</span><span style="color: #4EC9B0">ThemedDiv</span><span style="color: #808080">&gt;</span><span style="color: #D4D4D4">Greetings from the dark side.</span><span style="color: #808080">&lt;/</span><span style="color: #4EC9B0">ThemedDiv</span><span style="color: #808080">&gt;</span>
 <span style="color: #D4D4D4">  </span><span style="color: #808080">&lt;/</span><span style="color: #4EC9B0">ThemeInvertedProvider</span><span style="color: #808080">&gt;</span>
 <span style="color: #D4D4D4">);</span>
+</code></pre>
+				<a href="#style-syntax" id="style-syntax" style="color: inherit; text-decoration: none;">
+					<h2>Style syntax</h2>
+				</a>
+				<p>Style syntax is CSS-like, and all CSS properties, selectors, and at-rules are supported. In addition, SCSS-like nesting is supported with parent selector references (<code>&amp;</code>).</p>
+				<a href="#simple-css" id="simple-css" style="color: inherit; text-decoration: none;">
+					<h3>Simple CSS</h3>
+				</a>
+				<p>If you just want to style one element, use CSS properties at the top-level (no surrounding block).</p>
+				<pre><code class="language-tsx"><span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">StyledDiv</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">)</span><span style="color: #CE9178">`</span>
+<span style="color: #CE9178">  color: red;</span>
+<span style="color: #CE9178">`</span><span style="color: #D4D4D4">;</span>
+</code></pre>
+				<p>These CSS properties will be wrapped in a block with a selector for the styled dynamic class.</p>
+				<pre><code class="language-css"><span style="color: #D7BA7D">._s7y13d</span><span style="color: #D4D4D4"> {</span>
+<span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4">: </span><span style="color: #CE9178">red</span><span style="color: #D4D4D4">;</span>
+<span style="color: #D4D4D4">}</span>
+</code></pre>
+				<a href="#child-selectors" id="child-selectors" style="color: inherit; text-decoration: none;">
+					<h3>Child selectors</h3>
+				</a>
+				<p>You can use CSS selectors and blocks to style children of the styled component.</p>
+				<pre><code class="language-tsx"><span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">StyledDiv</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">)</span><span style="color: #CE9178">`</span>
+<span style="color: #CE9178">  color: red;</span>
+<span style="color: #CE9178">  .child {</span>
+<span style="color: #CE9178">    color: blue;</span>
+<span style="color: #CE9178">  }</span>
+<span style="color: #CE9178">`</span>
+</code></pre>
+				<p>The styled dynamic class will be automatically prepended to all selectors to make them &quot;scoped&quot;.</p>
+				<pre><code class="language-css"><span style="color: #D7BA7D">._s7y13d</span><span style="color: #D4D4D4"> {</span>
+<span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4">: </span><span style="color: #CE9178">red</span><span style="color: #D4D4D4">;</span>
+<span style="color: #D4D4D4">}</span>
+<span style="color: #D7BA7D">._s7y13d</span><span style="color: #D4D4D4"> </span><span style="color: #D7BA7D">.child</span><span style="color: #D4D4D4"> {</span>
+<span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4">: </span><span style="color: #CE9178">blue</span><span style="color: #D4D4D4">;</span>
+<span style="color: #D4D4D4">}</span>
+</code></pre>
+				<a href="#nesting" id="nesting" style="color: inherit; text-decoration: none;">
+					<h3>Nesting</h3>
+				</a>
+				<p>You can nest blocks to create more complex selectors.</p>
+				<pre><code class="language-tsx"><span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">StyledDiv</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">)</span><span style="color: #CE9178">`</span>
+<span style="color: #CE9178">  color: red;</span>
+<span style="color: #CE9178">  .child {</span>
+<span style="color: #CE9178">    color: blue;</span>
+<span style="color: #CE9178">    .grandchild {</span>
+<span style="color: #CE9178">      color: green;</span>
+<span style="color: #CE9178">    }</span>
+<span style="color: #CE9178">  }</span>
+<span style="color: #CE9178">`</span><span style="color: #D4D4D4">;</span>
+</code></pre>
+				<p>Just like the styled dynamic class is prepended to top-level selectors, so too are parent selectors prepended to child selectors.</p>
+				<pre><code class="language-css"><span style="color: #D7BA7D">._s7y13d</span><span style="color: #D4D4D4"> {</span>
+<span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4">: </span><span style="color: #CE9178">red</span><span style="color: #D4D4D4">;</span>
+<span style="color: #D4D4D4">}</span>
+<span style="color: #D7BA7D">._s7y13d</span><span style="color: #D4D4D4"> </span><span style="color: #D7BA7D">.child</span><span style="color: #D4D4D4"> {</span>
+<span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4">: </span><span style="color: #CE9178">blue</span><span style="color: #D4D4D4">;</span>
+<span style="color: #D4D4D4">}</span>
+<span style="color: #D7BA7D">._s7y13d</span><span style="color: #D4D4D4"> </span><span style="color: #D7BA7D">.child</span><span style="color: #D4D4D4"> </span><span style="color: #D7BA7D">.grandchild</span><span style="color: #D4D4D4"> {</span>
+<span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4">: </span><span style="color: #CE9178">green</span><span style="color: #D4D4D4">;</span>
+<span style="color: #D4D4D4">}</span>
+</code></pre>
+				<a href="#parent-selector-references" id="parent-selector-references" style="color: inherit; text-decoration: none;">
+					<h3>Parent selector references</h3>
+				</a>
+				<p>As noted above, the parent selector is automatically prepended to child selectors. This behavior can be <em>overridden</em> by using a parent selector reference (<code>&amp;</code>) to inject the parent selector <em>anywhere</em> in your child selector. This includes injecting the parent selector multiple times to increase specificity, and is necessary when using pseudo selectors like <code>:hover</code> which you will probably want to apply directly to the styled component instead of to its children.</p>
+				<pre><code class="language-tsx"><span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">StyledDiv</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">)</span><span style="color: #CE9178">`</span>
+<span style="color: #CE9178">  &amp;&amp; {</span>
+<span style="color: #CE9178">    color: red;</span>
+<span style="color: #CE9178">  }</span>
+<span style="color: #CE9178">  &amp;:hover {</span>
+<span style="color: #CE9178">    color: blue;</span>
+<span style="color: #CE9178">  }</span>
+<span style="color: #CE9178">  .parent &amp; {</span>
+<span style="color: #CE9178">    color: green;</span>
+<span style="color: #CE9178">  }</span>
+<span style="color: #CE9178">`</span>
+</code></pre>
+				<p>For any selector that contains an <code>&amp;</code>, the parent selector will replace the <code>&amp;</code> characters, and the parent selector will not be automatically prepended.</p>
+				<pre><code class="language-css"><span style="color: #D7BA7D">._s7y13d._s7y13d</span><span style="color: #D4D4D4"> {</span>
+<span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4">: </span><span style="color: #CE9178">red</span><span style="color: #D4D4D4">;</span>
+<span style="color: #D4D4D4">}</span>
+<span style="color: #D7BA7D">._s7y13d:hover</span><span style="color: #D4D4D4"> {</span>
+<span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4">: </span><span style="color: #CE9178">blue</span><span style="color: #D4D4D4">;</span>
+<span style="color: #D4D4D4">}</span>
+<span style="color: #D7BA7D">.parent</span><span style="color: #D4D4D4"> </span><span style="color: #D7BA7D">._s7y13d</span><span style="color: #D4D4D4"> {</span>
+<span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4"> green;</span>
+<span style="color: #D4D4D4">}</span>
+</code></pre>
+				<a href="#at-rules" id="at-rules" style="color: inherit; text-decoration: none;">
+					<h3>At-rules</h3>
+				</a>
+				<p>All CSS at-rules are supported (except <code>@charset</code> which isn&#39;t allowed inside <code>&lt;style&gt;</code> tags). Conditional group rules (ie. <code>@media</code> and <code>@supports</code>) which can have nested selector blocks, can themselves be nested, and can have deeply nested child selectors which use parent selector references.</p>
+				<pre><code class="language-tsx"><span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">StyledDiv</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">)</span><span style="color: #CE9178">`</span>
+<span style="color: #CE9178">  @media screen and (min-width: 900px) {</span>
+<span style="color: #CE9178">    color: red</span>
+<span style="color: #CE9178">  }</span>
+<span style="color: #CE9178">  .child {</span>
+<span style="color: #CE9178">    @media screen and (min-width: 600px) {</span>
+<span style="color: #CE9178">      .grandchild {</span>
+<span style="color: #CE9178">        color: blue;</span>
+<span style="color: #CE9178">        .adopted &amp; {</span>
+<span style="color: #CE9178">          color: green;</span>
+<span style="color: #CE9178">        }</span>
+<span style="color: #CE9178">      }</span>
+<span style="color: #CE9178">    }</span>
+<span style="color: #CE9178">  }</span>
+<span style="color: #CE9178">`</span><span style="color: #D4D4D4">;</span>
+</code></pre>
+				<p>The at-rules will be hoisted as necessary, and parent selectors will be handled the same way they would be without the intervening at-rule.</p>
+				<pre><code class="language-css"><span style="color: #C586C0">@media</span><span style="color: #D4D4D4"> </span><span style="color: #CE9178">screen</span><span style="color: #D4D4D4"> and (</span><span style="color: #9CDCFE">min-width</span><span style="color: #D4D4D4">: </span><span style="color: #B5CEA8">900px</span><span style="color: #D4D4D4">) {</span>
+<span style="color: #D4D4D4">  </span><span style="color: #D7BA7D">._s7y13d</span><span style="color: #D4D4D4"> {</span>
+<span style="color: #D4D4D4">    </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4">: </span><span style="color: #CE9178">red</span><span style="color: #D4D4D4">;</span>
+<span style="color: #D4D4D4">  }</span>
+<span style="color: #D4D4D4">}</span>
+<span style="color: #C586C0">@media</span><span style="color: #D4D4D4"> </span><span style="color: #CE9178">screen</span><span style="color: #D4D4D4"> and (</span><span style="color: #9CDCFE">min-width</span><span style="color: #D4D4D4">: </span><span style="color: #B5CEA8">600px</span><span style="color: #D4D4D4">) {</span>
+<span style="color: #D4D4D4">  </span><span style="color: #D7BA7D">._s7y13d</span><span style="color: #D4D4D4"> </span><span style="color: #D7BA7D">.child</span><span style="color: #D4D4D4"> </span><span style="color: #D7BA7D">.grandchild</span><span style="color: #D4D4D4"> {</span>
+<span style="color: #D4D4D4">    </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4">: </span><span style="color: #CE9178">blue</span><span style="color: #D4D4D4">;</span>
+<span style="color: #D4D4D4">  }</span>
+<span style="color: #D4D4D4">  </span><span style="color: #D7BA7D">.adopted</span><span style="color: #D4D4D4"> </span><span style="color: #D7BA7D">._s7y13d</span><span style="color: #D4D4D4"> </span><span style="color: #D7BA7D">.child</span><span style="color: #D4D4D4"> </span><span style="color: #D7BA7D">.grandchild</span><span style="color: #D4D4D4"> {</span>
+<span style="color: #D4D4D4">    </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4">: </span><span style="color: #CE9178">green</span><span style="color: #D4D4D4">;</span>
+<span style="color: #D4D4D4">  }</span>
+<span style="color: #D4D4D4">}</span>
+</code></pre>
+				<a href="#comments" id="comments" style="color: inherit; text-decoration: none;">
+					<h3>Comments</h3>
+				</a>
+				<p>Styles can contain both block (<code>/* */</code>) and line comments (<code>//</code>). Comments are never included in stylesheets.</p>
+				<pre><code class="language-tsx"><span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">StyledDiv</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">)</span><span style="color: #CE9178">`</span>
+<span style="color: #CE9178">  // This is a comment.</span>
+<span style="color: #CE9178">  /* And so is...</span>
+<span style="color: #CE9178">     this. */</span>
+<span style="color: #CE9178">`</span><span style="color: #D4D4D4">;</span>
 </code></pre>
 				<a href="#style-helpers" id="style-helpers" style="color: inherit; text-decoration: none;">
 					<h2>Style helpers</h2>
