@@ -195,8 +195,7 @@ code, kbd, pre, samp {
  * * Improve readability of pre-formatted text in all browsers. */
 pre {
   white-space: pre;
-  white-space: pre-wrap;
-  word-wrap: break-word;
+  overflow: auto;
 }
 
 /**
