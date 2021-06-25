@@ -99,7 +99,8 @@
 					</li>
 					<li><a href="#server-side-rendering-ssr">Server Side Rendering (SSR)</a></li>
 					<li><a href="#motivation">Motivation</a><ul>
-							<li><a href="#tsstyled-vs-styled-components">tsstyled vs styled-components</a></li>
+							<li><a href="#the-problems-with-styled-components">The problem(s) with styled-components</a></li>
+							<li><a href="#moving-from-styled-components">Moving from styled-components</a></li>
 						</ul>
 					</li>
 				</ul>
@@ -487,27 +488,42 @@
 				<a href="#motivation" id="motivation" style="color: inherit; text-decoration: none;">
 					<h2>Motivation</h2>
 				</a>
-				<p>The <a href="https://styled-components.com/docs/basics#motivation">styled-components</a> library is incredibly popular. The &quot;visual primitives&quot; (ie. atomic components with styles included as code) pattern combined with tagged templates, is both powerful and reasonably intuitive. However, it was created many years ago, well before TypeScript had gained the popularity it has now. Types have now been added by the community, but the API wasn&#39;t designed with types in mind, and some of the design choices are just not compatible with strong typing.</p>
-				<p>This library implements the same patterns, and adds the following enhancements over the original styled-components library:</p>
+				<p>The <a href="https://styled-components.com/docs/basics#motivation">styled-components</a> library is incredibly popular. The &quot;visual primitives&quot; pattern (ie. atomic components with styles included as code), combined with tagged templates, makes it powerful and an easy transition from CSS/SCSS.</p>
+				<p>However, it was created many years ago, well before TypeScript had gained the popularity it has now. Types have now been added by the community. But, the API wasn&#39;t designed with types in mind, and some of the design choices are just not compatible with strong typing.</p>
+				<p>This library is a refresh for Typescript and a better developer experience, with the key features intact.</p>
+				<a href="#the-problems-with-styled-components" id="the-problems-with-styled-components" style="color: inherit; text-decoration: none;">
+					<h3>The problem(s) with styled-components</h3>
+				</a>
+				<p>The styled-components types are usable... barely.</p>
 				<ul>
-					<li>First-class TypeScript support with a modified API for stronger types.</li>
-					<li>Zero dependencies and a smaller <a href="https://bundlephobia.com/package/tsstyled">bundle size</a>.</li>
+					<li>Type errors are surfaced late, when you try to use the component, not when you using the <code>styled</code> function, <code>attrs</code> method, or the tagged template.</li>
+					<li>It is possible to set the generics in ways that allow prop values to be assign without type errors, that will result in runtime errors.</li>
+					<li>It is very easy to create a styled component with props that do nothing, which is confusing to developers. And, there’s a related problem where styling a component that does not accept a <code>className</code> will silently do nothing (no type error).</li>
+					<li>The types are messy, hard to parse, and break some type utilities (<code>React.ComponentProps</code>)</li>
+					<li>Setting generic types explicitly is hard to get right, because some orders of operation are reversed, and the type intersections are not the best solution for combining them.</li>
+					<li>Theme typing is fragile, because it relies on declaration merging which doesn&#39;t always seem to work as intended. More importantly, using declaration merging locks all components into sharing a common theme type.</li>
+					<li>See also: <a href="https://github.com/DefinitelyTyped/DefinitelyTyped/issues?q=is%3Aissue+is%3Aopen+styled-components">https://github.com/DefinitelyTyped/DefinitelyTyped/issues?q=is%3Aissue+is%3Aopen+styled-components</a></li>
 				</ul>
-				<a href="#tsstyled-vs-styled-components" id="tsstyled-vs-styled-components" style="color: inherit; text-decoration: none;">
-					<h3>tsstyled vs styled-components</h3>
+				<p>There is also a philosophical problem: The authors of styled-components chose to make re-styling so powerful, that it can invalidate assumptions made by the originally styled component.</p>
+				<p>The <code>as</code> property is allowed to change the base component to anything. This is lazy and incompatible with good design. If you want to implement your own component with an <code>as</code> property, that’s completely fine, <em>because you designed it that way.</em> But having it automatically added to every styled component opens up too many uncertainties, and paves the way for a fragile component hierarchy.</p>
+				<p>The order of applying <code>attrs</code> is reversed. This is the opposite of standard component design. In vanilla React, if you wrap a component with another component, the outer component now controls what reaches the inner component, <em>which is a good thing.</em> If you restyle (wrap) an already styled component, the restyle gets to reach around the inner styled component and apply properties directly to the base component. This is fragile because you are modifying internal behaviors that you don&#39;t have visibility on or control over.</p>
+				<p>All of this means that when styling a component, you can’t assume you’re styling the component you think you are, you don’t really know what props will be passed to you, and your props might not be passed to the base component.</p>
+				<a href="#moving-from-styled-components" id="moving-from-styled-components" style="color: inherit; text-decoration: none;">
+					<h3>Moving from styled-components</h3>
 				</a>
 				<p>Most styled-components capabilities (basic and advanced) are supported, with some notable differences and omissions:</p>
 				<ul>
 					<li>The <code>styled.div</code> syntax is not supported (only <code>styled(&#39;div&#39;)</code>).</li>
-					<li>The <code>attrs</code> method is replaced by the <code>use</code>, <code>set</code>, and <code>map</code> methods, which are applied from outermost to innermost styled component, instead of the <a href="https://styled-components.com/docs/basics#overriding-attrs">reverse order</a> <code>attrs</code> uses.</li>
-					<li>The props type of styled components can be modified using the <code>props</code> method, instead of passing a generic parameter to the <code>styled</code> tagged template function.</li>
-					<li>The <a href="https://styled-components.com/docs/advanced#style-objects">style object</a> syntax is not supported.</li>
-					<li>The <a href="https://styled-components.com/docs/api#as-polymorphic-prop">as</a> polymorphic prop is not supported, because automatically adding it makes correct typing nearly impossible.</li>
-					<li>The attributes passed through to simple HTML elements (eg. <code>div</code>) are not <a href="https://styled-components.com/docs/basics#passed-props">filtered based on known HTML attributes</a>, and instead are filtered based on the following rules:<ul>
-							<li>Primitive valued props are passed through <em>unless</em> the prop names starts with <code>$</code>.</li>
-							<li>Function valued props are passed through <em>only if</em> the prop name starts with <code>on</code>.</li>
-							<li>Object valued props are passed through <em>only if</em> the prop name is <code>style</code>.</li>
-						</ul>
+					<li>The <code>attrs</code> method is replaced by the <code>props</code>, <code>use</code>, <code>set</code>, and <code>map</code> methods, which are applied in the intuitive order, instead of the <a href="https://styled-components.com/docs/basics#overriding-attrs">reverse order</a> <code>attrs</code> uses.</li>
+					<li>The props type of styled components can be modified using the <code>props</code> method, instead of passing a generic parameter to the <code>styled</code> tagged template function (and/or <code>attrs</code>).</li>
+					<li>The <a href="https://styled-components.com/docs/advanced#style-objects">style object</a> syntax is not supported, to keep the library size down, and because it provides a better developer experience overall.</li>
+					<li>The <a href="https://styled-components.com/docs/api#as-polymorphic-prop">as</a> polymorphic prop is not supported, because it does not fit the philosophy of this library.</li>
+					<li>The attributes passed through to simple HTML elements (eg. <code>div</code>) are not <a href="https://styled-components.com/docs/basics#passed-props">filtered based on known HTML attributes</a>, and instead are filtered based on the following rules:<ol>
+							<li>Props that start with <code>$</code> are <em>always</em> filtered out.</li>
+							<li>The <code>style</code> and <code>children</code> props are <em>never</em> filtered out.</li>
+							<li>Function props are filtered out <em>unless</em> the prop name starts with <code>on</code>.</li>
+							<li>All other non-primitive (<code>string</code>, <code>number</code>, <code>boolean</code>) props are filtered out.</li>
+						</ol>
 					</li>
 					<li>The <a href="https://styled-components.com/docs/advanced#referring-to-other-components">component selector</a> pattern only works when a component is given an <em>explicit</em> display name, because making every component selectable adds transfer size to SSR, and requiring a unique name mitigates some potential SSR vs client rendering order gotchas.</li>
 					<li>No <a href="https://styled-components.com/docs/advanced#theming">theme</a> is <em>automatically</em> injected into styled components, because custom themes can be <em>manually</em> injected by using a theme hook with the <code>use</code> method.</li>

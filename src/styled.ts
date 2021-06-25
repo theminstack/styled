@@ -64,7 +64,7 @@ function getStyledComponent(
               typeof props[prop] !== 'string' &&
               typeof props[prop] !== 'number' &&
               typeof props[prop] !== 'boolean' &&
-              !(prop.slice(0, 2) === 'on' && typeof props[prop] === 'function'))
+              (typeof props[prop] !== 'function' || prop.slice(0, 2) !== 'on'))
           ) {
             delete props[prop];
           }

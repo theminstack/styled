@@ -34,7 +34,8 @@ React visual primitives with first-class TypeScript support and a tiny footprint
   - [Themed helpers](#themed-helpers)
 - [Server Side Rendering (SSR)](#server-side-rendering-ssr)
 - [Motivation](#motivation)
-  - [tsstyled vs styled-components](#tsstyled-vs-styled-components)
+  - [The problem(s) with styled-components](#the-problems-with-styled-components)
+  - [Moving from styled-components](#moving-from-styled-components)
 
 ## The Basics
 
@@ -479,26 +480,46 @@ The `getStyleTag` method returns an HTML string containing a _single_ `<style>` 
 
 ## Motivation
 
-The [styled-components](https://styled-components.com/docs/basics#motivation) library is incredibly popular. The "visual primitives" (ie. atomic components with styles included as code) pattern combined with tagged templates, is both powerful and reasonably intuitive. However, it was created many years ago, well before TypeScript had gained the popularity it has now. Types have now been added by the community, but the API wasn't designed with types in mind, and some of the design choices are just not compatible with strong typing.
+The [styled-components](https://styled-components.com/docs/basics#motivation) library is incredibly popular. The "visual primitives" pattern (ie. atomic components with styles included as code), combined with tagged templates, makes it powerful and an easy transition from CSS/SCSS.
 
-This library implements the same patterns, and adds the following enhancements over the original styled-components library:
+However, it was created many years ago, well before TypeScript had gained the popularity it has now. Types have now been added by the community. But, the API wasn't designed with types in mind, and some of the design choices are just not compatible with strong typing.
 
-- First-class TypeScript support with a modified API for stronger types.
-- Zero dependencies and a smaller [bundle size](https://bundlephobia.com/package/tsstyled).
+This library is a refresh for Typescript and a better developer experience, with the key features intact.
 
-### tsstyled vs styled-components
+### The problem(s) with styled-components
+
+The styled-components types are usable... barely.
+
+- Type errors are surfaced late, when you try to use the component, not when you using the `styled` function, `attrs` method, or the tagged template.
+- It is possible to set the generics in ways that allow prop values to be assign without type errors, that will result in runtime errors.
+- It is very easy to create a styled component with props that do nothing, which is confusing to developers. And, there’s a related problem where styling a component that does not accept a `className` will silently do nothing (no type error).
+- The types are messy, hard to parse, and break some type utilities (`React.ComponentProps`)
+- Setting generic types explicitly is hard to get right, because some orders of operation are reversed, and the type intersections are not the best solution for combining them.
+- Theme typing is fragile, because it relies on declaration merging which doesn't always seem to work as intended. More importantly, using declaration merging locks all components into sharing a common theme type.
+- See also: https://github.com/DefinitelyTyped/DefinitelyTyped/issues?q=is%3Aissue+is%3Aopen+styled-components
+
+There is also a philosophical problem: The authors of styled-components chose to make re-styling so powerful, that it can invalidate assumptions made by the originally styled component.
+
+The `as` property is allowed to change the base component to anything. This is lazy and incompatible with good design. If you want to implement your own component with an `as` property, that’s completely fine, _because you designed it that way._ But having it automatically added to every styled component opens up too many uncertainties, and paves the way for a fragile component hierarchy.
+
+The order of applying `attrs` is reversed. This is the opposite of standard component design. In vanilla React, if you wrap a component with another component, the outer component now controls what reaches the inner component, _which is a good thing._ If you restyle (wrap) an already styled component, the restyle gets to reach around the inner styled component and apply properties directly to the base component. This is fragile because you are modifying internal behaviors that you don't have visibility on or control over.
+
+All of this means that when styling a component, you can’t assume you’re styling the component you think you are, you don’t really know what props will be passed to you, and your props might not be passed to the base component.
+
+### Moving from styled-components
 
 Most styled-components capabilities (basic and advanced) are supported, with some notable differences and omissions:
 
 - The `styled.div` syntax is not supported (only `styled('div')`).
-- The `attrs` method is replaced by the `use`, `set`, and `map` methods, which are applied from outermost to innermost styled component, instead of the [reverse order](https://styled-components.com/docs/basics#overriding-attrs) `attrs` uses.
-- The props type of styled components can be modified using the `props` method, instead of passing a generic parameter to the `styled` tagged template function.
-- The [style object](https://styled-components.com/docs/advanced#style-objects) syntax is not supported.
-- The [as](https://styled-components.com/docs/api#as-polymorphic-prop) polymorphic prop is not supported, because automatically adding it makes correct typing nearly impossible.
+- The `attrs` method is replaced by the `props`, `use`, `set`, and `map` methods, which are applied in the intuitive order, instead of the [reverse order](https://styled-components.com/docs/basics#overriding-attrs) `attrs` uses.
+- The props type of styled components can be modified using the `props` method, instead of passing a generic parameter to the `styled` tagged template function (and/or `attrs`).
+- The [style object](https://styled-components.com/docs/advanced#style-objects) syntax is not supported, to keep the library size down, and because it provides a better developer experience overall.
+- The [as](https://styled-components.com/docs/api#as-polymorphic-prop) polymorphic prop is not supported, because it does not fit the philosophy of this library.
 - The attributes passed through to simple HTML elements (eg. `div`) are not [filtered based on known HTML attributes](https://styled-components.com/docs/basics#passed-props), and instead are filtered based on the following rules:
-  - Primitive valued props are passed through _unless_ the prop names starts with `$`.
-  - Function valued props are passed through _only if_ the prop name starts with `on`.
-  - Object valued props are passed through _only if_ the prop name is `style`.
+  1. Props that start with `$` are _always_ filtered out.
+  2. The `style` and `children` props are _never_ filtered out.
+  3. Function props are filtered out _unless_ the prop name starts with `on`.
+  4. All other non-primitive (`string`, `number`, `boolean`) props are filtered out.
 - The [component selector](https://styled-components.com/docs/advanced#referring-to-other-components) pattern only works when a component is given an _explicit_ display name, because making every component selectable adds transfer size to SSR, and requiring a unique name mitigates some potential SSR vs client rendering order gotchas.
 - No [theme](https://styled-components.com/docs/advanced#theming) is _automatically_ injected into styled components, because custom themes can be _manually_ injected by using a theme hook with the `use` method.
 - No [keyframes](https://styled-components.com/docs/basics#animations) utility is included, because the `@keyframes` at-rule can be used in any styled template string, and the `getId` utility can be used if animation name collisions are a concern.
