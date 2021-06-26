@@ -502,7 +502,7 @@
 					<li>The types are messy, hard to parse, and break some type utilities (<code>React.ComponentProps</code>)</li>
 					<li>Setting generic types explicitly is hard to get right, because some orders of operation are reversed, and the type intersections are not the best solution for combining them.</li>
 					<li>Theme typing is fragile, because it relies on declaration merging which doesn&#39;t always seem to work as intended. More importantly, using declaration merging locks all components into sharing a common theme type.</li>
-					<li>See also: <a href="https://github.com/DefinitelyTyped/DefinitelyTyped/issues?q=is%3Aissue+is%3Aopen+styled-components">https://github.com/DefinitelyTyped/DefinitelyTyped/issues?q=is%3Aissue+is%3Aopen+styled-components</a></li>
+					<li>See also the <a href="https://github.com/DefinitelyTyped/DefinitelyTyped/issues?q=is%3Aissue+is%3Aopen+styled-components">DefinitlyTyped bugs for styled-components</a>.</li>
 				</ul>
 				<p>There is also a philosophical problem: The authors of styled-components chose to make re-styling so powerful, that it can invalidate assumptions made by the originally styled component.</p>
 				<p>The <code>as</code> property is allowed to change the base component to anything. This is lazy and incompatible with good design. If you want to implement your own component with an <code>as</code> property, that’s completely fine, <em>because you designed it that way.</em> But having it automatically added to every styled component opens up too many uncertainties, and paves the way for a fragile component hierarchy.</p>

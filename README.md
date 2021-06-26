@@ -496,7 +496,7 @@ The styled-components types are usable... barely.
 - The types are messy, hard to parse, and break some type utilities (`React.ComponentProps`)
 - Setting generic types explicitly is hard to get right, because some orders of operation are reversed, and the type intersections are not the best solution for combining them.
 - Theme typing is fragile, because it relies on declaration merging which doesn't always seem to work as intended. More importantly, using declaration merging locks all components into sharing a common theme type.
-- See also: https://github.com/DefinitelyTyped/DefinitelyTyped/issues?q=is%3Aissue+is%3Aopen+styled-components
+- See also the [DefinitlyTyped bugs for styled-components](https://github.com/DefinitelyTyped/DefinitelyTyped/issues?q=is%3Aissue+is%3Aopen+styled-components).
 
 There is also a philosophical problem: The authors of styled-components chose to make re-styling so powerful, that it can invalidate assumptions made by the originally styled component.
 
