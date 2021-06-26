@@ -521,7 +521,7 @@ Most styled-components capabilities (basic and advanced) are supported, with som
   2. The `style` and `children` props are _never_ filtered out.
   3. Function props are filtered out _unless_ the prop name starts with `on`.
   4. All other non-primitive (`string`, `number`, `boolean`) props are filtered out.
-- The [component selector](https://styled-components.com/docs/advanced#referring-to-other-components) pattern only works when a component is given an _explicit_ display name, because making every component selectable adds transfer size to SSR, and requiring a unique name mitigates some potential SSR vs client rendering order gotchas.
+- The [component selector](https://styled-components.com/docs/advanced#referring-to-other-components) pattern only works when a component is given an _explicit_ display name, because making every component selectable adds transfer size to the SSR output, and requiring a name can mitigate some potential SSR vs client rendering order gotchas.
 - No [theme](https://styled-components.com/docs/advanced#theming) is automatically injected into styled component props, because custom themes can be manually injected by using a theme hook with the `use` method.
 - No [keyframes](https://styled-components.com/docs/basics#animations) utility is included, because the `@keyframes` at-rule can be used in any styled template string, and the `getId` utility can be used if animation name collisions are a concern.
 - No [createGlobalStyle](https://styled-components.com/docs/api#createglobalstyle) utility is included, because global styles can be created by calling `styled('style')` which produces a global style component.
