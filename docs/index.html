@@ -514,11 +514,12 @@
 				<p>Most styled-components capabilities (basic and advanced) are supported, with some notable differences and omissions:</p>
 				<ul>
 					<li>The <code>styled.div</code> syntax is not supported (only <code>styled(&#39;div&#39;)</code>).</li>
-					<li>The <code>attrs</code> method is replaced by the <code>props</code>, <code>use</code>, <code>set</code>, and <code>map</code> methods, which are applied in the intuitive order, instead of the <a href="https://styled-components.com/docs/basics#overriding-attrs">reverse order</a> <code>attrs</code> uses.</li>
-					<li>The props type of styled components can be modified using the <code>props</code> method, instead of passing a generic parameter to the <code>styled</code> tagged template function (and/or <code>attrs</code>).</li>
-					<li>The <a href="https://styled-components.com/docs/advanced#style-objects">style object</a> syntax is not supported, to keep the library size down, and because it provides a better developer experience overall.</li>
+					<li>The <code>attrs</code> method is replaced by <code>props</code>, which can only be used once as the first chained method call after <code>styled</code>, and it is applied in the intuitive (ie. functional) order when restyling (instead of the <a href="https://styled-components.com/docs/basics#overriding-attrs">reverse order</a> used by <code>attrs</code>).</li>
+					<li>The template function returned by the <code>styled</code> function is not generic, because the <code>props</code> method is the only way to set the styled component&#39;s properties.</li>
+					<li>The <code>use</code>, <code>set</code>, and <code>map</code> functions have been added to support stronger typing when manipulating property values, and they are also applied in the intuitive order like <code>props</code> (instead of the reverse order used by <code>attrs</code>).</li>
+					<li>The <a href="https://styled-components.com/docs/advanced#style-objects">style object</a> syntax is not supported, to keep the library size down, and because tagged templates provide a better developer experience overall.</li>
 					<li>The <a href="https://styled-components.com/docs/api#as-polymorphic-prop">as</a> polymorphic prop is not supported, because it does not fit the philosophy of this library.</li>
-					<li>The attributes passed through to simple HTML elements (eg. <code>div</code>) are not <a href="https://styled-components.com/docs/basics#passed-props">filtered based on known HTML attributes</a>, and instead are filtered based on the following rules:<ol>
+					<li>The attributes passed through to simple HTML elements (eg. <code>div</code>) are not <a href="https://styled-components.com/docs/basics#passed-props">filtered based on known HTML attributes</a>, but instead are filtered based on the following rules:<ol>
 							<li>Props that start with <code>$</code> are <em>always</em> filtered out.</li>
 							<li>The <code>style</code> and <code>children</code> props are <em>never</em> filtered out.</li>
 							<li>Function props are filtered out <em>unless</em> the prop name starts with <code>on</code>.</li>
@@ -526,10 +527,10 @@
 						</ol>
 					</li>
 					<li>The <a href="https://styled-components.com/docs/advanced#referring-to-other-components">component selector</a> pattern only works when a component is given an <em>explicit</em> display name, because making every component selectable adds transfer size to SSR, and requiring a unique name mitigates some potential SSR vs client rendering order gotchas.</li>
-					<li>No <a href="https://styled-components.com/docs/advanced#theming">theme</a> is <em>automatically</em> injected into styled components, because custom themes can be <em>manually</em> injected by using a theme hook with the <code>use</code> method.</li>
+					<li>No <a href="https://styled-components.com/docs/advanced#theming">theme</a> is automatically injected into styled component props, because custom themes can be manually injected by using a theme hook with the <code>use</code> method.</li>
 					<li>No <a href="https://styled-components.com/docs/basics#animations">keyframes</a> utility is included, because the <code>@keyframes</code> at-rule can be used in any styled template string, and the <code>getId</code> utility can be used if animation name collisions are a concern.</li>
 					<li>No <a href="https://styled-components.com/docs/api#createglobalstyle">createGlobalStyle</a> utility is included, because global styles can be created by calling <code>styled(&#39;style&#39;)</code> which produces a global style component.</li>
-					<li>No automatic vendor prefixing is performed, because it drastically increases the library size and it&#39;s <a href="http://shouldiprefix.com/">unnecessary</a> for most common styling scenarios.</li>
+					<li>No automatic vendor prefixing is performed, to keep library size and complexity down, and because it&#39;s <a href="http://shouldiprefix.com/">unnecessary</a> for most common styling scenarios.</li>
 				</ul>
 				<p>The <code>tsstyled</code> API is also similar enough to the original API for the <code>vscode-styled-components</code> plugin to provide syntax support.</p>
 			</div>

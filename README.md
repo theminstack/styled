@@ -511,19 +511,20 @@ All of this means that when styling a component, you can’t assume you’re sty
 Most styled-components capabilities (basic and advanced) are supported, with some notable differences and omissions:
 
 - The `styled.div` syntax is not supported (only `styled('div')`).
-- The `attrs` method is replaced by the `props`, `use`, `set`, and `map` methods, which are applied in the intuitive order, instead of the [reverse order](https://styled-components.com/docs/basics#overriding-attrs) `attrs` uses.
-- The props type of styled components can be modified using the `props` method, instead of passing a generic parameter to the `styled` tagged template function (and/or `attrs`).
-- The [style object](https://styled-components.com/docs/advanced#style-objects) syntax is not supported, to keep the library size down, and because it provides a better developer experience overall.
+- The `attrs` method is replaced by `props`, which can only be used once as the first chained method call after `styled`, and it is applied in the intuitive (ie. functional) order when restyling (instead of the [reverse order](https://styled-components.com/docs/basics#overriding-attrs) used by `attrs`).
+- The template function returned by the `styled` function is not generic, because the `props` method is the only way to set the styled component's properties.
+- The `use`, `set`, and `map` functions have been added to support stronger typing when manipulating property values, and they are also applied in the intuitive order like `props` (instead of the reverse order used by `attrs`).
+- The [style object](https://styled-components.com/docs/advanced#style-objects) syntax is not supported, to keep the library size down, and because tagged templates provide a better developer experience overall.
 - The [as](https://styled-components.com/docs/api#as-polymorphic-prop) polymorphic prop is not supported, because it does not fit the philosophy of this library.
-- The attributes passed through to simple HTML elements (eg. `div`) are not [filtered based on known HTML attributes](https://styled-components.com/docs/basics#passed-props), and instead are filtered based on the following rules:
+- The attributes passed through to simple HTML elements (eg. `div`) are not [filtered based on known HTML attributes](https://styled-components.com/docs/basics#passed-props), but instead are filtered based on the following rules:
   1. Props that start with `$` are _always_ filtered out.
   2. The `style` and `children` props are _never_ filtered out.
   3. Function props are filtered out _unless_ the prop name starts with `on`.
   4. All other non-primitive (`string`, `number`, `boolean`) props are filtered out.
 - The [component selector](https://styled-components.com/docs/advanced#referring-to-other-components) pattern only works when a component is given an _explicit_ display name, because making every component selectable adds transfer size to SSR, and requiring a unique name mitigates some potential SSR vs client rendering order gotchas.
-- No [theme](https://styled-components.com/docs/advanced#theming) is _automatically_ injected into styled components, because custom themes can be _manually_ injected by using a theme hook with the `use` method.
+- No [theme](https://styled-components.com/docs/advanced#theming) is automatically injected into styled component props, because custom themes can be manually injected by using a theme hook with the `use` method.
 - No [keyframes](https://styled-components.com/docs/basics#animations) utility is included, because the `@keyframes` at-rule can be used in any styled template string, and the `getId` utility can be used if animation name collisions are a concern.
 - No [createGlobalStyle](https://styled-components.com/docs/api#createglobalstyle) utility is included, because global styles can be created by calling `styled('style')` which produces a global style component.
-- No automatic vendor prefixing is performed, because it drastically increases the library size and it's [unnecessary](http://shouldiprefix.com/) for most common styling scenarios.
+- No automatic vendor prefixing is performed, to keep library size and complexity down, and because it's [unnecessary](http://shouldiprefix.com/) for most common styling scenarios.
 
 The `tsstyled` API is also similar enough to the original API for the `vscode-styled-components` plugin to provide syntax support.
