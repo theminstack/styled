@@ -12,7 +12,7 @@ React visual primitives with first-class TypeScript support and a tiny footprint
   - [Style HTML elements](#style-html-elements)
   - [Style React components](#style-react-components)
   - [Override props type](#override-props-type)
-  - [Default prop values](#default-prop-values)
+  - [Provide default prop values](#provide-default-prop-values)
   - [Add or update prop values](#add-or-update-prop-values)
   - [Map prop values](#map-prop-values)
   - [Global styles](#global-styles)
@@ -83,7 +83,7 @@ const StyledDiv = styled('div').props<IStyledDivProps>((props) => ({
 `;
 ```
 
-### Default prop values
+### Provide default prop values
 
 Default prop values can be provided for undefined props with the `use` method. Props returned by the callback will only be set if the current prop value is undefined. This method is an alternative to using the `map` method with `Object.assign({}, defaultProps, props)` or `{ ...defaultProps, ...props }`, which allows explicitly undefined props to overwrite and hide default props.
 

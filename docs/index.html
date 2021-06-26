@@ -69,7 +69,7 @@
 							<li><a href="#style-html-elements">Style HTML elements</a></li>
 							<li><a href="#style-react-components">Style React components</a></li>
 							<li><a href="#override-props-type">Override props type</a></li>
-							<li><a href="#default-prop-values">Default prop values</a></li>
+							<li><a href="#provide-default-prop-values">Provide default prop values</a></li>
 							<li><a href="#add-or-update-prop-values">Add or update prop values</a></li>
 							<li><a href="#map-prop-values">Map prop values</a></li>
 							<li><a href="#global-styles">Global styles</a></li>
@@ -144,8 +144,8 @@
 <span style="color: #CE9178">  color: red;</span>
 <span style="color: #CE9178">`</span><span style="color: #D4D4D4">;</span>
 </code></pre>
-				<a href="#default-prop-values" id="default-prop-values" style="color: inherit; text-decoration: none;">
-					<h3>Default prop values</h3>
+				<a href="#provide-default-prop-values" id="provide-default-prop-values" style="color: inherit; text-decoration: none;">
+					<h3>Provide default prop values</h3>
 				</a>
 				<p>Default prop values can be provided for undefined props with the <code>use</code> method. Props returned by the callback will only be set if the current prop value is undefined. This method is an alternative to using the <code>map</code> method with <code>Object.assign({}, defaultProps, props)</code> or <code>{ ...defaultProps, ...props }</code>, which allows explicitly undefined props to overwrite and hide default props.</p>
 				<pre><code class="language-tsx"><span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">StyledDiv</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">).</span><span style="color: #DCDCAA">use</span><span style="color: #D4D4D4">((</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">) </span><span style="color: #569CD6">=&gt;</span><span style="color: #D4D4D4"> ({</span>
