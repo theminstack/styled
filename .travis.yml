@@ -1,6 +1,9 @@
 language: node_js
 node_js:
   - 'stable'
+branches:
+  only:
+    - travisci
 install: npm ci
 script:
   - npm test
