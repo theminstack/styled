@@ -39,7 +39,11 @@ export function createTheme<TTheme extends Record<string, any>>(
     const { value, children } = props;
     const theme = useTheme();
 
-    return createElement(Context.Provider, { value: typeof value === 'function' ? value(theme) : value }, children);
+    return createElement(
+      Context.Provider,
+      { value: typeof value === 'function' ? (value as Function)(theme) : value },
+      children,
+    );
   }
 
   return [useTheme, Provider];

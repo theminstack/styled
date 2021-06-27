@@ -3,9 +3,8 @@ node_js:
   - 'stable'
 branches:
   only:
-    - travisci
+    - main
 install: npm ci
 script:
   - npm test
-  - npm run build
 after_success: npm run coveralls

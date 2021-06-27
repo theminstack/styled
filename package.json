@@ -1,6 +1,6 @@
 {
   "name": "tsstyled",
-  "version": "1.0.0-prerelease.10",
+  "version": "1.0.0-prerelease.11",
   "main": "lib/cjs.js",
   "module": "lib/esm.js",
   "types": "lib/index.d.ts",
@@ -11,12 +11,13 @@
     }
   },
   "scripts": {
-    "test": "npm run eslint && npm run jest",
-    "build": "npm run tsc && npm run rollup && npm run typedoc",
-    "prepack": "npm i && npm test && npm run build",
+    "test": "npm run build && npm run eslint && npm run jest",
+    "build": "npm run tsc && npm run rollup && npm run check-es-compat && npm run typedoc",
+    "prepack": "npm i && npm test",
     "eslint": "eslint src",
     "jest": "del-cli coverage && jest",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "check-es-compat": "check-es-compat lib/cjs.js",
     "tsc": "del-cli out && tsc",
     "rollup": "del-cli lib && rollup -c rollup.config.js",
     "typedoc": "del-cli \"docs/*\" \"!docs/CNAME\" && typedoc src/index.ts --out docs --excludePrivate --excludeInternal --excludeExternals --disableOutputCheck --disableSources --theme \"./typedoc-dark\" --highlightTheme dark-plus"
@@ -47,10 +48,11 @@
     "@rollup/plugin-typescript": "^8.2.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
-    "@tinysource/eslint-config": "^1.0.3",
+    "@tinysource/eslint-config": "^1.0.4",
     "@types/jest": "^26.0.23",
     "@types/react": "^16.14.8",
     "@types/react-dom": "^16.9.13",
+    "check-es-compat": "^1.1.1",
     "coveralls": "^3.1.0",
     "del-cli": "^4.0.0",
     "eslint": "^7.28.0",
@@ -64,7 +66,7 @@
     "ts-jest": "^27.0.3",
     "tslib": "^2.3.0",
     "typedoc": "^0.21.0",
-    "typescript": "^4.3.4"
+    "typescript": "4.2.4"
   },
   "peerDependencies": {
     "react": ">=16.14.0"
@@ -89,5 +91,8 @@
   "bugs": {
     "url": "https://github.com/Shakeskeyboarde/tsstyled/issues"
   },
-  "homepage": "https://tsstyled.com"
+  "homepage": "https://tsstyled.com",
+  "browserslist": [
+    "IE >= 11"
+  ]
 }

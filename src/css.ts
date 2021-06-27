@@ -20,5 +20,6 @@ export function css<TProps extends Record<string, unknown> = {}>(
   template: TemplateStringsArray,
   ...values: StyleValue<TProps>[]
 ): StyleHelper<TProps> {
-  return (props: Record<string, unknown> = {}) => getStyleText(template, values, props);
+  return ((props: Record<string, unknown> = {}): string =>
+    getStyleText(template, values, props)) as StyleHelper<TProps>;
 }

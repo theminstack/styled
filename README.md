@@ -1,12 +1,17 @@
 # tsstyled
 
 [![homepage](https://badgen.net/badge/https%3A%2F%2F/tsstyled.com?label=homepage)](https://tsstyled.com)
-[![github-stars](https://badgen.net/github/stars/Shakeskeyboarde/tsstyled?icon=github)](https://github.com/Shakeskeyboarde/tsstyled)
-[![npm-version](https://badgen.net/npm/v/tsstyled?icon=npm&label=)](https://www.npmjs.com/package/tsstyled)
-[![bundle-size](https://badgen.net/bundlephobia/minzip/tsstyled@latest?label=size)](https://bundlephobia.com/result?p=tsstyled@latest)
+[![bundle size](https://badgen.net/bundlephobia/minzip/tsstyled@latest?label=size)](https://bundlephobia.com/result?p=tsstyled@latest)
+[![github stars](https://badgen.net/github/stars/Shakeskeyboarde/tsstyled?icon=github)](https://github.com/Shakeskeyboarde/tsstyled)
+[![npm version](https://badgen.net/npm/v/tsstyled?icon=npm&label=version)](https://www.npmjs.com/package/tsstyled)
+[![build status](https://badgen.net/travis/Shakeskeyboarde/tsstyled?icon=travis&label=build)](https://www.travis-ci.com/github/Shakeskeyboarde/tsstyled)
+[![coverage status](https://badgen.net/coveralls/c/github/Shakeskeyboarde/tsstyled)](https://coveralls.io/github/Shakeskeyboarde/tsstyled)
 
 React visual primitives with first-class TypeScript support and a tiny footprint.
 
+- [Getting Started](#getting-started)
+  - [Installation](#installation)
+  - [Compatibility](#compatibility)
 - [The Basics](#the-basics)
   - [Style HTML elements](#style-html-elements)
   - [Style React components](#style-react-components)
@@ -35,6 +40,28 @@ React visual primitives with first-class TypeScript support and a tiny footprint
 - [Motivation](#motivation)
   - [The problem(s) with styled-components](#the-problems-with-styled-components)
   - [Moving from styled-components](#moving-from-styled-components)
+
+## Getting Started
+
+### Installation
+
+Install the `tsstyled` package and its `react` peer dependency.
+
+```sh
+# With NPM
+npm i tsstyled react
+
+# With Yarn
+yarn add tsstyled react
+```
+
+This library uses semantic versioning. Breaking changes will only be introduced in major version updates.
+
+### Compatibility
+
+- React >= 16.14.0
+- TypeScript >= 4.2.4
+- IE >= 11
 
 ## The Basics
 
