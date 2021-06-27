@@ -11,10 +11,15 @@
     }
   },
   "scripts": {
-    "test": "del-cli coverage && tsc --emitDeclarationOnly false --noEmit true && eslint src && jest",
-    "build": "del-cli out lib \"docs/*\" \"!docs/CNAME\" && tsc && rollup -c rollup.config.js && npm run typedoc",
-    "prepack": "npm i && npm run test && npm run build",
-    "typedoc": "del-cli \"docs/*/\" \"docs/*.html\" && typedoc src/index.ts --out docs --excludePrivate --excludeInternal --excludeExternals --disableOutputCheck --disableSources --theme \"./typedoc-dark\" --highlightTheme dark-plus"
+    "test": "npm run eslint && npm run jest",
+    "build": "npm run tsc && npm run rollup && npm run typedoc",
+    "prepack": "npm i && npm test && npm run build",
+    "eslint": "eslint src",
+    "jest": "del-cli coverage && jest",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "tsc": "del-cli out && tsc",
+    "rollup": "del-cli lib && rollup -c rollup.config.js",
+    "typedoc": "del-cli \"docs/*\" \"!docs/CNAME\" && typedoc src/index.ts --out docs --excludePrivate --excludeInternal --excludeExternals --disableOutputCheck --disableSources --theme \"./typedoc-dark\" --highlightTheme dark-plus"
   },
   "keywords": [
     "component",
@@ -46,6 +51,7 @@
     "@types/jest": "^26.0.23",
     "@types/react": "^16.14.8",
     "@types/react-dom": "^16.9.13",
+    "coveralls": "^3.1.0",
     "del-cli": "^4.0.0",
     "eslint": "^7.28.0",
     "jest": "^27.0.4",

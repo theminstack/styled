@@ -1,10 +1,9 @@
 # tsstyled
 
-[![homepage](https://badgen.net/badge/https%3A%2F%2F/tsstyled.com)](https://tsstyled.com)
-[![github-stars](https://badgen.net/github/stars/Shakeskeyboarde/tsstyled)](https://github.com/Shakeskeyboarde/tsstyled)
-[![npm-version](https://badgen.net/npm/v/tsstyled)](https://www.npmjs.com/package/tsstyled)
-[![bundle-size](https://badgen.net/bundlephobia/minzip/tsstyled@latest)](https://bundlephobia.com/result?p=tsstyled@latest)
-[![bundle-deps](https://badgen.net/bundlephobia/dependency-count/tsstyled@latest)](https://bundlephobia.com/result?p=tsstyled@latest)
+[![homepage](https://badgen.net/badge/https%3A%2F%2F/tsstyled.com?label=homepage)](https://tsstyled.com)
+[![github-stars](https://badgen.net/github/stars/Shakeskeyboarde/tsstyled?icon=github)](https://github.com/Shakeskeyboarde/tsstyled)
+[![npm-version](https://badgen.net/npm/v/tsstyled?icon=npm&label=)](https://www.npmjs.com/package/tsstyled)
+[![bundle-size](https://badgen.net/bundlephobia/minzip/tsstyled@latest?label=size)](https://bundlephobia.com/result?p=tsstyled@latest)
 
 React visual primitives with first-class TypeScript support and a tiny footprint.
 

@@ -8,7 +8,7 @@ module.exports = {
   collectCoverage: true,
   collectCoverageFrom: ['src/**/*.{ts,tsx}', '!**/node_modules/**', '!**/index.{ts,tsx}', '!**/types/**', '!**/constants.*', '!**/_**'],
   coverageDirectory: 'coverage',
-  coverageReporters: ['text-summary', 'json-summary', 'html'],
+  coverageReporters: ['text-summary', 'json-summary', 'html', 'lcov'],
   coverageThreshold: {
     global: {
       functions: 0,
