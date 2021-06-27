@@ -5,7 +5,7 @@
 [![github stars](https://badgen.net/github/stars/Shakeskeyboarde/tsstyled?icon=github)](https://github.com/Shakeskeyboarde/tsstyled)
 [![npm version](https://badgen.net/npm/v/tsstyled?icon=npm&label=version)](https://www.npmjs.com/package/tsstyled)
 [![build status](https://badgen.net/travis/Shakeskeyboarde/tsstyled?icon=travis&label=build)](https://www.travis-ci.com/github/Shakeskeyboarde/tsstyled)
-[![coverage status](https://badgen.net/coveralls/c/github/Shakeskeyboarde/tsstyled)](https://coveralls.io/github/Shakeskeyboarde/tsstyled)
+[![coverage status](https://badgen.net/coveralls/c/github/Shakeskeyboarde/tsstyled/main)](https://coveralls.io/github/Shakeskeyboarde/tsstyled)
 
 React visual primitives with first-class TypeScript support and a tiny footprint.
 
