@@ -12,6 +12,7 @@ React visual primitives with first-class TypeScript support and a tiny footprint
 - [Getting Started](#getting-started)
   - [Installation](#installation)
   - [Compatibility](#compatibility)
+  - [Community](#community)
 - [The Basics](#the-basics)
   - [Style HTML elements](#style-html-elements)
   - [Style React components](#style-react-components)
@@ -62,6 +63,10 @@ This library uses semantic versioning. Breaking changes will only be introduced 
 - React >= 16.14.0
 - TypeScript >= 4.2.4
 - IE >= 11
+
+### Community
+
+Do you have questions, suggestions, or issues? Join the [Discord](https://discord.gg/r8u2rHrrGZ) server!
 
 ## The Basics
 
