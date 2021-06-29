@@ -403,6 +403,21 @@
 <span style="color: #CE9178">  color: red;</span>
 <span style="color: #CE9178">`</span><span style="color: #D4D4D4">;</span>
 </code></pre>
+								<p><strong>NOTE</strong>: Style partials should be complete styles. This means
+									that you should terminate all your statements with semicolons,
+								and close all your blocks.</p>
+								<pre><code class="language-ts"><span style="color: #6A9955">// good</span>
+<span style="color: #DCDCAA">css</span><span style="color: #CE9178">`color: red;`</span><span style="color: #D4D4D4">;</span>
+<span style="color: #DCDCAA">css</span><span style="color: #CE9178">`</span>
+<span style="color: #CE9178">  &amp;:hover {</span>
+<span style="color: #CE9178">    color: blue;</span>
+<span style="color: #CE9178">  }</span>
+<span style="color: #CE9178">`</span><span style="color: #D4D4D4">;</span>
+
+<span style="color: #6A9955">// bad</span>
+<span style="color: #DCDCAA">css</span><span style="color: #CE9178">`red`</span><span style="color: #D4D4D4">; </span><span style="color: #6A9955">// not a statement, only a value.</span>
+<span style="color: #DCDCAA">css</span><span style="color: #CE9178">`color: red`</span><span style="color: #D4D4D4">; </span><span style="color: #6A9955">// no terminating semicolon.</span>
+</code></pre>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
 							<ul class="tsd-type-parameters">
@@ -436,6 +451,21 @@
 <span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">Foo</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">)</span><span style="color: #CE9178">`</span>
 <span style="color: #CE9178">  </span><span style="color: #569CD6">${</span><span style="color: #DCDCAA">helper</span><span style="color: #D4D4D4">({ </span><span style="color: #9CDCFE">color:</span><span style="color: #D4D4D4"> </span><span style="color: #CE9178">&#039;blue&#039;</span><span style="color: #D4D4D4"> })</span><span style="color: #569CD6">}</span>
 <span style="color: #CE9178">`</span><span style="color: #D4D4D4">;</span>
+</code></pre>
+								<p><strong>NOTE</strong>: Style partials should be complete styles. This means
+									that you should terminate all your statements with semicolons,
+								and close all your blocks.</p>
+								<pre><code class="language-ts"><span style="color: #6A9955">// good</span>
+<span style="color: #DCDCAA">css</span><span style="color: #CE9178">&lt;{ </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4">:</span><span style="color: #CE9178"> </span><span style="color: #4EC9B0">string</span><span style="color: #CE9178"> }&gt;`color: </span><span style="color: #569CD6">${</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">) </span><span style="color: #569CD6">=&gt;</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">color</span><span style="color: #569CD6">}</span><span style="color: #CE9178">;`</span><span style="color: #D4D4D4">;</span>
+<span style="color: #DCDCAA">css</span><span style="color: #CE9178">&lt;{ </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4">:</span><span style="color: #CE9178"> </span><span style="color: #4EC9B0">string</span><span style="color: #CE9178"> }&gt;`</span>
+<span style="color: #CE9178">  &amp;:hover {</span>
+<span style="color: #CE9178">    color: </span><span style="color: #569CD6">${</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">) </span><span style="color: #569CD6">=&gt;</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">color</span><span style="color: #569CD6">}</span><span style="color: #CE9178">;</span>
+<span style="color: #CE9178">  }</span>
+<span style="color: #CE9178">`</span><span style="color: #D4D4D4">;</span>
+
+<span style="color: #6A9955">// bad</span>
+<span style="color: #DCDCAA">css</span><span style="color: #CE9178">&lt;{ </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4">:</span><span style="color: #CE9178"> </span><span style="color: #4EC9B0">string</span><span style="color: #CE9178"> }&gt;`</span><span style="color: #569CD6">${</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">) </span><span style="color: #569CD6">=&gt;</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">color</span><span style="color: #569CD6">}</span><span style="color: #CE9178">`</span><span style="color: #D4D4D4">; </span><span style="color: #6A9955">// not a statement, only a value.</span>
+<span style="color: #DCDCAA">css</span><span style="color: #CE9178">&lt;{ </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4">:</span><span style="color: #CE9178"> </span><span style="color: #4EC9B0">string</span><span style="color: #CE9178"> }&gt;`color: </span><span style="color: #569CD6">${</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">) </span><span style="color: #569CD6">=&gt;</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">color</span><span style="color: #569CD6">}</span><span style="color: #CE9178">`</span><span style="color: #D4D4D4">; </span><span style="color: #6A9955">// no terminating semicolon.</span>
 </code></pre>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>

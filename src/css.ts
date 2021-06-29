@@ -13,6 +13,24 @@ import { isStyledSelector } from './utils/isStyledSelector';
  *   color: red;
  * `;
  * ```
+ *
+ * **NOTE**: Style partials should be complete styles. This means
+ * that you should terminate all your statements with semicolons,
+ * and close all your blocks.
+ *
+ * ```ts
+ * // good
+ * css`color: red;`;
+ * css`
+ *   &:hover {
+ *     color: blue;
+ *   }
+ * `;
+ *
+ * // bad
+ * css`red`; // not a statement, only a value.
+ * css`color: red`; // no terminating semicolon.
+ * ```
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function css<TProps = unknown>(
@@ -31,6 +49,24 @@ export function css<TProps = unknown>(
  * const Foo = styled('div')`
  *   ${helper({ color: 'blue' })}
  * `;
+ * ```
+ *
+ * **NOTE**: Style partials should be complete styles. This means
+ * that you should terminate all your statements with semicolons,
+ * and close all your blocks.
+ *
+ * ```ts
+ * // good
+ * css<{ color: string }>`color: ${(props) => props.color};`;
+ * css<{ color: string }>`
+ *   &:hover {
+ *     color: ${(props) => props.color};
+ *   }
+ * `;
+ *
+ * // bad
+ * css<{ color: string }>`${(props) => props.color}`; // not a statement, only a value.
+ * css<{ color: string }>`color: ${(props) => props.color}`; // no terminating semicolon.
  * ```
  */
 export function css<TProps = unknown>(

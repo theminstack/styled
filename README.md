@@ -99,9 +99,8 @@ This library is a rewrite which keeps the key features, cleans up the design for
 <details>
 <summary>Philosophically, the styled-components "re-styling" capability is too powerful. It can invalidate assumptions made by the originally styled component.</summary>
 
-The `as` property is allowed to change the base component to anything. This is lazy and incompatible with good design. If you want to implement your own component with an `as` property, that’s completely fine, _because you designed it that way._ But having it automatically added to every styled component opens up too many uncertainties, and paves the way for a fragile component hierarchy.
-
-The order of applying `attrs` is reversed. This is the opposite of standard component design. In vanilla React, if you wrap a component with another component, the outer component now controls what reaches the inner component, _which is a good thing._ If you restyle (wrap) an already styled component, the restyle gets to reach around the inner styled component and apply properties directly to the base component. This is fragile because you are modifying internal behaviors that you don't have visibility on or control over.
+- The `as` property is allowed to change the base component to anything. This is lazy and incompatible with good design. If you want to implement your own component with an `as` property, that’s completely fine, _because you designed it that way._ But having it automatically added to every styled component opens up too many uncertainties, and paves the way for a fragile component hierarchy.
+- The order of applying `attrs` is reversed. This is the opposite of standard component design. In vanilla React, if you wrap a component with another component, the outer component now controls what reaches the inner component, _which is a good thing._ If you restyle (wrap) an already styled component, the restyle gets to reach around the inner styled component and apply properties directly to the base component. This is fragile because you are modifying internal behaviors that you don't have visibility on or control over.
 
 All of this means that when styling a component, you can’t assume you’re styling the component you think you are, you don’t really know what props will be passed to you, and your props might not be passed to the base component.
 </details>
@@ -162,30 +161,41 @@ const StyledBase = styled(Base)`
 
 When you style an HTML element or a React component, the new styled component has the exact same props as the original component by default. You can override that default by using the generic `props` method to set a custom props type.
 
-```tsx
-import { InferProps, styled } from 'tsstyled';
+**NOTE**: The `props` method must always be the first styled method called, and it can only be used once per styled component.
 
-// Custom props type.
-//
-// NOTE: You must explicitly extend the default props of the base
-// component if you want to keep them! The props method only includes
-// the props you tell it to, and nothing more. The "InferProps" type
-// helper is included to make this easier.
-interface IStyledDivProps extends InferProps<'div'> {
-  // Add a non-standard "color" prop.
+The simplest case is a props type which is "compatible" with the base component props type. Compatible means that the new styled component props could passed directly to the base component without modification. Omitting optional props, restricting prop values to a subset of the original types, and adding new props are all compatible changes. 
+
+```tsx
+interface IStyledDivProps {
+  // This is compatible with the intrinsic className property.
+  className?: string;
+  // This is a non-standard "extra" property, so it is also
+  // considered compatible.
   color?: string;
 }
 
-// Use the "props" method generic parameter to give your styled
-// component your custom props type.
 const StyledDiv = styled('div').props<IStyledDivProps>()`
   color: ${(props) => props.color};
 `;
 ```
 
-**NOTE**: The `props` method must always be the first styled method called, and it can only be used once per styled component.
+The styled component above now _only_ accepts `color` and `className` props, and no other props (`id`, `title`, etc.). The philosophy here is that if you specialize the props, then you have a specific set of props you are designing for, and so you must explicitly choose all the props that you want to allow.
 
-The `props` method also accepts a callback for mapping the custom props to the props required by the base component. This callback is _required_ if your custom properties are _incompatible_ with the properties of the base component, because `props` (and all other styled methods) must always return props that are assignable to the base component.
+If you decide to keep _all_ of the base component props, and just add some new props, you can use the `extend` option.
+
+```tsx
+interface IStyledDivExtraProps {
+  color?: string;
+}
+
+const StyledDiv = styled('div').props<IStyledDivExtraProps>({ extend: true })`
+  color: ${(props) => props.color};
+`;
+```
+
+Now the styled component accepts all of the intrinsic `div` props, as well as the non-standard `color` prop.
+
+If your custom props type is not compatible with the base component, then a mapping function to create props compatible with the base component is required. Adding a new prop value type and removing a required prop, are examples of incompatible changes.
 
 ```tsx
 interface IStyledDivProps {
@@ -195,13 +205,22 @@ interface IStyledDivProps {
   className?: string | string[];
 }
 
-// Pass a callback to the "props" method to map the incompatible
-// props to props that are compatible with the base component.
 const StyledDiv = styled('div').props<IStyleDivProps>((props) => ({
-  // This callback is required to convert an incompatible array
-  // class name back to a string which is compatible with the div.
+  // This mapping function is required to convert an incompatible
+  // array class name back to a string which is compatible with the
+  // div.
   className: props.className instanceof Array ? props.join(' ') : props.className
 }))``;
+```
+
+The above styled component now only supports the `className` prop, and no other props. The `extend` option can't be used with a mapping function due to type complications. To keep any of the base component props, include them manually in your custom props type. The `InferProps` type utility can be used to access the properties of any HTML element or React component.
+
+```tsx
+import { InferProps } from 'tsstyled';
+
+interface IStyledDivProps extends Omit<InferProps<'div'>, 'className'> {
+  className?: string | string[];
+}
 ```
 
 ### Provide default prop values
@@ -316,6 +335,9 @@ const [useTheme, ThemeProvider] = createTheme({
   foregroundColor: black;
   backgroundColor: white;
 });
+
+// The theme type can be inferred from the hook's return type.
+type Theme = ReturnType<typeof useTheme>;
 ```
 
 ### Use a theme

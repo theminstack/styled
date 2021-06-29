@@ -166,8 +166,10 @@
 				</ul>
 				<details>
 					<summary>Philosophically, the styled-components "re-styling" capability is too powerful. It can invalidate assumptions made by the originally styled component.</summary>
-					<p>The <code>as</code> property is allowed to change the base component to anything. This is lazy and incompatible with good design. If you want to implement your own component with an <code>as</code> property, that’s completely fine, <em>because you designed it that way.</em> But having it automatically added to every styled component opens up too many uncertainties, and paves the way for a fragile component hierarchy.</p>
-					<p>The order of applying <code>attrs</code> is reversed. This is the opposite of standard component design. In vanilla React, if you wrap a component with another component, the outer component now controls what reaches the inner component, <em>which is a good thing.</em> If you restyle (wrap) an already styled component, the restyle gets to reach around the inner styled component and apply properties directly to the base component. This is fragile because you are modifying internal behaviors that you don&#39;t have visibility on or control over.</p>
+					<ul>
+						<li>The <code>as</code> property is allowed to change the base component to anything. This is lazy and incompatible with good design. If you want to implement your own component with an <code>as</code> property, that’s completely fine, <em>because you designed it that way.</em> But having it automatically added to every styled component opens up too many uncertainties, and paves the way for a fragile component hierarchy.</li>
+						<li>The order of applying <code>attrs</code> is reversed. This is the opposite of standard component design. In vanilla React, if you wrap a component with another component, the outer component now controls what reaches the inner component, <em>which is a good thing.</em> If you restyle (wrap) an already styled component, the restyle gets to reach around the inner styled component and apply properties directly to the base component. This is fragile because you are modifying internal behaviors that you don&#39;t have visibility on or control over.</li>
+					</ul>
 					<p>All of this means that when styling a component, you can’t assume you’re styling the component you think you are, you don’t really know what props will be passed to you, and your props might not be passed to the base component.</p>
 				</details>
 				<a href="#moving-from-styled-components" id="moving-from-styled-components" style="color: inherit; text-decoration: none;">
@@ -224,27 +226,32 @@
 					<h3>Override component props type</h3>
 				</a>
 				<p>When you style an HTML element or a React component, the new styled component has the exact same props as the original component by default. You can override that default by using the generic <code>props</code> method to set a custom props type.</p>
-				<pre><code class="language-tsx"><span style="color: #C586C0">import</span><span style="color: #D4D4D4"> { </span><span style="color: #9CDCFE">InferProps</span><span style="color: #D4D4D4">, </span><span style="color: #9CDCFE">styled</span><span style="color: #D4D4D4"> } </span><span style="color: #C586C0">from</span><span style="color: #D4D4D4"> </span><span style="color: #CE9178">&#039;tsstyled&#039;</span><span style="color: #D4D4D4">;</span>
-
-<span style="color: #6A9955">// Custom props type.</span>
-<span style="color: #6A9955">//</span>
-<span style="color: #6A9955">// NOTE: You must explicitly extend the default props of the base</span>
-<span style="color: #6A9955">// component if you want to keep them! The props method only includes</span>
-<span style="color: #6A9955">// the props you tell it to, and nothing more. The &quot;InferProps&quot; type</span>
-<span style="color: #6A9955">// helper is included to make this easier.</span>
-<span style="color: #569CD6">interface</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">IStyledDivProps</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">extends</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">InferProps</span><span style="color: #D4D4D4">&lt;</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">&gt; {</span>
-<span style="color: #D4D4D4">  </span><span style="color: #6A9955">// Add a non-standard &quot;color&quot; prop.</span>
+				<p><strong>NOTE</strong>: The <code>props</code> method must always be the first styled method called, and it can only be used once per styled component.</p>
+				<p>The simplest case is a props type which is &quot;compatible&quot; with the base component props type. Compatible means that the new styled component props could passed directly to the base component without modification. Omitting optional props, restricting prop values to a subset of the original types, and adding new props are all compatible changes. </p>
+				<pre><code class="language-tsx"><span style="color: #569CD6">interface</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">IStyledDivProps</span><span style="color: #D4D4D4"> {</span>
+<span style="color: #D4D4D4">  </span><span style="color: #6A9955">// This is compatible with the intrinsic className property.</span>
+<span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">className</span><span style="color: #D4D4D4">?: </span><span style="color: #4EC9B0">string</span><span style="color: #D4D4D4">;</span>
+<span style="color: #D4D4D4">  </span><span style="color: #6A9955">// This is a non-standard &quot;extra&quot; property, so it is also</span>
+<span style="color: #D4D4D4">  </span><span style="color: #6A9955">// considered compatible.</span>
 <span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4">?: </span><span style="color: #4EC9B0">string</span><span style="color: #D4D4D4">;</span>
 <span style="color: #D4D4D4">}</span>
 
-<span style="color: #6A9955">// Use the &quot;props&quot; method generic parameter to give your styled</span>
-<span style="color: #6A9955">// component your custom props type.</span>
 <span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">StyledDiv</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">).</span><span style="color: #DCDCAA">props</span><span style="color: #D4D4D4">&lt;</span><span style="color: #4EC9B0">IStyledDivProps</span><span style="color: #D4D4D4">&gt;()</span><span style="color: #CE9178">`</span>
 <span style="color: #CE9178">  color: </span><span style="color: #569CD6">${</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">) </span><span style="color: #569CD6">=&gt;</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">color</span><span style="color: #569CD6">}</span><span style="color: #CE9178">;</span>
 <span style="color: #CE9178">`</span><span style="color: #D4D4D4">;</span>
 </code></pre>
-				<p><strong>NOTE</strong>: The <code>props</code> method must always be the first styled method called, and it can only be used once per styled component.</p>
-				<p>The <code>props</code> method also accepts a callback for mapping the custom props to the props required by the base component. This callback is <em>required</em> if your custom properties are <em>incompatible</em> with the properties of the base component, because <code>props</code> (and all other styled methods) must always return props that are assignable to the base component.</p>
+				<p>The styled component above now <em>only</em> accepts <code>color</code> and <code>className</code> props, and no other props (<code>id</code>, <code>title</code>, etc.). The philosophy here is that if you specialize the props, then you have a specific set of props you are designing for, and so you must explicitly choose all the props that you want to allow.</p>
+				<p>If you decide to keep <em>all</em> of the base component props, and just add some new props, you can use the <code>extend</code> option.</p>
+				<pre><code class="language-tsx"><span style="color: #569CD6">interface</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">IStyledDivExtraProps</span><span style="color: #D4D4D4"> {</span>
+<span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">color</span><span style="color: #D4D4D4">?: </span><span style="color: #4EC9B0">string</span><span style="color: #D4D4D4">;</span>
+<span style="color: #D4D4D4">}</span>
+
+<span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">StyledDiv</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">).</span><span style="color: #DCDCAA">props</span><span style="color: #D4D4D4">&lt;</span><span style="color: #4EC9B0">IStyledDivExtraProps</span><span style="color: #D4D4D4">&gt;({ </span><span style="color: #9CDCFE">extend:</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">true</span><span style="color: #D4D4D4"> })</span><span style="color: #CE9178">`</span>
+<span style="color: #CE9178">  color: </span><span style="color: #569CD6">${</span><span style="color: #D4D4D4">(</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">) </span><span style="color: #569CD6">=&gt;</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">color</span><span style="color: #569CD6">}</span><span style="color: #CE9178">;</span>
+<span style="color: #CE9178">`</span><span style="color: #D4D4D4">;</span>
+</code></pre>
+				<p>Now the styled component accepts all of the intrinsic <code>div</code> props, as well as the non-standard <code>color</code> prop.</p>
+				<p>If your custom props type is not compatible with the base component, then a mapping function to create props compatible with the base component is required. Adding a new prop value type and removing a required prop, are examples of incompatible changes.</p>
 				<pre><code class="language-tsx"><span style="color: #569CD6">interface</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">IStyledDivProps</span><span style="color: #D4D4D4"> {</span>
 <span style="color: #D4D4D4">  </span><span style="color: #6A9955">// The standard className can only be a string. Allowing a string</span>
 <span style="color: #D4D4D4">  </span><span style="color: #6A9955">// array makes this incompatible with the base component (div)</span>
@@ -252,13 +259,19 @@
 <span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">className</span><span style="color: #D4D4D4">?: </span><span style="color: #4EC9B0">string</span><span style="color: #D4D4D4"> | </span><span style="color: #4EC9B0">string</span><span style="color: #D4D4D4">[];</span>
 <span style="color: #D4D4D4">}</span>
 
-<span style="color: #6A9955">// Pass a callback to the &quot;props&quot; method to map the incompatible</span>
-<span style="color: #6A9955">// props to props that are compatible with the base component.</span>
 <span style="color: #569CD6">const</span><span style="color: #D4D4D4"> </span><span style="color: #4FC1FF">StyledDiv</span><span style="color: #D4D4D4"> = </span><span style="color: #DCDCAA">styled</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">).</span><span style="color: #DCDCAA">props</span><span style="color: #D4D4D4">&lt;</span><span style="color: #4EC9B0">IStyleDivProps</span><span style="color: #D4D4D4">&gt;((</span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">) </span><span style="color: #569CD6">=&gt;</span><span style="color: #D4D4D4"> ({</span>
-<span style="color: #D4D4D4">  </span><span style="color: #6A9955">// This callback is required to convert an incompatible array</span>
-<span style="color: #D4D4D4">  </span><span style="color: #6A9955">// class name back to a string which is compatible with the div.</span>
+<span style="color: #D4D4D4">  </span><span style="color: #6A9955">// This mapping function is required to convert an incompatible</span>
+<span style="color: #D4D4D4">  </span><span style="color: #6A9955">// array class name back to a string which is compatible with the</span>
+<span style="color: #D4D4D4">  </span><span style="color: #6A9955">// div.</span>
 <span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">className:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">className</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">instanceof</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">Array</span><span style="color: #D4D4D4"> ? </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #DCDCAA">join</span><span style="color: #D4D4D4">(</span><span style="color: #CE9178">&#039; &#039;</span><span style="color: #D4D4D4">) : </span><span style="color: #9CDCFE">props</span><span style="color: #D4D4D4">.</span><span style="color: #9CDCFE">className</span>
 <span style="color: #D4D4D4">}))</span><span style="color: #CE9178">``</span><span style="color: #D4D4D4">;</span>
+</code></pre>
+				<p>The above styled component now only supports the <code>className</code> prop, and no other props. The <code>extend</code> option can&#39;t be used with a mapping function due to type complications. To keep any of the base component props, include them manually in your custom props type. The <code>InferProps</code> type utility can be used to access the properties of any HTML element or React component.</p>
+				<pre><code class="language-tsx"><span style="color: #C586C0">import</span><span style="color: #D4D4D4"> { </span><span style="color: #9CDCFE">InferProps</span><span style="color: #D4D4D4"> } </span><span style="color: #C586C0">from</span><span style="color: #D4D4D4"> </span><span style="color: #CE9178">&#039;tsstyled&#039;</span><span style="color: #D4D4D4">;</span>
+
+<span style="color: #569CD6">interface</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">IStyledDivProps</span><span style="color: #D4D4D4"> </span><span style="color: #569CD6">extends</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">Omit</span><span style="color: #D4D4D4">&lt;</span><span style="color: #4EC9B0">InferProps</span><span style="color: #D4D4D4">&lt;</span><span style="color: #CE9178">&#039;div&#039;</span><span style="color: #D4D4D4">&gt;, </span><span style="color: #CE9178">&#039;className&#039;</span><span style="color: #D4D4D4">&gt; {</span>
+<span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">className</span><span style="color: #D4D4D4">?: </span><span style="color: #4EC9B0">string</span><span style="color: #D4D4D4"> | </span><span style="color: #4EC9B0">string</span><span style="color: #D4D4D4">[];</span>
+<span style="color: #D4D4D4">}</span>
 </code></pre>
 				<a href="#provide-default-prop-values" id="provide-default-prop-values" style="color: inherit; text-decoration: none;">
 					<h3>Provide default prop values</h3>
@@ -360,6 +373,9 @@
 <span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">foregroundColor:</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">black</span><span style="color: #D4D4D4">;</span>
 <span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">backgroundColor</span><span style="color: #D4D4D4">: </span><span style="color: #9CDCFE">white</span><span style="color: #D4D4D4">;</span>
 <span style="color: #D4D4D4">});</span>
+
+<span style="color: #6A9955">// The theme type can be inferred from the hook&#039;s return type.</span>
+<span style="color: #569CD6">type</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">Theme</span><span style="color: #D4D4D4"> = </span><span style="color: #4EC9B0">ReturnType</span><span style="color: #D4D4D4">&lt;</span><span style="color: #569CD6">typeof</span><span style="color: #D4D4D4"> </span><span style="color: #9CDCFE">useTheme</span><span style="color: #D4D4D4">&gt;;</span>
 </code></pre>
 				<a href="#use-a-theme" id="use-a-theme" style="color: inherit; text-decoration: none;">
 					<h3>Use a theme</h3>

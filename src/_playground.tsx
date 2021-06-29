@@ -81,14 +81,14 @@ const [useTheme, ThemeProvider] = createTheme({
 
 type ThemeType = ReturnType<typeof useTheme>;
 
-interface ITextInputProps extends InferProps<'input'> {
+interface ITextInputProps {
   type?: 'text' | 'password' | 'email' | 'date' | 'datetime-local' | 'month' | 'number';
   theme?: ThemeType;
   $size?: 'small' | 'large';
 }
 
 const TextInput = styled('input', 'TextInput')
-  .props<ITextInputProps>((props) => ({ ...props }))
+  .props<ITextInputProps>({ extend: true })
   .use(() => ({
     theme: useTheme(),
     $size: 'small' as const,
@@ -105,7 +105,7 @@ const TextInput = styled('input', 'TextInput')
   `;
 
 const SignatureInput = styled(TextInput, 'SignatureInput')
-  .props<Omit<ITextInputProps, 'type'>>()
+  .props<Omit<InferProps<typeof TextInput>, 'type'>>()
   .set(() => ({ type: 'text' }))`
     font-family: cursive;
   `;
@@ -162,3 +162,5 @@ const font = css<{ scale?: number }>`
   font-weight: 400;
   font-size: ${(props) => props.scale ?? 1}rem;
 `;
+
+const style = css`${'foo'}`;

@@ -199,8 +199,9 @@ export function styled<TProps extends IStylableComponentProps, _ extends 'IKnowW
 ): IStyledTemplate<IStyledSelector, Flat<TProps>>;
 export function styled(type: string | StylableComponent<AnyProps>, displayName?: string): IStyledTemplate<any, any> {
   return assign(getStyledTemplateBase(type, displayName, []), {
-    props(cb?: (props: AnyProps) => AnyProps): IStyledTemplateMod<boolean, any> {
-      return getStyledTemplateBase(type, displayName, cb ? [cb] : []);
+    props(arg?: ((props: AnyProps) => AnyProps) | Record<string, unknown>): IStyledTemplateMod<boolean, any> {
+      const map = typeof arg === 'function' ? arg : undefined;
+      return getStyledTemplateBase(type, displayName, map ? [map] : []);
     },
   });
 }
