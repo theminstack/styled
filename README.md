@@ -150,7 +150,7 @@ Prop values can be completely rewritten using the `map` method. Props returned b
 **NOTE**: Please give preference to the `use` and `set` methods. They provide better type support for their respective scenarios. Only use `map` when you need to _remove_ properties from the current props object.
 
 ```tsx
-const StyledDiv = styled('div').set((props) => ({
+const StyledDiv = styled('div').map((props) => ({
   id: props.id,
   className: props.className,
   children: props.children,
