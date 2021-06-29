@@ -373,7 +373,7 @@ For any selector that contains an `&`, the parent selector will replace the `&` 
   color: blue;
 }
 .parent ._s7y13d {
-  color green;
+  color: green;
 }
 ```
 
