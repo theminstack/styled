@@ -163,7 +163,7 @@ When you style an HTML element or a React component, the new styled component ha
 
 **NOTE**: The `props` method must always be the first styled method called, and it can only be used once per styled component.
 
-The simplest case is a props type which is "compatible" with the base component props type. Compatible means that the new styled component props could passed directly to the base component without modification. Omitting optional props, restricting prop values to a subset of the original types, and adding new props are all compatible changes. 
+The simplest case is a props type which is "compatible" with the base component props type. Compatible means that the new styled component props could be passed directly to the base component without modification. Omitting optional props, restricting prop values to a subset of the original types, and adding new props are all compatible changes. 
 
 ```tsx
 interface IStyledDivProps {

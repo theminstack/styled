@@ -227,7 +227,7 @@
 				</a>
 				<p>When you style an HTML element or a React component, the new styled component has the exact same props as the original component by default. You can override that default by using the generic <code>props</code> method to set a custom props type.</p>
 				<p><strong>NOTE</strong>: The <code>props</code> method must always be the first styled method called, and it can only be used once per styled component.</p>
-				<p>The simplest case is a props type which is &quot;compatible&quot; with the base component props type. Compatible means that the new styled component props could passed directly to the base component without modification. Omitting optional props, restricting prop values to a subset of the original types, and adding new props are all compatible changes. </p>
+				<p>The simplest case is a props type which is &quot;compatible&quot; with the base component props type. Compatible means that the new styled component props could be passed directly to the base component without modification. Omitting optional props, restricting prop values to a subset of the original types, and adding new props are all compatible changes. </p>
 				<pre><code class="language-tsx"><span style="color: #569CD6">interface</span><span style="color: #D4D4D4"> </span><span style="color: #4EC9B0">IStyledDivProps</span><span style="color: #D4D4D4"> {</span>
 <span style="color: #D4D4D4">  </span><span style="color: #6A9955">// This is compatible with the intrinsic className property.</span>
 <span style="color: #D4D4D4">  </span><span style="color: #9CDCFE">className</span><span style="color: #D4D4D4">?: </span><span style="color: #4EC9B0">string</span><span style="color: #D4D4D4">;</span>
