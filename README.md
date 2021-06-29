@@ -21,7 +21,7 @@ _TL;DR: This library is a styled-components rewrite that is smaller, simpler, wi
 - [The Basics](#the-basics)
   - [Style HTML elements](#style-html-elements)
   - [Style React components](#style-react-components)
-  - [Override props type](#override-props-type)
+  - [Override component props type](#override-component-props-type)
   - [Provide default prop values](#provide-default-prop-values)
   - [Add or update prop values](#add-or-update-prop-values)
   - [Map prop values](#map-prop-values)
@@ -38,9 +38,10 @@ _TL;DR: This library is a styled-components rewrite that is smaller, simpler, wi
   - [Parent selector references](#parent-selector-references)
   - [At-rules](#at-rules)
   - [Comments](#comments)
+  - [Empty values](#empty-values)
 - [Style helpers](#style-helpers)
   - [Static helpers](#static-helpers)
-  - [Parametric helpers](#parametric-helpers)
+  - [Dynamic helpers](#dynamic-helpers)
   - [Themed helpers](#themed-helpers)
 - [Server Side Rendering (SSR)](#server-side-rendering-ssr)
 - [Ecosystem](#ecosystem)
@@ -79,7 +80,7 @@ The [styled-components](https://styled-components.com/docs/basics#motivation) li
 
 However, it was created many years ago, well before TypeScript had gained the popularity it has now. Types have now been added by the community. But, the API wasn't designed with types in mind, and some of the design choices are just not compatible with strong typing.
 
-This library is a rewrite which keeps the key features, cleans up the design for TypeScript, and removes some unnecessary and counter productive "features".
+This library is a rewrite which keeps the key features, cleans up the design for TypeScript, and removes some unnecessary and counter productive "features". It also completely removes any dependence on third party libraries, and is about 1/3rd the size.
 
 ### The problem(s) with styled-components
 
@@ -96,7 +97,7 @@ This library is a rewrite which keeps the key features, cleans up the design for
 </details>
 
 <details>
-<summary>Philosophically, re-styling is too powerful. It can invalidate assumptions made by the originally styled component.</summary>
+<summary>Philosophically, the styled-components "re-styling" capability is too powerful. It can invalidate assumptions made by the originally styled component.</summary>
 
 The `as` property is allowed to change the base component to anything. This is lazy and incompatible with good design. If you want to implement your own component with an `as` property, that’s completely fine, _because you designed it that way._ But having it automatically added to every styled component opens up too many uncertainties, and paves the way for a fragile component hierarchy.
 
@@ -157,23 +158,50 @@ const StyledBase = styled(Base)`
 `;
 ```
 
-### Override props type
+### Override component props type
 
-The props type of a styled component can be replaced using the `props` method. If the new props type is not compatible (assignable) to the original props type, then you must provide a map function to convert the new props to those expected by the base component.
+When you style an HTML element or a React component, the new styled component has the exact same props as the original component by default. You can override that default by using the generic `props` method to set a custom props type.
 
-**NOTE**: The `props` method must always be the first styled method used. It is not available after using the `use`, `set`, or `map` methods.
+```tsx
+import { InferProps, styled } from 'tsstyled';
+
+// Custom props type.
+//
+// NOTE: You must explicitly extend the default props of the base
+// component if you want to keep them! The props method only includes
+// the props you tell it to, and nothing more. The "InferProps" type
+// helper is included to make this easier.
+interface IStyledDivProps extends InferProps<'div'> {
+  // Add a non-standard "color" prop.
+  color?: string;
+}
+
+// Use the "props" method generic parameter to give your styled
+// component your custom props type.
+const StyledDiv = styled('div').props<IStyledDivProps>()`
+  color: ${(props) => props.color};
+`;
+```
+
+**NOTE**: The `props` method must always be the first styled method called, and it can only be used once per styled component.
+
+The `props` method also accepts a callback for mapping the custom props to the props required by the base component. This callback is _required_ if your custom properties are _incompatible_ with the properties of the base component, because `props` (and all other styled methods) must always return props that are assignable to the base component.
 
 ```tsx
 interface IStyledDivProps {
-  description?: string;
+  // The standard className can only be a string. Allowing a string
+  // array makes this incompatible with the base component (div)
+  // props.
+  className?: string | string[];
 }
 
-const StyledDiv = styled('div').props<IStyledDivProps>((props) => ({
-  // Pass the description to the base component as its only child.
-  children: props.description,
-}))`
-  color: red;
-`;
+// Pass a callback to the "props" method to map the incompatible
+// props to props that are compatible with the base component.
+const StyledDiv = styled('div').props<IStyleDivProps>((props) => ({
+  // This callback is required to convert an incompatible array
+  // class name back to a string which is compatible with the div.
+  className: props.className instanceof Array ? props.join(' ') : props.className
+}))``;
 ```
 
 ### Provide default prop values
@@ -488,22 +516,42 @@ const StyledDiv = styled('div')`
 `;
 ```
 
+### Empty values
+
+If a CSS property value is an empty string or null-ish (`null`, `undefined`), then the whole property will be omitted from the style.
+
+```tsx
+const StyledDiv = styled('div')`
+  color: ${null};
+  background: red;
+`;
+```
+
+The color property is not included because it has no value.
+
+```css
+._s7y13d {
+  background: red;
+}
+```
+
 ## Style helpers
 
-Helpers are simply functions that return style strings. You could just make string builders the old fashioned way, but using the `css` utility enables syntax checking and highlighting.
+The `css` utility provides syntax support when defining independent styles which are not immediately applied to a component.
 
 ### Static helpers
 
-The `css` template function always returns a function, but it can still be used for simple static style string constants.
+Static helpers are simple style strings. As long as the template doesn't include any function values, the `css` utility returns a string.
 
 ```tsx
 import { css, styled } from 'tsstyled';
 
-const font = css`
+const font: string = css`
   font-family: Arial, sans-serif;
   font-weight: 400;
   font-size: 1rem;
 `;
+// typeof font === 'string'
 
 const StyledDiv = styled('div')`
   ${font}
@@ -511,9 +559,9 @@ const StyledDiv = styled('div')`
 `;
 ```
 
-### Parametric helpers
+### Dynamic helpers
 
-If you're repeating styles with only some small differences, you can use a helper which accepts parameters.
+Dynamic helpers are functions that return style strings. If the template includes any function values, the `css` utility returns a function instead of a string. The generic type defines the properties that your helper will accept.
 
 ```tsx
 const font = css<{ scale?: number }>`
@@ -521,16 +569,17 @@ const font = css<{ scale?: number }>`
   font-weight: 400;
   font-size: ${(props) => props.scale ?? 1}rem;
 `;
+// typeof font === 'function'
 
 const StyledDiv = styled('div')`
-  ${font(2)}
+  ${font({ scale: 2 })}
   color: red;
 `;
 ```
 
 ### Themed helpers
 
-If you're using theming, you'll almost certainly need some of your helpers to use the theme. This is just a specialized form of parametric helpers which accept the theme as a prop. However, it's a good idea _not_ to depend on the entire theme, only the values you need. This makes it easier to use the helper in the case where you don't have the theme, and just want to manually fill in the required theme values.
+If you're using theming, you'll almost certainly need some of your helpers to use the theme. Themed helpers are just a specialized form of dynamic helper which accepts the theme as a prop. However, it's a good idea _not_ to depend on the entire theme, only the values you need. This makes it easier to use the helper in the case where you don't have the theme, and just want to manually fill in the required theme values.
 
 ```tsx
 const font = css<{ theme: Pick<Theme, 'fontSize'> }>`
