@@ -7,7 +7,7 @@ branches:
 install:
   - npm ci
 script:
-  - npm build
+  - npm run build
   - npm test
 after_success:
   - npm run coveralls
