@@ -4,6 +4,7 @@ node_js:
 branches:
   only:
     - main
+    - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
 install:
   - npm ci
 script:
@@ -17,7 +18,6 @@ deploy:
     email: $NPM_EMAIL
     api_key: $NPM_API_TOKEN
     on:
-      branch: main
       tags: true
   - provider: pages
     skip_cleanup: true
@@ -25,5 +25,4 @@ deploy:
     local_dir: docs
     github_token: $GITHUB_TOKEN
     on:
-      branch: main
       tags: true
