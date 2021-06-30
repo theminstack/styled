@@ -205,7 +205,7 @@ interface IStyledDivProps {
   className?: string | string[];
 }
 
-const StyledDiv = styled('div').props<IStyleDivProps>((props) => ({
+const StyledDiv = styled('div').props((props: IStyleDivProps) => ({
   // This mapping function is required to convert an incompatible
   // array class name back to a string which is compatible with the
   // div.
