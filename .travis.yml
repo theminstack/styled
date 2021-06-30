@@ -13,6 +13,7 @@ script:
   - npm test
 deploy:
   - provider: script
+    skip_cleanup: true
     script: npm run coveralls
     on:
       branch: /^v\d+\.\d+(\.\d+)?$/
