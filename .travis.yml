@@ -11,14 +11,26 @@ script:
   - npm run build
   - npm run typedoc
   - npm test
-after_success:
-  - npm run coveralls
 deploy:
+  - provider: script
+    script: npm run coveralls
+    on:
+      branch: /^v\d+\.\d+(\.\d+)?$/
+      tags: true
   - provider: npm
     skip_cleanup: true
     email: $NPM_EMAIL
     api_key: $NPM_API_TOKEN
     on:
+      branch: /^v\d+\.\d+(\.\d+)?$/
+      tags: true
+  - provider: npm
+    skip_cleanup: true
+    tag: prerelease
+    email: $NPM_EMAIL
+    api_key: $NPM_API_TOKEN
+    on:
+      branch: /^v\d+\.\d+\.\d+-\S+$/
       tags: true
   - provider: pages
     skip_cleanup: true
@@ -26,4 +38,5 @@ deploy:
     local_dir: docs
     github_token: $GITHUB_TOKEN
     on:
+      branch: /^v\d+\.\d+(\.\d+)?$/
       tags: true
