@@ -118,4 +118,5 @@ dist
 .pnp.*
 
 .DS_Store
+/docs
 /lib

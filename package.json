@@ -12,15 +12,14 @@
   },
   "scripts": {
     "test": "npm run eslint && npm run jest",
-    "build": "npm run tsc && npm run rollup && npm run check-es-compat && npm run typedoc",
-    "prepack": "npm i && npm test",
+    "build": "npm run tsc && npm run rollup && npm run check-es-compat",
     "eslint": "eslint src",
     "jest": "del-cli coverage && jest",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "check-es-compat": "check-es-compat lib/cjs.js",
     "tsc": "del-cli out && tsc",
     "rollup": "del-cli lib && rollup -c rollup.config.js",
-    "typedoc": "del-cli \"docs/*\" \"!docs/CNAME\" && typedoc src/index.ts --out docs --excludePrivate --excludeInternal --excludeExternals --disableOutputCheck --disableSources --theme \"./typedoc-dark\" --highlightTheme dark-plus"
+    "typedoc": "del-cli docs && typedoc src/index.ts --out docs --excludePrivate --excludeInternal --excludeExternals --disableOutputCheck --disableSources --theme \"./typedoc-dark\" --highlightTheme dark-plus"
   },
   "keywords": [
     "component",

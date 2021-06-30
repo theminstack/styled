@@ -9,6 +9,7 @@ install:
   - npm ci
 script:
   - npm run build
+  - npm run typedoc
   - npm test
 after_success:
   - npm run coveralls
