@@ -1,10 +1,29 @@
 language: node_js
 node_js:
-  - 'stable'
+  - stable
 branches:
   only:
     - main
-install: npm ci
+install:
+  - npm ci
 script:
+  - npm build
   - npm test
-after_success: npm run coveralls
+after_success:
+  - npm run coveralls
+deploy:
+  - provider: npm
+    skip_cleanup: true
+    email: $NPM_EMAIL
+    api_key: $NPM_API_TOKEN
+    on:
+      branch: main
+      tags: true
+  - provider: pages
+    skip_cleanup: true
+    keep_history: true
+    local_dir: docs
+    github_token: $GITHUB_TOKEN
+    on:
+      branch: main
+      tags: true
