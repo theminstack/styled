@@ -1,11 +1,13 @@
 import { createContext, createElement, ReactElement, ReactNode, useContext } from 'react';
 
-export interface IThemeProviderProps<TTheme extends Record<string, any>> {
+export interface IThemeProviderProps<TTheme extends Record<string, unknown>> {
   value: TTheme | ((current: TTheme) => TTheme);
   children?: ReactNode;
 }
-export type ThemeHook<TTheme> = () => TTheme;
-export type ThemeProvider<TTheme> = (props: IThemeProviderProps<TTheme>) => ReactElement;
+export type ThemeHook<TTheme extends Record<string, unknown>> = () => TTheme;
+export type ThemeProvider<TTheme extends Record<string, unknown>> = (
+  props: IThemeProviderProps<TTheme>,
+) => ReactElement;
 
 /**
  * Create a theme hook and provider component.
@@ -29,7 +31,7 @@ export type ThemeProvider<TTheme> = (props: IThemeProviderProps<TTheme>) => Reac
  * );
  * ```
  */
-export function createTheme<TTheme extends Record<string, any>>(
+export function createTheme<TTheme extends Record<string, unknown>>(
   defaultValue: TTheme,
 ): [ThemeHook<TTheme>, ThemeProvider<TTheme>] {
   const Context = createContext(defaultValue);

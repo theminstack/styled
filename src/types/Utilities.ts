@@ -8,6 +8,11 @@ export type Flat<T> = T extends {}
   ? { [P in keyof T as string extends P ? never : number extends P ? never : P]: T[P] }
   : T;
 
+/**
+ * Get the value type of an object property.
+ */
+export type PropValue<T, K extends string> = K extends keyof T ? T[K] : never;
+
 export type Assign<L, R> = {
   [P in keyof L | keyof R]: P extends keyof L
     ? P extends RequiredKeys<R>
@@ -19,11 +24,6 @@ export type Assign<L, R> = {
     ? R[P]
     : never;
 };
-// /**
-//  * Recursive type for unconditional assignment, where the "right"
-//  * (own property) value overwrites the "left".
-//  */
-// export type Assign<A extends readonly [...any]> = A extends [infer L, ...infer R] ? Assign2<L, Assign<R>> : unknown;
 
 export type Defaults<L, R> = {
   [P in keyof L | keyof R]: P extends keyof L
@@ -36,13 +36,6 @@ export type Defaults<L, R> = {
     ? R[P]
     : never;
 };
-// /**
-//  * Recursive type for non-greedy assignment, where the "right" value
-//  * is only assigned if the "left" value is undefined.
-//  */
-// export type Defaults<A extends readonly [...any]> = A extends [infer L, ...infer R]
-//   ? Defaults2<L, Defaults<R>>
-//   : unknown;
 
 export type Merge<L, R> = {
   [P in keyof L | keyof R]: P extends keyof R
@@ -55,9 +48,3 @@ export type Merge<L, R> = {
     ? L[P]
     : never;
 };
-// /**
-//  * Recursive type for greedy assignment, where the "right" value
-//  * always overwrites the "left" value, unless the "right" value is
-//  * undefined.
-//  */
-// export type Merge<A extends readonly [...any]> = A extends [infer L, ...infer R] ? Merge2<L, Merge<R>> : unknown;

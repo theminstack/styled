@@ -6,11 +6,20 @@ import { Defaults, Flat, Merge } from './Utilities';
  * Styled template function with static utility methods for modifying
  * the styled component's prop values.
  */
-export interface IStyledTemplateMod<TStatic, TOuterProps, TInnerProps = TOuterProps, TExtendedProps = TInnerProps> {
+export interface IStyledTemplateMod<
+  TStatic extends {},
+  TOuterProps extends {},
+  TInnerProps extends {} = TOuterProps,
+  TExtendedProps extends {} = TInnerProps,
+> {
   /**
    * Styled tagged template function.
    */
-  (template: TemplateStringsArray, ...values: StyleValue<TExtendedProps>[]): IStyledComponent<TOuterProps> & TStatic;
+  (template: TemplateStringsArray, ...values: StyleValue<TExtendedProps>[]): IStyledComponent<
+    TOuterProps,
+    TInnerProps
+  > &
+    TStatic;
 
   /**
    * Use prop default values. As the name implies, this callback is
@@ -22,7 +31,7 @@ export interface IStyledTemplateMod<TStatic, TOuterProps, TInnerProps = TOuterPr
    * set _and_ remove values.
    */
   use<TNewInnerProps extends Partial<TInnerProps> & Record<string, any>>(
-    cb: (props: TExtendedProps) => Partial<TInnerProps> & TNewInnerProps,
+    cb: (props: TExtendedProps) => TNewInnerProps,
   ): IStyledTemplateMod<TStatic, TOuterProps, TInnerProps, Flat<Defaults<TExtendedProps, TNewInnerProps>>>;
 
   /**
@@ -39,7 +48,7 @@ export interface IStyledTemplateMod<TStatic, TOuterProps, TInnerProps = TOuterPr
    * set _and_ remove values.
    */
   set<TNewInnerProps extends Partial<TInnerProps> & Record<string, any>>(
-    cb: (props: TExtendedProps) => Partial<TInnerProps> & TNewInnerProps,
+    cb: (props: TExtendedProps) => TNewInnerProps,
   ): IStyledTemplateMod<TStatic, TOuterProps, TInnerProps, Flat<Merge<TExtendedProps, TNewInnerProps>>>;
 
   /**
@@ -53,7 +62,7 @@ export interface IStyledTemplateMod<TStatic, TOuterProps, TInnerProps = TOuterPr
    * - Try the {@link IStyledTemplate.set set} method if you want to
    * set (not remove) some prop values.
    */
-  map<TNewInnerProps extends Partial<TInnerProps> & Record<string, any>>(
-    cb: (props: TExtendedProps) => Partial<TInnerProps> & TNewInnerProps,
+  map<TNewInnerProps extends TInnerProps & Record<string, any>>(
+    cb: (props: TExtendedProps) => TNewInnerProps,
   ): IStyledTemplateMod<TStatic, TOuterProps, TInnerProps, Flat<TNewInnerProps>>;
 }

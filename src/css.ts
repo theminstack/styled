@@ -33,7 +33,7 @@ import { isStyledSelector } from './utils/isStyledSelector';
  * ```
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function css<TProps = unknown>(
+export function css<TProps = {}>(
   template: TemplateStringsArray,
   ...values: (StylePrimitive | IStyledSelector)[]
 ): string;
@@ -69,11 +69,8 @@ export function css<TProps = unknown>(
  * css<{ color: string }>`color: ${(props) => props.color}`; // no terminating semicolon.
  * ```
  */
-export function css<TProps = unknown>(
-  template: TemplateStringsArray,
-  ...values: StyleValue<TProps>[]
-): StyleHelper<TProps>;
-export function css<TProps = unknown>(
+export function css<TProps = {}>(template: TemplateStringsArray, ...values: StyleValue<TProps>[]): StyleHelper<TProps>;
+export function css<TProps = {}>(
   template: TemplateStringsArray,
   ...values: StyleValue<TProps>[]
 ): string | StyleHelper<TProps> {

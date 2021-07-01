@@ -14,9 +14,23 @@ function Foo(props: { className?: string; bar: number; ref?: LegacyRef<string> }
   return null;
 }
 
-function Bar(props: { foo?: number }): null {
+function Bar(): null {
   return null;
 }
+
+const helperA = css``;
+const helperB = css`${() => ''}`;
+const helperC = css<{}>`${() => ''}`;
+const helperD = css<{ foo?: string }>`${(props) => ''}`;
+const helperE = css<{ foo: string }>`${(props) => ''}`;
+const helperF = css<string>`${props => ''}`;
+
+// styled(() => null);
+// styled((props: {}) => null);
+// styled((props: { className?: number }) => null);
+// styled(() => null, '');
+// styled((props: {}) => null, '');
+// styled((props: { className?: number }) => null, '');
 
 class Baz extends Component<{ className?: string }> {
   render(): ReactNode {
@@ -38,6 +52,7 @@ const A = styled('a')
 
 const refB = createRef<string>();
 const B = styled(Foo, 'Foo')
+  .use((props) => ({}))
   .use<{ z?: number }>((props) => ({ z: 1 }))
   .use((props) => ({ className: '', z: '' }))
   .set((props) => ({}))
@@ -58,9 +73,9 @@ const C = styled(Baz, 'Baz')
     color: blue;
   `;
 
-const D = styled<{ className: string; bar: number }, 'IKnowWhatIAmDoing'>(Foo)`
-  color: blue;
-`;
+// const D = styled<{ className: string; bar: number }, 'IKnowWhatIAmDoing'>(Foo)`
+//   color: blue;
+// `;
 
 styled(Foo)
   .set(() => ({ className: undefined }))
@@ -82,6 +97,8 @@ const [useTheme, ThemeProvider] = createTheme({
 type ThemeType = ReturnType<typeof useTheme>;
 
 interface ITextInputProps {
+  className?: string;
+  name?: string;
   type?: 'text' | 'password' | 'email' | 'date' | 'datetime-local' | 'month' | 'number';
   theme?: ThemeType;
   $size?: 'small' | 'large';
@@ -163,4 +180,22 @@ const font = css<{ scale?: number }>`
   font-size: ${(props) => props.scale ?? 1}rem;
 `;
 
-const style = css`${'foo'}`;
+const style = css`
+  ${'foo'}
+`;
+
+const CompA = (props: { className?: string; foo?: string, bar?: string }) => null;
+
+const CompB = styled(CompA).props<{ className?: string }>()``;
+const CompC = styled(CompB).props<{ className?: string, foo: string }>()`
+  color: blue;
+`;
+const CompD = styled(CompC).props((props: { className?: string, foo: number }) => ({
+  foo: '',
+  bar: ''
+}))`
+  color: blue;
+`;
+const CompE = styled(CompD).props(() => ({
+  foo: 1
+}))

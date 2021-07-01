@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { createRef, forwardRef } from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { styled } from './styled';
@@ -187,13 +188,13 @@ test('only styled components with a display name should support "component selec
 });
 
 test('default display names', () => {
-  const A = () => null;
-  const B = assign(() => null, { displayName: 'Foo' });
+  const A = (_props: { className?: string }) => null;
+  const B = assign((_props: { className?: string }) => null, { displayName: 'Foo' });
 
   expect(styled('div')``.displayName).toMatchInlineSnapshot(`"$$styled('div')"`);
   expect(styled(A)``.displayName).toMatchInlineSnapshot(`"$$styled(A)"`);
   expect(styled(B)``.displayName).toMatchInlineSnapshot(`"$$styled(Foo)"`);
-  expect(styled(() => null)``.displayName).toMatchInlineSnapshot(`"$$styled()"`);
+  expect(styled((_props: { className?: string }) => null)``.displayName).toMatchInlineSnapshot(`"$$styled()"`);
 });
 
 test('prop mapping methods', () => {

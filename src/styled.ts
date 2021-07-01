@@ -1,14 +1,14 @@
-import { createElement, forwardRef, Fragment, ReactElement } from 'react';
+import { Component, createElement, forwardRef, Fragment, ReactElement } from 'react';
 import { styledComponentMarker } from './constants';
-import { IStylableComponentProps } from './types/IStylableComponentProps';
 import { IStyledTemplate } from './types/IStyledTemplate';
 import { IStyledTemplateMod } from './types/IStyledTemplateMod';
-import { StylableComponent } from './types/StylableComponent';
 import { StyleValue } from './types/StyleValue';
 import { IStyledComponent } from './types/IStyledComponent';
 import { HtmlTag } from './types/HtmlTag';
 import { InferProps } from './types/InferProps';
-import { Flat } from './types/Utilities';
+import { IStyledSelector } from './types/IStyledSelector';
+import { InferInnerProps } from './types/InferInnerProps';
+import { PropValue } from './types/Utilities';
 import { getId } from './utils/getId';
 import { getStyleText } from './utils/getStyleText';
 import { defaults } from './utils/defaults';
@@ -18,17 +18,18 @@ import { isStyled } from './utils/isStyled';
 import { useStyleTokens } from './react/useStyleTokens';
 import { useCssText } from './react/useCssText';
 import { Stylesheet } from './react/Stylesheet';
-import { IStyledSelector } from './types/IStyledSelector';
 
-type AnyProps = IStylableComponentProps & Record<string, unknown>;
+type AnyComponent<TProps> =
+  | (new (props: TProps, context?: any) => Component<any>)
+  | ((props: TProps) => ReactElement | null);
 
 function getStyledComponent(
-  type: string | (StylableComponent<AnyProps> & { displayName?: string; name?: string }),
+  type: string | (AnyComponent<{}> & { displayName?: string; name?: string }),
   displayName: string | undefined,
-  mapFunctions: ((props: AnyProps) => AnyProps)[],
+  mapFunctions: ((props: {}) => {})[],
   template: TemplateStringsArray,
-  values: StyleValue<AnyProps>[],
-): IStyledComponent<any> {
+  values: StyleValue<{}>[],
+): IStyledComponent<{}> {
   const isGlobal = type === 'style';
   const staticClassName = !isGlobal && displayName != null ? getId(displayName) : undefined;
   const staticClassNameSelector = staticClassName != null ? `.${staticClassName}` : undefined;
@@ -38,7 +39,7 @@ function getStyledComponent(
   }
 
   return assign(
-    forwardRef((props: AnyProps, ref): ReactElement | null => {
+    forwardRef<any, { className?: string; [key: string]: unknown }>((props, ref): ReactElement | null => {
       props = mapFunctions.reduce((acc, cb) => cb(acc), { ...props });
 
       const isGlobal = type === 'style';
@@ -71,7 +72,7 @@ function getStyledComponent(
         }
       }
 
-      const element = createElement(type, {
+      const element = createElement<typeof props>(type, {
         ...props,
         ref,
         className: [...otherClassNames, ...(staticClassName != null ? [staticClassName] : []), dynamicClassName].join(
@@ -90,22 +91,22 @@ function getStyledComponent(
 }
 
 function getStyledTemplateBase(
-  type: string | StylableComponent<AnyProps>,
+  type: string | AnyComponent<{}>,
   displayName: string | undefined,
-  mapFunctions: ((props: AnyProps) => AnyProps)[],
-): IStyledTemplateMod<any, any> {
+  mapFunctions: ((props: {}) => {})[],
+): IStyledTemplateMod<{}, {}> {
   return assign(
-    (template: TemplateStringsArray, ...values: StyleValue<AnyProps>[]) => {
+    (template: TemplateStringsArray, ...values: StyleValue<{}>[]) => {
       return getStyledComponent(type, displayName, mapFunctions, template, values);
     },
     {
-      use: (cb: (props: AnyProps) => AnyProps): IStyledTemplateMod<boolean, any> => {
+      use: (cb: (props: {}) => {}): IStyledTemplateMod<{}, any> => {
         return getStyledTemplateBase(type, displayName, [...mapFunctions, (props) => defaults(props, cb(props))]);
       },
-      set: (cb: (props: AnyProps) => AnyProps): IStyledTemplateMod<boolean, any> => {
+      set: (cb: (props: {}) => {}): IStyledTemplateMod<{}, any> => {
         return getStyledTemplateBase(type, displayName, [...mapFunctions, (props) => merge(props, cb(props))]);
       },
-      map: (cb: (props: AnyProps) => AnyProps): IStyledTemplateMod<boolean, any> => {
+      map: (cb: (props: {}) => {}): IStyledTemplateMod<{}, any> => {
         return getStyledTemplateBase(type, displayName, [...mapFunctions, cb]);
       },
     },
@@ -151,7 +152,7 @@ export function styled<TTag extends HtmlTag | string>(
  * `;
  * ```
  */
-export function styled(tag: 'style', displayName?: string): IStyledTemplate<{}, IStylableComponentProps>;
+export function styled(tag: 'style', displayName?: string): IStyledTemplate<{}, { className?: string }>;
 /**
  * Style an React component. If the component will be used a
  * selector, add a display name (second argument).
@@ -168,9 +169,9 @@ export function styled(tag: 'style', displayName?: string): IStyledTemplate<{}, 
  * `;
  * ```
  */
-export function styled<TProps extends IStylableComponentProps, _ extends 'IKnowWhatIAmDoing'>(
-  component: StylableComponent<TProps>,
-): IStyledTemplate<{}, Flat<TProps>>;
+export function styled<TComponent extends AnyComponent<any>, _ extends 'IKnowWhatIAmDoing'>(
+  component: string extends PropValue<InferProps<TComponent>, 'className'> ? TComponent : never,
+): IStyledTemplate<{}, InferProps<TComponent>, InferInnerProps<TComponent>>;
 /**
  * Create a styled React component with component selection support.
  *
@@ -193,13 +194,16 @@ export function styled<TProps extends IStylableComponentProps, _ extends 'IKnowW
  * `;
  * ```
  */
-export function styled<TProps extends IStylableComponentProps, _ extends 'IKnowWhatIAmDoing'>(
-  component: StylableComponent<TProps>,
+export function styled<TComponent extends AnyComponent<any>, _ extends 'IKnowWhatIAmDoing'>(
+  component: string extends PropValue<InferProps<TComponent>, 'className'> ? TComponent : never,
   displayName: string,
-): IStyledTemplate<IStyledSelector, Flat<TProps>>;
-export function styled(type: string | StylableComponent<AnyProps>, displayName?: string): IStyledTemplate<any, any> {
+): IStyledTemplate<IStyledSelector, InferProps<TComponent>, InferInnerProps<TComponent>>;
+export function styled<TType extends string | AnyComponent<{}>>(
+  type: TType extends string ? TType : string extends PropValue<InferProps<TType>, 'className'> ? TType : never,
+  displayName?: string,
+): IStyledTemplate<{}, {}> {
   return assign(getStyledTemplateBase(type, displayName, []), {
-    props(arg?: ((props: AnyProps) => AnyProps) | Record<string, unknown>): IStyledTemplateMod<boolean, any> {
+    props(arg?: ((props: {}) => {}) | Record<string, unknown>): IStyledTemplateMod<{}, any> {
       const map = typeof arg === 'function' ? arg : undefined;
       return getStyledTemplateBase(type, displayName, map ? [map] : []);
     },

@@ -8,7 +8,7 @@ import { Merge } from '../types/Utilities';
  * merge({ foo: 1, bar: undefined, baz: 3 }, { foo: 0, bar: 2, baz: undefined }); // { foo: 0, bar: 2, baz: 3 }
  * ```
  */
-export function merge<A extends Record<string, unknown>, B extends Record<string, unknown>>(a: A, b: B): Merge<A, B>;
+export function merge<A extends {}, B extends Record<string, unknown>>(a: A, b: B): Merge<A, B>;
 export function merge(a: Record<string, unknown>, b: Record<string, unknown>): Record<string, unknown> {
   return Object.keys(b).reduce(
     (acc, key) => {
