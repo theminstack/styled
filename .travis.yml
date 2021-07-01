@@ -4,7 +4,7 @@ node_js:
 branches:
   only:
     - main
-    - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
+    - /^v\d+\.\d+(\.\d+)?(-\S+)?$/
 install:
   - npm ci
 script:
@@ -16,32 +16,32 @@ deploy:
     skip_cleanup: true
     script: npm run coveralls
     on:
-      branch: main
       # only on untagged versions.
       condition: $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+$
+      all_branches: true
   - provider: npm
     skip_cleanup: true
     email: $NPM_EMAIL
     api_key: $NPM_API_TOKEN
     on:
-      branch: main
       # only on untagged versions.
       condition: $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+$
+      all_branches: true
   - provider: npm
     skip_cleanup: true
     tag: prerelease
     email: $NPM_EMAIL
     api_key: $NPM_API_TOKEN
     on:
-      branch: main
       # only on tagged versions.
       condition: $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+-[^[:space:]]+$
+      all_branches: true
   - provider: pages
     skip_cleanup: true
     keep_history: true
     local_dir: docs
     github_token: $GITHUB_TOKEN
     on:
-      branch: main
       # only on untagged versions.
       condition: $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+$
+      all_branches: true
