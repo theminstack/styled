@@ -1,6 +1,6 @@
 {
   "name": "tsstyled",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "main": "lib/cjs.js",
   "module": "lib/esm.js",
   "types": "lib/index.d.ts",
@@ -19,7 +19,7 @@
     "check-es-compat": "check-es-compat lib/cjs.js",
     "tsc": "del-cli out && tsc",
     "rollup": "del-cli lib && rollup -c rollup.config.js",
-    "typedoc": "del-cli docs && typedoc src/index.ts --out docs --excludePrivate --excludeInternal --excludeExternals --disableOutputCheck --disableSources --theme \"./typedoc-dark\" --highlightTheme dark-plus"
+    "typedoc": "del-cli docs && make-dir docs && echo 'tsstyled.com' > docs/CNAME && typedoc src/index.ts --out docs --excludePrivate --excludeInternal --excludeExternals --disableOutputCheck --disableSources --theme \"./typedoc-dark\" --highlightTheme dark-plus"
   },
   "keywords": [
     "component",
@@ -56,6 +56,7 @@
     "del-cli": "^4.0.0",
     "eslint": "^7.28.0",
     "jest": "^27.0.4",
+    "make-dir-cli": "^3.0.0",
     "prettier": "^2.3.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
