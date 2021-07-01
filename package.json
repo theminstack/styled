@@ -1,6 +1,6 @@
 {
   "name": "tsstyled",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "main": "lib/cjs.js",
   "module": "lib/esm.js",
   "types": "lib/index.d.ts",
@@ -29,10 +29,16 @@
     "sass",
     "scss",
     "styled-components",
+    "style",
     "styles",
     "styling",
     "theme",
-    "typescript"
+    "typescript",
+    "ssr",
+    "jss",
+    "styled-jsx",
+    "emotion",
+    "emotionjs"
   ],
   "author": "Chris Ackerman",
   "license": "ISC",
