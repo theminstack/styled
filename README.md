@@ -162,39 +162,31 @@ When you style an HTML element or a React component, the new styled component ha
 
 **NOTE**: The `props` method must always be the first styled method called, and it can only be used once per styled component.
 
-The simplest case is a props type which is "compatible" with the base component props type. Compatible means that the new styled component props could be passed directly to the base component without modification. Omitting optional props, restricting prop values to a subset of the original types, and adding new props are all compatible changes. 
+The simplest case is a props type which extends the base props type, and optionally adds extra props.
 
 ```tsx
-interface IStyledDivProps {
-  // This is compatible with the intrinsic className property.
-  className?: string;
-  // This is a non-standard "extra" property, so it is also
-  // considered compatible.
-  color?: string;
-}
-
-const StyledDiv = styled('div').props<IStyledDivProps>()`
-  color: ${(props) => props.color};
+const StyledDiv = styled('div').props<{ $color?: string }>()`
+  color: ${(props) => props.$color};
 `;
 ```
 
-The styled component above now _only_ accepts `color` and `className` props, and no other props (`id`, `title`, etc.). The philosophy here is that if you specialize the props, then you have a specific set of props you are designing for, and so you must explicitly choose all the props that you want to allow.
+The styled component above accepts all of the intrinsic `div` props, as well as the non-standard `$color` prop. Be sure to include the `$` prefix if you don't want a property to be applied to the HTML element as an attribute.
 
-If you decide to keep _all_ of the base component props, and just add some new props, you can use the `extend` option.
+If you don't want to extend the base props, you can set the `extend` option to `false`.
 
 ```tsx
 interface IStyledDivExtraProps {
   color?: string;
 }
 
-const StyledDiv = styled('div').props<IStyledDivExtraProps>({ extend: true })`
-  color: ${(props) => props.color};
+const StyledDiv = styled('div').props<{ $color?: string }>({ extend: false })`
+  color: ${(props) => props.$color};
 `;
 ```
 
-Now the styled component accepts all of the intrinsic `div` props, as well as the non-standard `color` prop.
+Now the styled component only accepts the `$color` prop, and no other props.
 
-If your custom props type is not compatible with the base component, then a mapping function to create props compatible with the base component is required. Adding a new prop value type and removing a required prop, are examples of incompatible changes.
+If your custom props type is not "compatible" with the base component, then a mapping function to create props compatible with the base component is required. Compatible means that the new styled component props can be passed directly to the base component without modification. Omitting optional props, restricting prop values to a subset of the original types, and adding new props are all compatible changes. Changing a prop value type, and removing a required prop, are examples of incompatible changes.
 
 ```tsx
 interface IStyledDivProps {
@@ -212,7 +204,7 @@ const StyledDiv = styled('div').props((props: IStyleDivProps) => ({
 }))``;
 ```
 
-The above styled component now only supports the `className` prop, and no other props. The `extend` option can't be used with a mapping function due to type complications. To keep any of the base component props, include them manually in your custom props type. The `InferProps` type utility can be used to access the properties of any HTML element or React component.
+Using the `props` with a callback does not extend the base props. So, the above styled component now only supports the `className` prop, and no other props. To keep any of the base component props, include them manually in your custom props type. The `InferProps` type utility can be used to access the properties of any HTML element or React component.
 
 ```tsx
 import { InferProps } from 'tsstyled';

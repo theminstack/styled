@@ -115,7 +115,7 @@ interface ITextInputProps {
 }
 
 const TextInput = styled('input', 'TextInput')
-  .props<ITextInputProps>({ extend: true })
+  .props<ITextInputProps>()
   .use(() => ({
     theme: useTheme(),
     $size: 'small' as const,
@@ -132,7 +132,7 @@ const TextInput = styled('input', 'TextInput')
   `;
 
 const SignatureInput = styled(TextInput, 'SignatureInput')
-  .props<Omit<InferProps<typeof TextInput>, 'type'>>()
+  .props<Omit<InferProps<typeof TextInput>, 'type'>>({ extend: false })
   .set(() => ({ type: 'text' }))`
     font-family: cursive;
   `;
@@ -195,9 +195,8 @@ const style = css`
 `;
 
 const CompA = (props: { className?: string; foo?: string; bar?: string }) => null;
-
-const CompB = styled(CompA).props<{ className?: string }>()``;
-const CompC = styled(CompB).props<{ className?: string; foo: string }>()`
+const CompB = styled(CompA).props<{ className?: string }>({ extend: false })``;
+const CompC = styled(CompB).props<{ className?: string; foo: string }>({ extend: false })`
   color: blue;
 `;
 const CompD = styled(CompC).props((props: { className?: string; foo: number }) => ({
