@@ -209,3 +209,8 @@ const CompD = styled(CompC).props((props: { className?: string; foo: number }) =
 const CompE = styled(CompD).props(() => ({
   foo: 1,
 }));
+
+export default styled('div').props((props: Omit<InferProps<'div'>, 'children'>) => ({
+  ...props,
+  children: undefined,
+}))``;
