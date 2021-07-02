@@ -10,7 +10,7 @@ export interface IStyledTemplateMod<
   TStatic extends {},
   TOuterProps extends {},
   TInnerProps extends {} = TOuterProps,
-  TExtendedProps extends {} = TInnerProps,
+  TExtendedProps extends {} = TOuterProps,
 > {
   /**
    * Styled tagged template function.

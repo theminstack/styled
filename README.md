@@ -118,7 +118,7 @@ All of this means that when styling a component, you can’t assume you’re sty
 - The [as](https://styled-components.com/docs/api#as-polymorphic-prop) polymorphic prop is not supported, because it does not fit the philosophy of this library.
 - The attributes passed through to simple HTML elements (eg. `div`) are not [filtered based on known HTML attributes](https://styled-components.com/docs/basics#passed-props), but instead are filtered based on the following rules:
   1. Props that start with `$` are _always_ filtered out.
-  2. The `style` and `children` props are _never_ filtered out.
+  2. The `style`, `children`, and `ref` props are _never_ filtered out.
   3. Function props are filtered out _unless_ the prop name starts with `on`.
   4. All other non-primitive (`string`, `number`, `boolean`) props are filtered out.
 - The [component selector](https://styled-components.com/docs/advanced#referring-to-other-components) pattern only works when a component is given an _explicit_ display name, because making every component selectable adds transfer size to the SSR output, and requiring a name can mitigate some potential SSR vs client rendering order gotchas.

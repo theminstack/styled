@@ -1,4 +1,4 @@
-import { Component, createElement, forwardRef, Fragment, ReactElement } from 'react';
+import { Component, createElement, forwardRef, Fragment, PropsWithRef, ReactElement } from 'react';
 import { styledComponentMarker } from './constants';
 import { IStyledTemplate } from './types/IStyledTemplate';
 import { IStyledTemplateMod } from './types/IStyledTemplateMod';
@@ -40,7 +40,7 @@ function getStyledComponent(
 
   return assign(
     forwardRef<any, { className?: string; [key: string]: unknown }>((props, ref): ReactElement | null => {
-      props = mapFunctions.reduce((acc, cb) => cb(acc), { ...props });
+      props = mapFunctions.reduce((acc, cb) => cb(acc), { ...props, ...(ref ? { ref } : {}) });
 
       const isGlobal = type === 'style';
       const styleText = getStyleText(template, values, props);
@@ -60,7 +60,8 @@ function getStyledComponent(
         for (const prop of Object.keys(props)) {
           if (
             prop[0] === '$' ||
-            (prop !== 'style' &&
+            (prop !== 'ref' &&
+              prop !== 'style' &&
               prop !== 'children' &&
               typeof props[prop] !== 'string' &&
               typeof props[prop] !== 'number' &&
@@ -74,7 +75,6 @@ function getStyledComponent(
 
       const element = createElement<typeof props>(type, {
         ...props,
-        ref,
         className: [...otherClassNames, ...(staticClassName != null ? [staticClassName] : []), dynamicClassName].join(
           ' ',
         ),
@@ -123,7 +123,7 @@ function getStyledTemplateBase(
  * `;
  * ```
  */
-export function styled<TTag extends HtmlTag | string>(tag: TTag): IStyledTemplate<{}, InferProps<TTag>>;
+export function styled<TTag extends HtmlTag | string>(tag: TTag): IStyledTemplate<{}, PropsWithRef<InferProps<TTag>>>;
 /**
  * Create a styled HTML element with component selection support.
  *
@@ -142,7 +142,7 @@ export function styled<TTag extends HtmlTag | string>(tag: TTag): IStyledTemplat
 export function styled<TTag extends HtmlTag | string>(
   tag: TTag,
   displayName: string,
-): IStyledTemplate<IStyledSelector, InferProps<TTag>>;
+): IStyledTemplate<IStyledSelector, PropsWithRef<InferProps<TTag>>>;
 /**
  * Create a global style.
  *
@@ -171,7 +171,7 @@ export function styled(tag: 'style', displayName?: string): IStyledTemplate<{}, 
  */
 export function styled<TComponent extends AnyComponent<any>, _ extends 'IKnowWhatIAmDoing'>(
   component: string extends PropValue<InferProps<TComponent>, 'className'> ? TComponent : never,
-): IStyledTemplate<{}, InferProps<TComponent>, InferInnerProps<TComponent>>;
+): IStyledTemplate<{}, PropsWithRef<InferProps<TComponent>>, InferInnerProps<TComponent>>;
 /**
  * Create a styled React component with component selection support.
  *
@@ -197,7 +197,7 @@ export function styled<TComponent extends AnyComponent<any>, _ extends 'IKnowWha
 export function styled<TComponent extends AnyComponent<any>, _ extends 'IKnowWhatIAmDoing'>(
   component: string extends PropValue<InferProps<TComponent>, 'className'> ? TComponent : never,
   displayName: string,
-): IStyledTemplate<IStyledSelector, InferProps<TComponent>, InferInnerProps<TComponent>>;
+): IStyledTemplate<IStyledSelector, PropsWithRef<InferProps<TComponent>>, InferInnerProps<TComponent>>;
 export function styled<TType extends string | AnyComponent<{}>>(
   type: TType extends string ? TType : string extends PropValue<InferProps<TType>, 'className'> ? TType : never,
   displayName?: string,

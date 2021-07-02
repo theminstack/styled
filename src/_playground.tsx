@@ -19,11 +19,21 @@ function Bar(): null {
 }
 
 const helperA = css``;
-const helperB = css`${() => ''}`;
-const helperC = css<{}>`${() => ''}`;
-const helperD = css<{ foo?: string }>`${(props) => ''}`;
-const helperE = css<{ foo: string }>`${(props) => ''}`;
-const helperF = css<string>`${props => ''}`;
+const helperB = css`
+  ${() => ''}
+`;
+const helperC = css<{}>`
+  ${() => ''}
+`;
+const helperD = css<{ foo?: string }>`
+  ${(props) => ''}
+`;
+const helperE = css<{ foo: string }>`
+  ${(props) => ''}
+`;
+const helperF = css<string>`
+  ${(props) => ''}
+`;
 
 // styled(() => null);
 // styled((props: {}) => null);
@@ -44,7 +54,7 @@ const A = styled('a')
   .use((props) => ({ className: '' }))
   .set((props) => ({}))
   .set((props) => ({ a: 1 }))
-  .map((props) => ({ ...props, z: 1 }))
+  .map((props) => ({ ...props, z: 1, ref: props.ref }))
   .map((props) => ({ z: 1 }))`
     color: blue;
   `;
@@ -184,18 +194,18 @@ const style = css`
   ${'foo'}
 `;
 
-const CompA = (props: { className?: string; foo?: string, bar?: string }) => null;
+const CompA = (props: { className?: string; foo?: string; bar?: string }) => null;
 
 const CompB = styled(CompA).props<{ className?: string }>()``;
-const CompC = styled(CompB).props<{ className?: string, foo: string }>()`
+const CompC = styled(CompB).props<{ className?: string; foo: string }>()`
   color: blue;
 `;
-const CompD = styled(CompC).props((props: { className?: string, foo: number }) => ({
+const CompD = styled(CompC).props((props: { className?: string; foo: number }) => ({
   foo: '',
-  bar: ''
+  bar: '',
 }))`
   color: blue;
 `;
 const CompE = styled(CompD).props(() => ({
-  foo: 1
-}))
+  foo: 1,
+}));
