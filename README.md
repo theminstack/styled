@@ -162,15 +162,22 @@ When you style an HTML element or a React component, the new styled component ha
 
 **NOTE**: The `props` method must always be the first styled method called, and it can only be used once per styled component.
 
-The simplest case is a props type which extends the base props type, and optionally adds extra props.
+The simplest case is a props type which extends the base props type. New props can be added, prop values can be narrowed, and optional props can be removed.
 
 ```tsx
-const StyledDiv = styled('div').props<{ $color?: string }>()`
-  color: ${(props) => props.$color};
-`;
+const StyledDiv = styled('div').props<{
+    // Add a new prop.
+    $color?: string;
+    // Narrow the value type of a prop.
+    className?: 'foo' | 'bar';
+    // Remove an optional prop by narrowing the type to undefined.
+    style: undefined;
+  }>()`
+    color: ${(props) => props.$color};
+  `;
 ```
 
-The styled component above accepts all of the intrinsic `div` props, as well as the non-standard `$color` prop. Be sure to include the `$` prefix if you don't want a property to be applied to the HTML element as an attribute.
+The styled component above accepts all of the intrinsic `div` props, except `style` which has been removed, and the `className` only accepts the values `foo` or `bar`. It also accepts an extra non-standard `$color` prop. Be sure to include the `$` prefix if you want keep a property from being passed to the base HTML element as an attribute.
 
 If you don't want to extend the base props, you can set the `extend` option to `false`.
 
@@ -186,7 +193,7 @@ const StyledDiv = styled('div').props<{ $color?: string }>({ extend: false })`
 
 Now the styled component only accepts the `$color` prop, and no other props.
 
-If your custom props type is not "compatible" with the base component, then a mapping function to create props compatible with the base component is required. Compatible means that the new styled component props can be passed directly to the base component without modification. Omitting optional props, restricting prop values to a subset of the original types, and adding new props are all compatible changes. Changing a prop value type, and removing a required prop, are examples of incompatible changes.
+If your custom props type is not "compatible" with the base component, then a mapping function to create props compatible with the base component is required. Compatible means that the new styled component props can be passed directly to the base component without modification. Changing a prop value type (eg. `string` to `string[]`), and removing a required prop, are examples of incompatible changes.
 
 ```tsx
 interface IStyledDivProps {

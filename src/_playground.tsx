@@ -14,6 +14,9 @@ function Foo(props: { className?: string; bar: number; ref?: LegacyRef<string> }
   return null;
 }
 
+const Foo2 = styled(Foo).props<{ ref: undefined }>()``;
+<Foo2 bar={1} />;
+
 function Bar(): null {
   return null;
 }
@@ -78,7 +81,7 @@ const C = styled(Baz, 'Baz')
   .use<{ z?: number }>((props) => ({ z: 1 }))
   .use((props) => ({ className: '' }))
   .set((props) => ({ className: '', a: 1 }))
-  .map((props) => props)
+  .map((props): Record<string, any> => props)
   .map((props) => ({ ...props, z: 1, className: '' }))`
     color: blue;
   `;

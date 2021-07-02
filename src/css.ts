@@ -76,5 +76,5 @@ export function css<TProps = {}>(
 ): string | StyleHelper<TProps> {
   return values.every((value) => typeof value !== 'function' || isStyledSelector(value))
     ? getStyleText(template, values, {})
-    : (((props: Record<string, unknown> = {}): string => getStyleText(template, values, props)) as StyleHelper<TProps>);
+    : (((props: {} = {}): string => getStyleText(template, values, props)) as StyleHelper<TProps>);
 }

@@ -1,5 +1,5 @@
 import { IStyledTemplateMod } from './IStyledTemplateMod';
-import { Flat } from './Utilities';
+import { Flat, FlatClean, NonStrictPick } from './Utilities';
 
 /**
  * Styled template function with static utility methods for modifying
@@ -12,14 +12,14 @@ export interface IStyledTemplate<TStatic extends {}, TOuterProps extends {}, TIn
    * Change the styled component props type to new type that
    * _extends_ the original props type.
    */
-  props<TNewProps extends Partial<TOuterProps> & Record<string, any>>(options?: {
+  props<TNewProps extends NonStrictPick<TOuterProps & TInnerProps, keyof TNewProps>>(options?: {
     extend?: true;
-  }): IStyledTemplateMod<TStatic, Flat<TOuterProps & TNewProps>, TInnerProps>;
+  }): IStyledTemplateMod<TStatic, FlatClean<TOuterProps & TNewProps>, TInnerProps>;
   /**
    * Change the styled component props type to new type that is
    * _assignable_ to the original props type.
    */
-  props<TNewProps extends Partial<TOuterProps> & Partial<TInnerProps> & Record<string, any>>(options: {
+  props<TNewProps extends TOuterProps & TInnerProps>(options: {
     extend: false;
   }): IStyledTemplateMod<TStatic, Flat<TNewProps>, TInnerProps>;
   /**
