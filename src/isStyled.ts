@@ -1,4 +1,4 @@
-import { styledComponentMarker } from '../constants';
+import { styledComponentMarker } from './constants';
 
 /**
  * Returns true if the component is a styled component.

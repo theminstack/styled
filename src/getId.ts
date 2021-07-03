@@ -1,8 +1,8 @@
-import { getHash } from './getHash';
-import { getCssIdentifier } from './getCssIdentifier';
-import { isTest } from '../constants';
-import { version } from '../../package.json';
-import { RefManagerVoid } from './RefManagerVoid';
+import { getHash } from './utils/getHash';
+import { getCssIdentifier } from './utils/getCssIdentifier';
+import { isTest } from './constants';
+import { version } from '../package.json';
+import { RefManagerVoid } from './utils/RefManagerVoid';
 
 export const _refs = new RefManagerVoid();
 

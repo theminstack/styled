@@ -43,6 +43,9 @@ _TL;DR: This library is a styled-components rewrite that is smaller, simpler, wi
   - [Static helpers](#static-helpers)
   - [Dynamic helpers](#dynamic-helpers)
   - [Themed helpers](#themed-helpers)
+- [Utilities](#utilities)
+  - [Detecting styled components](#detecting-styled-components)
+  - [Building a class name string](#building-a-class-name-string)
 - [Server Side Rendering (SSR)](#server-side-rendering-ssr)
 - [Ecosystem](#ecosystem)
   - [Websites](#websites)
@@ -618,6 +621,34 @@ const StyledDiv = styled('div')`
   ${font({ theme: { fontSize: '1rem' } })}
   color: red;
 `;
+```
+
+## Utilities
+
+### Detecting styled components
+
+The `isStyled` and `isStyledSelector` functions can be used to detect components that have been styled. The `isStyled` method detects any styled component, while the `isStyledSelector` function only returns true for styled components that can be used as selectors.
+
+```tsx
+import { isStyled, isStyledSelector } from 'tsstyled';
+
+const StyledComp = styled('div')``;
+const StyledCompAndSelector = styled('div', 'DisplayName')``;
+
+isStyled(StyledComp); // true
+isStyled(StyledCompAndSelector); // true
+isStyledSelector(StyledComp); // false
+isStyledSelector(StyledCompAndSelector); // true
+```
+
+### Building a class name string
+
+Joining multiple class names into a single string is a common problem. The `classNames` function takes possibly falsy class names, or maps of class names, and returns a clean class names string.
+
+```tsx
+import { isStyled, isStyledSelector } from 'tsstyled';
+
+const className = classNames('a', { b: true, c: false }, null); // "a b"
 ```
 
 ## Server Side Rendering (SSR)

@@ -1,5 +1,8 @@
 import { Component, createElement, forwardRef, Fragment, ReactElement } from 'react';
 import { styledComponentMarker } from './constants';
+import { classNames } from './classNames';
+import { getId } from './getId';
+import { isStyled } from './isStyled';
 import { IStyledTemplate } from './types/IStyledTemplate';
 import { IStyledTemplateMod } from './types/IStyledTemplateMod';
 import { StyleValue } from './types/StyleValue';
@@ -9,54 +12,63 @@ import { InferProps } from './types/InferProps';
 import { IStyledSelector } from './types/IStyledSelector';
 import { InferInnerProps } from './types/InferInnerProps';
 import { PropValue } from './types/Utilities';
-import { getId } from './utils/getId';
 import { getStyleText } from './utils/getStyleText';
 import { defaults } from './utils/defaults';
 import { merge } from './utils/merge';
 import { assign } from './utils/assign';
-import { isStyled } from './utils/isStyled';
 import { useStyleTokens } from './react/useStyleTokens';
 import { useCssText } from './react/useCssText';
 import { Stylesheet } from './react/Stylesheet';
+
+const staticClassNames: Record<string, true> = Object.create(null);
 
 type AnyComponent<TProps> =
   | (new (props: TProps, context?: any) => Component<any>)
   | ((props: TProps) => ReactElement | null);
 
 function getStyledComponent(
-  type: string | (AnyComponent<{}> & { displayName?: string; name?: string }),
+  base: string | (AnyComponent<{}> & { displayName?: string; name?: string }),
   displayName: string | undefined,
   mapFunctions: ((props: {}) => {})[],
   template: TemplateStringsArray,
   values: StyleValue<{}>[],
 ): IStyledComponent<{}> {
-  const isGlobal = type === 'style';
-  const staticClassName = !isGlobal && displayName != null ? getId(displayName) : undefined;
-  const staticClassNameSelector = staticClassName != null ? `.${staticClassName}` : undefined;
+  const isGlobal = base === 'style';
+  const id = !isGlobal && displayName != null ? getId(displayName) : undefined;
+  const idSelector = id != null ? `.${id}` : undefined;
 
   if (displayName == null) {
-    displayName = typeof type === 'string' ? `$$styled('${type}')` : `$$styled(${type.displayName || type.name || ''})`;
+    displayName = typeof base === 'string' ? `$$styled('${base}')` : `$$styled(${base.displayName || base.name || ''})`;
+  }
+
+  if (id != null) {
+    staticClassNames[id] = true;
   }
 
   return assign(
     forwardRef<any, { className?: string; [key: string]: unknown }>((props, ref): ReactElement | null => {
       props = mapFunctions.reduce((acc, cb) => cb(acc), { ...props, ...(ref ? { ref } : {}) });
 
-      const isGlobal = type === 'style';
+      const isGlobal = base === 'style';
       const styleText = getStyleText(template, values, props);
-      const { styleTokens, dynamicClassName, otherClassNames } = useStyleTokens(
+      const { styleTokens, dynamicClassName, staticClassName, otherClassNames } = useStyleTokens(
         styleText,
         props.className,
         displayName,
+        staticClassNames,
       );
       const cssText = useCssText(styleTokens, isGlobal ? undefined : dynamicClassName);
-      const style = isStyled(type) ? null : createElement(Stylesheet, { className: dynamicClassName, cssText });
+      const style = cssText
+        ? isStyled(base)
+          ? null
+          : createElement(Stylesheet, { className: dynamicClassName, cssText })
+        : null;
 
       if (isGlobal) {
         return style;
       }
 
-      if (typeof type === 'string') {
+      if (typeof base === 'string') {
         for (const prop of Object.keys(props)) {
           if (
             prop[0] === '$' ||
@@ -73,41 +85,37 @@ function getStyledComponent(
         }
       }
 
-      const element = createElement<typeof props>(type, {
-        ...props,
-        className: [...otherClassNames, ...(staticClassName != null ? [staticClassName] : []), dynamicClassName].join(
-          ' ',
-        ),
-      });
+      const className = classNames(otherClassNames, staticClassName ?? id, dynamicClassName);
+      const element = createElement<typeof props>(base, { ...props, className });
 
       return createElement(Fragment, {}, style, element);
     }),
     {
       displayName,
-      [styledComponentMarker]: staticClassNameSelector != null,
-      ...(staticClassNameSelector != null ? { toString: () => staticClassNameSelector } : {}),
+      [styledComponentMarker]: idSelector != null,
+      ...(idSelector != null ? { toString: () => idSelector } : {}),
     },
   );
 }
 
 function getStyledTemplateBase(
-  type: string | AnyComponent<{}>,
+  base: string | AnyComponent<{}>,
   displayName: string | undefined,
   mapFunctions: ((props: {}) => {})[],
 ): IStyledTemplateMod<{}, {}> {
   return assign(
     (template: TemplateStringsArray, ...values: StyleValue<{}>[]) => {
-      return getStyledComponent(type, displayName, mapFunctions, template, values);
+      return getStyledComponent(base, displayName, mapFunctions, template, values);
     },
     {
       use: (cb: (props: {}) => {}): IStyledTemplateMod<{}, any> => {
-        return getStyledTemplateBase(type, displayName, [...mapFunctions, (props) => defaults(props, cb(props))]);
+        return getStyledTemplateBase(base, displayName, [...mapFunctions, (props) => defaults(props, cb(props))]);
       },
       set: (cb: (props: {}) => {}): IStyledTemplateMod<{}, any> => {
-        return getStyledTemplateBase(type, displayName, [...mapFunctions, (props) => merge(props, cb(props))]);
+        return getStyledTemplateBase(base, displayName, [...mapFunctions, (props) => merge(props, cb(props))]);
       },
       map: (cb: (props: {}) => {}): IStyledTemplateMod<{}, any> => {
-        return getStyledTemplateBase(type, displayName, [...mapFunctions, cb]);
+        return getStyledTemplateBase(base, displayName, [...mapFunctions, cb]);
       },
     },
   );
@@ -123,7 +131,7 @@ function getStyledTemplateBase(
  * `;
  * ```
  */
-export function styled<TTag extends HtmlTag | string>(tag: TTag): IStyledTemplate<{}, InferProps<TTag>>;
+export function styled<TTag extends HtmlTag | string>(base: TTag): IStyledTemplate<{}, InferProps<TTag>>;
 /**
  * Create a styled HTML element with component selection support.
  *
@@ -140,7 +148,7 @@ export function styled<TTag extends HtmlTag | string>(tag: TTag): IStyledTemplat
  * ```
  */
 export function styled<TTag extends HtmlTag | string>(
-  tag: TTag,
+  base: TTag,
   displayName: string,
 ): IStyledTemplate<IStyledSelector, InferProps<TTag>>;
 /**
@@ -170,7 +178,7 @@ export function styled(tag: 'style', displayName?: string): IStyledTemplate<{}, 
  * ```
  */
 export function styled<TComponent extends AnyComponent<any>, _ extends 'IKnowWhatIAmDoing'>(
-  component: string extends PropValue<InferProps<TComponent>, 'className'> ? TComponent : never,
+  base: string extends PropValue<InferProps<TComponent>, 'className'> ? TComponent : never,
 ): IStyledTemplate<{}, InferProps<TComponent>, InferInnerProps<TComponent>>;
 /**
  * Create a styled React component with component selection support.
@@ -195,17 +203,17 @@ export function styled<TComponent extends AnyComponent<any>, _ extends 'IKnowWha
  * ```
  */
 export function styled<TComponent extends AnyComponent<any>, _ extends 'IKnowWhatIAmDoing'>(
-  component: string extends PropValue<InferProps<TComponent>, 'className'> ? TComponent : never,
+  base: string extends PropValue<InferProps<TComponent>, 'className'> ? TComponent : never,
   displayName: string,
 ): IStyledTemplate<IStyledSelector, InferProps<TComponent>, InferInnerProps<TComponent>>;
 export function styled<TType extends string | AnyComponent<{}>>(
-  type: TType extends string ? TType : string extends PropValue<InferProps<TType>, 'className'> ? TType : never,
+  base: TType extends string ? TType : string extends PropValue<InferProps<TType>, 'className'> ? TType : never,
   displayName?: string,
 ): IStyledTemplate<{}, {}> {
-  return assign(getStyledTemplateBase(type, displayName, []), {
+  return assign(getStyledTemplateBase(base, displayName, []), {
     props(arg?: ((props: {}) => {}) | Record<string, unknown>): IStyledTemplateMod<{}, any> {
       const map = typeof arg === 'function' ? arg : undefined;
-      return getStyledTemplateBase(type, displayName, map ? [map] : []);
+      return getStyledTemplateBase(base, displayName, map ? [map] : []);
     },
   });
 }

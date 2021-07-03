@@ -59,10 +59,25 @@ test('overrides styled component styles (only one style should be injected)', ()
   expect(container).toMatchInlineSnapshot(`
     <div>
       <div
-        class="B-3t2f A-3t2c _12tdhwp"
+        class="B-3t2f _12tdhwp"
       />
     </div>
   `);
+});
+
+test('uses the outermost static class name', () => {
+  const A = styled('div', 'A')``;
+  const B = styled(A, 'B')``;
+  const C = styled(B, 'C')``;
+  const { container } = render(<C />);
+
+  expect(container).toMatchInlineSnapshot(`
+<div>
+  <div
+    class="C-3t2e _3t2c"
+  />
+</div>
+`);
 });
 
 test('deduplicates styles and removes styles that are no longer used (injection order matters)', () => {
@@ -336,4 +351,11 @@ test('React component props are not filtered', () => {
 </div>
 `);
   expect(onClick).toHaveBeenCalledTimes(1);
+});
+
+test('skip the style element if the style is empty', () => {
+  const A = styled('div')``;
+  const { container } = render(<A />);
+
+  expect(document.head).toMatchInlineSnapshot(`<head />`);
 });

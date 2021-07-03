@@ -1,4 +1,4 @@
-import { isStyledSelector } from './isStyledSelector';
+import { isStyledSelector } from '../isStyledSelector';
 
 /**
  * Convert a tagged template array and values into a single style

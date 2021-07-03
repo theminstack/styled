@@ -11,9 +11,10 @@ export { ServerStyleManager } from './ServerStyleManager';
 
 export { StyleConfig } from './react/StyleConfig';
 
-export { getId } from './utils/getId';
-export { isStyled } from './utils/isStyled';
-export { isStyledSelector } from './utils/isStyledSelector';
+export { classNames } from './classNames';
+export { getId } from './getId';
+export { isStyled } from './isStyled';
+export { isStyledSelector } from './isStyledSelector';
 
 export type { IThemeProviderProps, ThemeHook, ThemeProvider } from './createTheme';
 export type { IStyleConfigProps } from './react/StyleConfig';

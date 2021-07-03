@@ -1,9 +1,9 @@
+import { isStyledSelector } from './isStyledSelector';
 import { getStyleText } from './utils/getStyleText';
 import { StyleHelper } from './types/StyleHelper';
 import { StyleValue } from './types/StyleValue';
 import { StylePrimitive } from './types/StylePrimitive';
 import { IStyledSelector } from './types/IStyledSelector';
-import { isStyledSelector } from './utils/isStyledSelector';
 
 /**
  * Syntax helper for static style strings.

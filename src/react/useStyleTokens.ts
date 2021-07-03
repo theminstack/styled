@@ -15,28 +15,33 @@ export function useStyleTokens(
   styleText: string,
   className: string | undefined,
   displayName: string | undefined,
-): { styleTokens: Tokens; dynamicClassName: string; otherClassNames: string[] } {
-  const { styleTokens, dynamicClassName, otherClassNames } = useMemo(() => {
-    const { styleTokens, otherClassNames } = (className ?? '')
+  staticClassNames: Record<string, true>,
+): { styleTokens: Tokens; dynamicClassName: string; staticClassName: string | null; otherClassNames: string[] } {
+  const { styleTokens, dynamicClassName, staticClassName, otherClassNames } = useMemo(() => {
+    const { styleTokens, staticClassName, otherClassNames } = (className ?? '')
       .trim()
       .split(/\s+/g)
-      .reduce<{ otherClassNames: string[]; styleTokens: Tokens }>(
+      .reduce<{ otherClassNames: string[]; staticClassName: string | null; styleTokens: Tokens }>(
         (acc, singleClassName) => {
           if (!singleClassName) {
             return acc;
           }
 
+          if (singleClassName in staticClassNames) {
+            return !acc.staticClassName ? { ...acc, staticClassName: singleClassName } : acc;
+          }
+
           const classTokens = _refs.get(singleClassName)?.value;
 
           return classTokens
-            ? { otherClassNames: acc.otherClassNames, styleTokens: [...acc.styleTokens, ...classTokens] }
-            : { otherClassNames: [...acc.otherClassNames, singleClassName], styleTokens: acc.styleTokens };
+            ? { ...acc, styleTokens: [...acc.styleTokens, ...classTokens] }
+            : { ...acc, otherClassNames: [...acc.otherClassNames, singleClassName] };
         },
-        { styleTokens: getStyleTokens(styleText), otherClassNames: [] },
+        { styleTokens: getStyleTokens(styleText), staticClassName: null, otherClassNames: [] },
       );
     const dynamicClassName = getDynamicClassName(styleTokens, displayName);
 
-    return { styleTokens, dynamicClassName, otherClassNames };
+    return { styleTokens, dynamicClassName, staticClassName, otherClassNames };
   }, [styleText, className, displayName]);
 
   // Adds the cache entry early (before effects) so that it will
@@ -70,5 +75,5 @@ export function useStyleTokens(
     }, [ref]);
   }
 
-  return { styleTokens, dynamicClassName, otherClassNames };
+  return { styleTokens, dynamicClassName, staticClassName, otherClassNames };
 }
