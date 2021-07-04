@@ -74,7 +74,7 @@ test('uses the outermost static class name', () => {
   expect(container).toMatchInlineSnapshot(`
 <div>
   <div
-    class="C-3t2e _3t2c"
+    class="C-3t2e"
   />
 </div>
 `);
@@ -308,7 +308,6 @@ test('HTML element props are filtered', () => {
 
   expect(container.firstChild).toMatchInlineSnapshot(`
 <div
-  class="_1f8sca4"
   num="1"
   readonly=""
   str="s"
@@ -346,7 +345,7 @@ test('React component props are not filtered', () => {
 
   expect(container.firstChild).toMatchInlineSnapshot(`
 <div>
-  {"$data":"$","obj":{},"style":{},"str":"s","num":1,"readOnly":true,"className":"_1emgcpi"}
+  {"$data":"$","obj":{},"style":{},"str":"s","num":1,"readOnly":true}
   child
 </div>
 `);

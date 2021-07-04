@@ -85,7 +85,8 @@ function getStyledComponent(
         }
       }
 
-      const className = classNames(otherClassNames, staticClassName ?? id, dynamicClassName);
+      const className =
+        classNames(otherClassNames, staticClassName ?? id, cssText ? dynamicClassName : null) || undefined;
       const element = createElement<typeof props>(base, { ...props, className });
 
       return createElement(Fragment, {}, style, element);
