@@ -9,24 +9,27 @@ export type ClassName = undefined | null | false | string | Record<string, boole
  * ```
  */
 export function classNames(...values: ClassName[]): string {
-  return values
-    .reduce<string[]>((acc, value) => {
-      if (!value) {
-        return acc;
-      } else if (typeof value === 'string') {
-        return [...acc, value];
-      } else if (value instanceof Array) {
-        value = classNames(...value);
-        return value ? [...acc, value] : acc;
-      }
+  let className = '';
 
+  for (let i = 0, length = values.length; i < length; ++i) {
+    const value = values[i];
+
+    if (!value) {
+      continue;
+    }
+
+    if (typeof value === 'string') {
+      className = className ? className + ' ' + value : value;
+    } else if (value instanceof Array) {
+      className = classNames(className, ...value);
+    } else {
       for (const key of Object.keys(value)) {
-        if (value[key]) {
-          acc = [...acc, key];
+        if (key && value[key]) {
+          className = className ? className + ' ' + key : key;
         }
       }
+    }
+  }
 
-      return acc;
-    }, [])
-    .join(' ');
+  return className;
 }
