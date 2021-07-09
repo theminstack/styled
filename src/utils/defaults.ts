@@ -10,11 +10,19 @@ import { Defaults } from '../types/Utilities';
  */
 export function defaults<A extends {}, B extends Record<string, unknown>>(a: A, b: B): Defaults<A, B>;
 export function defaults(a: Record<string, unknown>, b: Record<string, unknown>): Record<string, unknown> {
-  return Object.keys(b).reduce(
-    (acc, key) => {
+  a = { ...a };
+
+  for (let i = 0, keys = Object.keys(b), length = keys.length; i < length; ++i) {
+    const key = keys[i];
+
+    if (a[key] === undefined) {
       const value = b[key];
-      return value === undefined || a[key] !== undefined ? acc : { ...acc, [key]: value };
-    },
-    { ...a },
-  );
+
+      if (value !== undefined) {
+        a[key] = value;
+      }
+    }
+  }
+
+  return a;
 }
