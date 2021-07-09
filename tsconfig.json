@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "rootDir": ".",
+    "rootDir": "src",
     "outDir": "out",
-    "types": ["react", "jest", "@testing-library/jest-dom"],
+    "types": ["react", "jest", "@testing-library/jest-dom", "webpack-env"],
     "lib": ["DOM", "ES5"],
     "target": "ES5",
     "module": "ESNext",
@@ -15,7 +15,7 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "declaration": true,
-    "emitDeclarationOnly": true
+    "sourceMap": true,
   },
   "include": ["src/**/*"]
 }

@@ -1,5 +1,6 @@
 import { useLayoutEffect, useMemo } from 'react';
 import { isClient } from '../constants';
+import { Token } from '../types/Token';
 import { Tokens } from '../types/Tokens';
 import { getDynamicClassName } from '../utils/getDynamicClassName';
 import { getStyleTokens } from '../utils/getStyleTokens';
@@ -16,29 +17,37 @@ export function useStyleTokens(
   className: string | undefined,
   displayName: string | undefined,
   staticClassNames: Record<string, true>,
-): { styleTokens: Tokens; dynamicClassName: string; staticClassName: string | null; otherClassNames: string[] } {
+): { styleTokens: Token[]; dynamicClassName: string; staticClassName: string | null; otherClassNames: string[] } {
   const { styleTokens, dynamicClassName, staticClassName, otherClassNames } = useMemo(() => {
-    const { styleTokens, staticClassName, otherClassNames } = (className ?? '')
-      .trim()
-      .split(/\s+/g)
-      .reduce<{ otherClassNames: string[]; staticClassName: string | null; styleTokens: Tokens }>(
-        (acc, singleClassName) => {
-          if (!singleClassName) {
-            return acc;
-          }
+    const classNames = (className ?? '').trim().split(/\s+/g);
+    const styleTokens: Token[] = getStyleTokens(styleText);
+    const otherClassNames: string[] = [];
+    let staticClassName: string | null = null;
 
-          if (singleClassName in staticClassNames) {
-            return !acc.staticClassName ? { ...acc, staticClassName: singleClassName } : acc;
-          }
+    for (let i = 0, length = classNames.length; i < length; ++i) {
+      const singleClassName = classNames[i];
 
-          const classTokens = _refs.get(singleClassName)?.value;
+      if (!singleClassName) {
+        continue;
+      }
 
-          return classTokens
-            ? { ...acc, styleTokens: [...acc.styleTokens, ...classTokens] }
-            : { ...acc, otherClassNames: [...acc.otherClassNames, singleClassName] };
-        },
-        { styleTokens: getStyleTokens(styleText), staticClassName: null, otherClassNames: [] },
-      );
+      if (singleClassName in staticClassNames) {
+        if (!staticClassName) {
+          staticClassName = singleClassName;
+        }
+
+        continue;
+      }
+
+      const classTokens = _refs.get(singleClassName)?.value;
+
+      if (classTokens) {
+        styleTokens.push(...classTokens);
+      } else {
+        otherClassNames.push(singleClassName);
+      }
+    }
+
     const dynamicClassName = getDynamicClassName(styleTokens, displayName);
 
     return { styleTokens, dynamicClassName, staticClassName, otherClassNames };
