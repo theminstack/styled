@@ -92,17 +92,25 @@ export function getCssText(styleTokens: Tokens, formatter: IStyleFormatter, clas
 
       const indent = blocks[parentIndex] != null ? blocks[parentIndex].indent + singleIndent : '';
       const parentSelectors = blocks[0].conditions;
-      const selectors = getTokenValues(indexStart, indexEnd).reduce<string[]>(
-        (acc, child) => [
-          ...acc,
-          ...(parentSelectors.length
-            ? parentSelectors.map((parent) =>
-                /&/.test(child) ? child.replace(/&/g, parent) : parent === ':root' ? child : parent + ' ' + child,
-              )
-            : [child]),
-        ],
-        [],
-      );
+      const childSelectors = getTokenValues(indexStart, indexEnd);
+      const selectors: string[] = [];
+
+      for (let i = 0, iLen = childSelectors.length; i < iLen; ++i) {
+        const child = childSelectors[i];
+
+        if (parentSelectors.length === 0) {
+          selectors.push(child);
+          continue;
+        }
+
+        for (let j = 0, jLen = parentSelectors.length; j < jLen; ++j) {
+          const parent = parentSelectors[j];
+
+          selectors.push(
+            /&/.test(child) ? child.replace(/&/g, parent) : parent === ':root' ? child : parent + ' ' + child,
+          );
+        }
+      }
 
       blocks.unshift({
         ...blockTemplate,
