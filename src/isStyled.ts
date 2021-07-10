@@ -1,4 +1,5 @@
-import { styledComponentMarker } from './constants';
+import { styledComponentMetadataKey } from './constants';
+import { IStyledComponent } from './types/IStyledComponent';
 
 /**
  * Returns true if the component is a styled component.
@@ -12,11 +13,6 @@ import { styledComponentMarker } from './constants';
  * ```
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function isStyled(component: unknown): boolean {
-  return (
-    typeof component === 'object' &&
-    component != null &&
-    styledComponentMarker in component &&
-    typeof (component as { [styledComponentMarker]?: unknown })[styledComponentMarker] === 'boolean'
-  );
+export function isStyled(component: unknown): component is IStyledComponent<{}> {
+  return typeof component === 'object' && component != null && styledComponentMetadataKey in component;
 }

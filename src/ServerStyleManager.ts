@@ -1,8 +1,7 @@
 import { createElement, ReactElement } from 'react';
-import { styledElementAttribute } from './constants';
+import { version, styledElementAttribute } from './constants';
 import { IStyle } from './types/IStyle';
 import { IStyleManager } from './types/IStyleManager';
-import { version } from '../package.json';
 
 declare const __webpack_nonce__: string | undefined;
 
@@ -48,14 +47,18 @@ export class ServerStyleManager implements IStyleManager {
    * removed) styles.
    */
   getStyleTag(): string {
-    const props = this._getProps();
-    const propsString = Object.keys(props)
-      .reduce<string[]>((acc, key) => {
-        const value = props[key];
-        return [...acc, value ? `${key}="${value}"` : key];
-      }, [])
-      .join(' ');
     const cssText = this._getCssText();
+    const props = this._getProps();
+    const keys = Object.keys(props);
+    let propsString = '';
+
+    for (let i = 0, length = keys.length; i < length; ++i) {
+      const key = keys[i];
+      const value = props[key];
+      const prop = value ? `${key}="${value}"` : key;
+
+      propsString = propsString ? propsString + ' ' + prop : prop;
+    }
 
     return `<style ${propsString}>${cssText}</style>`;
   }

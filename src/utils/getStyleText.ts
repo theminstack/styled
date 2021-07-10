@@ -4,22 +4,14 @@ import { isStyledSelector } from '../isStyledSelector';
  * Convert a tagged template array and values into a single style
  * string with all function values resolved.
  */
-export function getStyleText(template: TemplateStringsArray, values: unknown[], props: unknown): string {
-  let styleText = template.raw
-    .reduce<string[]>((acc, segment, i) => {
-      acc.push(segment);
+export function getStyleText(raw: readonly string[], values: unknown[], props: unknown): string {
+  let styleText = '';
 
-      if (i < values.length) {
-        const value = values[i];
-
-        acc.push(
-          typeof value == null ? '' : typeof value === 'function' && !isStyledSelector(value) ? value(props) : value,
-        );
-      }
-
-      return acc;
-    }, [])
-    .join('');
+  for (let i = 0, length = raw.length; i < length; ++i) {
+    const value = values[i];
+    styleText +=
+      raw[i] + (value == null ? '' : typeof value === 'function' && !isStyledSelector(value) ? value(props) : value);
+  }
 
   // A style tagged template should always be a complete statement,
   // which means it should always end with a semicolon ";" or a

@@ -71,10 +71,10 @@ export function css<TProps = {}>(
  */
 export function css<TProps = {}>(template: TemplateStringsArray, ...values: StyleValue<TProps>[]): StyleHelper<TProps>;
 export function css<TProps = {}>(
-  template: TemplateStringsArray,
+  { raw }: TemplateStringsArray,
   ...values: StyleValue<TProps>[]
 ): string | StyleHelper<TProps> {
   return values.every((value) => typeof value !== 'function' || isStyledSelector(value))
-    ? getStyleText(template, values, {})
-    : (((props: {} = {}): string => getStyleText(template, values, props)) as StyleHelper<TProps>);
+    ? getStyleText(raw, values, {})
+    : (((props: {} = {}): string => getStyleText(raw, values, props)) as StyleHelper<TProps>);
 }

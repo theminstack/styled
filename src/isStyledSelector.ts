@@ -1,4 +1,5 @@
-import { styledComponentMarker } from './constants';
+import { styledComponentMetadataKey } from './constants';
+import { isStyled } from './isStyled';
 
 /**
  * Returns true if the value is a styled component which supports
@@ -21,9 +22,5 @@ import { styledComponentMarker } from './constants';
  * ```
  */
 export function isStyledSelector(value: unknown): boolean {
-  return (
-    typeof value === 'function' &&
-    styledComponentMarker in value &&
-    (value as { [styledComponentMarker]?: unknown })[styledComponentMarker] === true
-  );
+  return isStyled(value) && value[styledComponentMetadataKey].isSelectable === true;
 }

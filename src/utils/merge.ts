@@ -10,11 +10,16 @@ import { Merge } from '../types/Utilities';
  */
 export function merge<A extends {}, B extends Record<string, unknown>>(a: A, b: B): Merge<A, B>;
 export function merge(a: Record<string, unknown>, b: Record<string, unknown>): Record<string, unknown> {
-  return Object.keys(b).reduce(
-    (acc, key) => {
-      const value = b[key];
-      return value === undefined ? acc : { ...acc, [key]: value };
-    },
-    { ...a },
-  );
+  a = { ...a };
+
+  for (let i = 0, keys = Object.keys(b), len = keys.length; i < len; ++i) {
+    const key = keys[i];
+    const value = b[key];
+
+    if (value !== undefined) {
+      a[key] = value;
+    }
+  }
+
+  return a;
 }

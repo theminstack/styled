@@ -1,5 +1,5 @@
 import { Component, createElement, forwardRef, Fragment, ReactElement } from 'react';
-import { styledComponentMarker } from './constants';
+import { styledComponentMetadataKey } from './constants';
 import { classNames } from './classNames';
 import { getId } from './getId';
 import { isStyled } from './isStyled';
@@ -30,9 +30,18 @@ function getStyledComponent(
   base: string | (AnyComponent<{}> & { displayName?: string; name?: string }),
   displayName: string | undefined,
   mapFunctions: ((props: {}) => {})[],
-  template: TemplateStringsArray,
-  values: StyleValue<{}>[],
+  templateRawStringsArray: readonly string[],
+  templateValues: StyleValue<{}>[],
 ): IStyledComponent<{}> {
+  if (isStyled(base)) {
+    const metadata = base[styledComponentMetadataKey];
+
+    base = metadata.base;
+    mapFunctions = [...metadata.mapFunctions, ...mapFunctions];
+    templateRawStringsArray = [...metadata.templateRawStringsArray, ...templateRawStringsArray];
+    templateValues = [...metadata.templateValues, undefined, ...templateValues];
+  }
+
   const isGlobal = base === 'style';
   const id = !isGlobal && displayName != null ? getId(displayName) : undefined;
   const idSelector = id != null ? `.${id}` : undefined;
@@ -47,10 +56,13 @@ function getStyledComponent(
 
   return assign(
     forwardRef<any, { className?: string; [key: string]: unknown }>((props, ref): ReactElement | null => {
-      props = mapFunctions.reduce((acc, cb) => cb(acc), { ...props, ...(ref ? { ref } : {}) });
+      props = { ...props, ...(ref ? { ref } : {}) };
 
-      const isGlobal = base === 'style';
-      const styleText = getStyleText(template, values, props);
+      for (let i = 0, length = mapFunctions.length; i < length; ++i) {
+        props = mapFunctions[i](props);
+      }
+
+      const styleText = getStyleText(templateRawStringsArray, templateValues, props);
       const { styleTokens, dynamicClassName, staticClassName, otherClassNames } = useStyleTokens(
         styleText,
         props.className,
@@ -93,7 +105,13 @@ function getStyledComponent(
     }),
     {
       displayName,
-      [styledComponentMarker]: idSelector != null,
+      [styledComponentMetadataKey]: {
+        base,
+        mapFunctions,
+        templateRawStringsArray,
+        templateValues,
+        isSelectable: idSelector != null,
+      },
       ...(idSelector != null ? { toString: () => idSelector } : {}),
     },
   );
@@ -105,8 +123,8 @@ function getStyledTemplateBase(
   mapFunctions: ((props: {}) => {})[],
 ): IStyledTemplateMod<{}, {}> {
   return assign(
-    (template: TemplateStringsArray, ...values: StyleValue<{}>[]) => {
-      return getStyledComponent(base, displayName, mapFunctions, template, values);
+    ({ raw }: TemplateStringsArray, ...values: StyleValue<{}>[]) => {
+      return getStyledComponent(base, displayName, mapFunctions, raw, values);
     },
     {
       use: (cb: (props: {}) => {}): IStyledTemplateMod<{}, any> => {

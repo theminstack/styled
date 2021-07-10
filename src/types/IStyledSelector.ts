@@ -1,4 +1,4 @@
-import { styledComponentMarker } from '../constants';
+import { styledComponentMetadataKey } from '../constants';
 
 /**
  * Values of this type can be used as selectors in tagged template
@@ -18,7 +18,7 @@ export interface IStyledSelector {
   /**
    * @ignore
    */
-  readonly [styledComponentMarker]: true;
+  readonly [styledComponentMetadataKey]: true;
   /**
    * Returns a selector for a specific styled component.
    */

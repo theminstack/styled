@@ -2,12 +2,10 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 /** @type {(env: Record<string, unknown>) => import('webpack').Configuration} */
-module.exports = (env, argv) => {
+module.exports = (env) => {
   const isBuild = !!env.WEBPACK_BUILD;
   const source = path.resolve('src/benchmark');
   const target = path.resolve('docs/benchmark');
-
-  console.log(mode);
 
   return {
     mode: 'production',

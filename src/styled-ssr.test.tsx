@@ -6,8 +6,7 @@ import { StyleConfig } from './react/StyleConfig';
 import { ServerStyleManager } from './ServerStyleManager';
 
 (window as any).__webpack_nonce__ = 'webpack-test-nonce';
-jest.mock('./constants', () => ({ ...jest.requireActual('./constants'), isClient: false }));
-jest.mock('../package.json', () => ({ version: '1.0.0-test' }));
+jest.mock('./constants', () => ({ ...jest.requireActual('./constants'), isClient: false, version: '1.0.0-test' }));
 
 test('inlined style', () => {
   const A = styled('div')`

@@ -1,5 +1,6 @@
 import { ReactElement, WeakValidationMap } from 'react';
-import { styledComponentMarker } from '../constants';
+import { styledComponentMetadataKey } from '../constants';
+import { IStyledMetadata } from './IStyledMetadata';
 
 /**
  * Component type returned by the {@link styled} tagged template function.
@@ -18,5 +19,5 @@ export interface IStyledComponent<TProps extends {}, TInnerProps extends {} = TP
   /**
    * @ignore
    */
-  [styledComponentMarker]: boolean;
+  [styledComponentMetadataKey]: IStyledMetadata<TInnerProps>;
 }

@@ -1,5 +1,4 @@
 import { Token } from '../types/Token';
-import { Tokens } from '../types/Tokens';
 
 /**
  * Tokenize the style string.
@@ -15,7 +14,7 @@ import { Tokens } from '../types/Tokens';
  *
  * It should be safe to concatenate token arrays.
  */
-export function getStyleTokens(styleText: string): Tokens {
+export function getStyleTokens(styleText: string): Token[] {
   const re =
     /\\[\s\S]|[@:]|(?:\s*([,;{}])\s*)|(['"])(?:[\s\S]*?\2|[\s\S]*$)|((\s+)?\/\*(?:[\s\S]*?\*\/(\s+)?|[\s\S]*$))|(\/{2}(?:[\s\S]*?(?:(?=\n)|$)))|(\s+)/g;
   const tokens: Token[] = [];

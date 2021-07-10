@@ -2,7 +2,7 @@
 import React, { createRef, forwardRef } from 'react';
 import { fireEvent, render } from '@testing-library/react';
 import { styled } from './styled';
-import { styledComponentMarker } from './constants';
+import { styledComponentMetadataKey } from './constants';
 import { assign } from './utils/assign';
 
 declare const Symbol: (...args: any[]) => symbol;
@@ -46,9 +46,9 @@ test('overrides styled component styles (only one style should be injected)', ()
   expect(document.head).toMatchInlineSnapshot(`
     <head>
       <style
-        data-tss="_12tdhwp"
+        data-tss="_qpvaa2"
       >
-        ._12tdhwp {
+        ._qpvaa2 {
       color: red;
       color: blue;
     }
@@ -59,7 +59,7 @@ test('overrides styled component styles (only one style should be injected)', ()
   expect(container).toMatchInlineSnapshot(`
     <div>
       <div
-        class="B-3t2f _12tdhwp"
+        class="B-3t2f _qpvaa2"
       />
     </div>
   `);
@@ -197,9 +197,19 @@ test('only styled components with a display name should support "component selec
   const A = styled('div', 'A')``;
   const B = styled('div')``;
 
-  expect(A[styledComponentMarker]).toBe(true);
+  expect(A[styledComponentMetadataKey]).toMatchInlineSnapshot(`
+Object {
+  "base": "div",
+  "isSelectable": true,
+  "mapFunctions": Array [],
+  "templateRawStringsArray": Array [
+    "",
+  ],
+  "templateValues": Array [],
+}
+`);
   expect(`${A}`).toMatchInlineSnapshot(`".A-3t2c"`);
-  expect(B[styledComponentMarker]).toBe(false);
+  expect(B[styledComponentMetadataKey].isSelectable).toBe(false);
 });
 
 test('default display names', () => {
