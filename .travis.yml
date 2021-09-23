@@ -9,7 +9,7 @@ install:
   - npm ci
 script:
   - npm run build
-  - npm run typedoc
+  - npm run docs
   - npm test
 deploy:
   - provider: script

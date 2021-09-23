@@ -6,13 +6,13 @@ module.exports = {
   clearMocks: true,
   errorOnDeprecated: true,
   collectCoverage: true,
-  collectCoverageFrom: ['src/**/*.{ts,tsx}', '!**/node_modules/**', '!**/index.{ts,tsx}', '!**/types/**', '!**/constants.*', '!**/_**'],
-  coverageDirectory: 'coverage',
+  collectCoverageFrom: ['src/**/*.{ts,tsx}', '!**/node_modules/**', '!**/index.{ts,tsx}', '!**/types/**', '!**/benchmark/**', '!**/constants.*', '!**/_**'],
+  coverageDirectory: '<rootDir>/out/coverage',
   coverageReporters: ['text-summary', 'json-summary', 'html', 'lcov'],
   coverageThreshold: {
     global: {
       functions: 95,
-      branches: 85,
+      branches: 90,
       lines: 95,
       statements: 95,
     },

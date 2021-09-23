@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-    "rootDir": ".",
-    "outDir": "out",
-    "types": ["react", "jest", "@testing-library/jest-dom"],
-    "lib": ["DOM", "ES5"],
+    "rootDir": "src",
+    "types": ["jest", "@testing-library/jest-dom", "webpack-env"],
+    "lib": ["DOM", "ES2015"],
     "target": "ES5",
     "module": "ESNext",
     "moduleResolution": "node",
@@ -14,8 +13,9 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "declaration": true,
-    "emitDeclarationOnly": true
+    "sourceMap": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
   },
   "include": ["src/**/*"]
 }

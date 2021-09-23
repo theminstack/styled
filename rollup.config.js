@@ -3,6 +3,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import json from '@rollup/plugin-json';
+import versionInjector from 'rollup-plugin-version-injector';
 import { terser } from 'rollup-plugin-terser';
 import dts from 'rollup-plugin-dts';
 
@@ -17,17 +18,17 @@ const external = [
 /** @type {import('rollup').RollupOptions[]} */
 const config = [
   {
-    input: 'src/index.ts',
+    input: ['src/index.ts'],
     output: [
-      { file: 'lib/esm.js', format: 'esm' },
-      { file: 'lib/cjs.js', format: 'cjs' },
+      { dir: 'lib/cjs', format: 'cjs', sourcemap: true },
+      { dir: 'lib/esm', format: 'esm', sourcemap: true },
     ],
     external,
-    plugins: [resolve(), commonjs(), typescript(), json(), terser()],
+    plugins: [resolve(), commonjs(), typescript({ rootDir: 'src' }), json(), versionInjector(), terser()],
   },
   {
-    input: 'out/src/index.d.ts',
-    output: [{ file: 'lib/index.d.ts', format: 'esm' }],
+    input: ['out/index.d.ts'],
+    output: [{ dir: 'lib/types', entryFileNames: (chunk) => chunk.name.replace(/\.d$/, '') + '.d.ts', format: 'esm' }],
     plugins: [dts()],
   },
 ];
