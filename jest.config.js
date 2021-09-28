@@ -7,12 +7,12 @@ module.exports = {
   errorOnDeprecated: true,
   collectCoverage: true,
   collectCoverageFrom: ['src/**/*.{ts,tsx}', '!**/node_modules/**', '!**/index.{ts,tsx}', '!**/types/**', '!**/benchmark/**', '!**/constants.*', '!**/_**'],
-  coverageDirectory: 'coverage',
+  coverageDirectory: '<rootDir>/out/coverage',
   coverageReporters: ['text-summary', 'json-summary', 'html', 'lcov'],
   coverageThreshold: {
     global: {
       functions: 95,
-      branches: 80,
+      branches: 90,
       lines: 95,
       statements: 95,
     },

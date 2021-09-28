@@ -4,6 +4,6 @@ export interface IInputProps {
   children?: ReactNode;
 }
 
-export default function Input({ children }: IInputProps): ReactElement {
+export function Input({ children }: IInputProps): ReactElement {
   return <div className={'input'}>{children}</div>;
 }

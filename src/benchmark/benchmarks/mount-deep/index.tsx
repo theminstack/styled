@@ -1,5 +1,5 @@
 import React from 'react';
-import Tree from '../../components/Tree';
+import { Tree } from '../../components/Tree';
 import { BenchmarkRender, BenchmarkType } from '../../types/schemaBenchmarkConfig';
 
 export const name = 'Mount deep tree';

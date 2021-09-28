@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import View from './View';
 import { IDotProps } from '../../types/IDotProps';
+import { View } from './View';
 
 export const Dot: FC<IDotProps> = (props) => {
   return (

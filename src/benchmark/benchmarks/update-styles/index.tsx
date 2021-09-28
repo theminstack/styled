@@ -1,5 +1,5 @@
 import React from 'react';
-import SierpinskiTriangle from '../../components/SierpinskiTriangle';
+import { SierpinskiTriangle } from '../../components/SierpinskiTriangle';
 import { BenchmarkRender, BenchmarkType } from '../../types/schemaBenchmarkConfig';
 
 export const name = 'Dynamic style updates';

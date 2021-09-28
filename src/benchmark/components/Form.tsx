@@ -4,6 +4,6 @@ export interface IFormProps {
   children?: ReactNode;
 }
 
-export default function Form({ children }: IFormProps): ReactElement {
+export function Form({ children }: IFormProps): ReactElement {
   return <div className={'form'}>{children}</div>;
 }

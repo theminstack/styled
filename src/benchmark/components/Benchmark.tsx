@@ -1,5 +1,27 @@
 import { ReactElement, useLayoutEffect, useRef, useState } from 'react';
 
+interface ISample {
+  scriptStart: number;
+  layoutStart: number;
+  end: number;
+}
+
+function getMean(values: number[]): number {
+  const sum = values.reduce((acc: number, value: number) => acc + value, 0);
+  return sum / values.length;
+}
+
+function getStdDev(values: number[]): number {
+  const avg = getMean(values);
+
+  const squareDiffs = values.map((value: number) => {
+    const diff = value - avg;
+    return diff * diff;
+  });
+
+  return Math.sqrt(getMean(squareDiffs));
+}
+
 export interface IBenchmarkValue {
   mean: number;
   stdDev: number;
@@ -25,13 +47,7 @@ export interface IBenchmarkProps {
   onResult?: (results: IBenchmarkResult) => void;
 }
 
-interface ISample {
-  scriptStart: number;
-  layoutStart: number;
-  end: number;
-}
-
-export default function Benchmark({ config: _config = null, onResult }: IBenchmarkProps): ReactElement | null {
+export function Benchmark({ config: _config = null, onResult }: IBenchmarkProps): ReactElement | null {
   const [config, setConfig] = useState<IBenchmarkConfig | null>(null);
   const [cycle, setCycle] = useState(NaN);
   const startTime = useRef(0);
@@ -57,7 +73,7 @@ export default function Benchmark({ config: _config = null, onResult }: IBenchma
 
   // Start the benchmark run.
   useLayoutEffect(() => {
-    if (!config) {
+    if (config == null) {
       return;
     }
 
@@ -101,11 +117,12 @@ export default function Benchmark({ config: _config = null, onResult }: IBenchma
 
       samples.current = [];
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config]);
 
   // Handle each cycle.
   useLayoutEffect(() => {
-    if (!config) {
+    if (config == null) {
       return;
     }
 
@@ -129,19 +146,20 @@ export default function Benchmark({ config: _config = null, onResult }: IBenchma
       raf.current = undefined;
       setCycle(cycle + 1);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cycle, record]);
 
   // Handle unmount.
   useLayoutEffect(
     () => () => {
-      if (raf.current != null) {
+      if (raf.current) {
         cancelAnimationFrame(raf.current);
       }
     },
     [],
   );
 
-  if (!config) {
+  if (config == null) {
     return null;
   }
 
@@ -154,20 +172,4 @@ export default function Benchmark({ config: _config = null, onResult }: IBenchma
   }
 
   return mount ? config.render(samples.current.length) : null;
-}
-
-function getMean(values: number[]): number {
-  const sum = values.reduce((sum: number, value: number) => sum + value, 0);
-  return sum / values.length;
-}
-
-function getStdDev(values: number[]): number {
-  const avg = getMean(values);
-
-  const squareDiffs = values.map((value: number) => {
-    const diff = value - avg;
-    return diff * diff;
-  });
-
-  return Math.sqrt(getMean(squareDiffs));
 }

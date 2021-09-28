@@ -6,7 +6,7 @@ export interface IButtonProps {
   onClick?: () => void;
 }
 
-export default function Button({ disabled = false, children, onClick }: IButtonProps): ReactElement {
+export function Button({ disabled = false, children, onClick }: IButtonProps): ReactElement {
   const $onClick = useCallback(() => {
     if (!disabled) {
       onClick?.();

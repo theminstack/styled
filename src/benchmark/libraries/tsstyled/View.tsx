@@ -1,6 +1,6 @@
-import { styled } from '../../../styled';
+import { styled } from './styled';
 
-export default styled('div')`
+export const View = styled('div')`
   align-items: stretch;
   border-width: 0;
   border-style: solid;

@@ -66,6 +66,8 @@ module.exports = (env) => {
     ],
     devServer: {
       static: target,
+      hot: false,
+      watchFiles: path.resolve(__dirname, 'src'),
       compress: true,
       port: 3000,
       open: true,

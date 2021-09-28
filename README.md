@@ -1,5 +1,3 @@
-# tsstyled
-
 [![homepage](https://badgen.net/badge/https%3A%2F%2F/tsstyled.com?label=homepage)](https://tsstyled.com)
 [![bundle size](https://badgen.net/bundlephobia/minzip/tsstyled@latest?label=size)](https://bundlephobia.com/result?p=tsstyled@latest)
 [![github stars](https://badgen.net/github/stars/Shakeskeyboarde/tsstyled?icon=github)](https://github.com/Shakeskeyboarde/tsstyled)
@@ -7,49 +5,50 @@
 [![build status](https://badgen.net/travis/Shakeskeyboarde/tsstyled?icon=travis&label=build)](https://www.travis-ci.com/github/Shakeskeyboarde/tsstyled)
 [![coverage status](https://badgen.net/coveralls/c/github/Shakeskeyboarde/tsstyled/main)](https://coveralls.io/github/Shakeskeyboarde/tsstyled)
 
-React visual primitives with first-class TypeScript support and a tiny footprint.
+A lean CSS-in-JS solution for React with first-class TypeScript support.
 
-_TL;DR: This library is a styled-components rewrite that is smaller, simpler, with stronger TypeScript types._
+- **Fast**: Faster than styled-components (benchmarks included).
+- **Small**: Less than 4kb (minified and gzipped) and no dependencies.
+- **Simple**: A minimal and intuitive API.
+- **Typed**: Written in TypeScript with a focus on type safety and clarity.
+
+---
+
+**Table of contents**
 
 - [Getting Started](#getting-started)
   - [Installation](#installation)
   - [Compatibility](#compatibility)
   - [Community](#community)
 - [Motivation](#motivation)
-  - [The problem(s) with styled-components](#the-problems-with-styled-components)
-  - [Moving from styled-components](#moving-from-styled-components)
+  - [Compared with other libraries](#compared-with-other-libraries)
+  - [Benchmarks](#benchmarks)
 - [The Basics](#the-basics)
-  - [Style HTML elements](#style-html-elements)
-  - [Style React components](#style-react-components)
-  - [Override component props type](#override-component-props-type)
-  - [Provide default prop values](#provide-default-prop-values)
-  - [Add or update prop values](#add-or-update-prop-values)
-  - [Map prop values](#map-prop-values)
-  - [Global styles](#global-styles)
-  - [Keyframes and fonts](#keyframes-and-fonts)
+  - [Styling HTML elements and components](#styling-html-elements-and-components)
+  - [Extending the properties type](#extending-the-properties-type)
+  - [Setting default property values](#setting-default-property-values)
+  - [Creating global styles](#creating-global-styles)
+  - [Defining keyframes and fonts](#defining-keyframes-and-fonts)
 - [Theming](#theming)
-  - [Create a theme](#create-a-theme)
-  - [Use a theme](#use-a-theme)
-  - [Override theme values](#override-theme-values)
+  - [Creating a theme](#creating-a-theme)
+  - [Using a theme](#using-a-theme)
+  - [Overriding theme values](#overriding-theme-values)
 - [Style syntax](#style-syntax)
-  - [Simple CSS](#simple-css)
-  - [Child selectors](#child-selectors)
-  - [Nesting](#nesting)
-  - [Parent selector references](#parent-selector-references)
-  - [At-rules](#at-rules)
-  - [Comments](#comments)
-  - [Empty values](#empty-values)
-- [Style helpers](#style-helpers)
-  - [Static helpers](#static-helpers)
-  - [Dynamic helpers](#dynamic-helpers)
-  - [Themed helpers](#themed-helpers)
-- [Utilities](#utilities)
-  - [Detecting styled components](#detecting-styled-components)
-  - [Building a class name string](#building-a-class-name-string)
+  - [Styling self](#styling-self)
+  - [Styling children](#styling-children)
+  - [Styling other styled components](#styling-other-styled-components)
+  - [Nesting rules](#nesting-rules)
+  - [Using parent selector references](#using-parent-selector-references)
+  - [Using at-rules](#using-at-rules)
+  - [Using empty values](#using-empty-values)
+  - [Commenting](#commenting)
+- [Style mixins (helpers)](#style-mixins-helpers)
+  - [Creating simple mixins](#creating-simple-mixins)
+  - [Creating parametric mixins](#creating-parametric-mixins)
 - [Server Side Rendering (SSR)](#server-side-rendering-ssr)
-- [Ecosystem](#ecosystem)
-  - [Websites](#websites)
-  - [Packages](#packages)
+- [Testing](#testing)
+
+---
 
 ## Getting Started
 
@@ -59,7 +58,7 @@ Install the `tsstyled` package and its `react` peer dependency.
 
 ```sh
 # With NPM
-npm i tsstyled react
+npm add tsstyled react
 
 # With Yarn
 yarn add tsstyled react
@@ -70,7 +69,6 @@ This library uses semantic versioning. Breaking changes will only be introduced 
 ### Compatibility
 
 - React >= 16.14.0
-- TypeScript >= 4.2.4
 - IE >= 11
 
 ### Community
@@ -79,232 +77,180 @@ Do you have questions, suggestions, or issues? Join the [Discord](https://discor
 
 ## Motivation
 
-The [styled-components](https://styled-components.com/docs/basics#motivation) library is incredibly popular. The "visual primitives" pattern (ie. atomic components with styles included as code), combined with tagged templates, make it powerful and an easy transition from CSS/SCSS.
+I wanted a small CSS-in-JS solution for React, with zero dependencies, and strong types. I love the styled-components pattern, but Styled Components itself is too big and it's typings are [not the best](https://github.com/DefinitelyTyped/DefinitelyTyped/issues?q=is%3Aissue+is%3Aopen+styled-components). Emotion is smaller and generally better, but still not ideal. Then I found [Goober](https://npmjs.com/package/goober) which nearly convincing me not to write this library. If you're looking for a good solution, check it out too.
 
-However, it was created many years ago, well before TypeScript had gained the popularity it has now. Types have now been added by the community. But, the API wasn't designed with types in mind, and some of the design choices are just not compatible with strong typing.
+I still wrote this because it was just a fun side project, and because there were some different design choices I wanted to make. I've included a comparison of what I consider to be the key features of any CSS-in-JS library.
 
-This library is a rewrite which keeps the key features, cleans up the design for TypeScript, and removes some unnecessary and counter productive "features". It also completely removes any dependence on third party libraries, and is about 1/3rd the size.
+### Compared with other libraries
 
-### The problem(s) with styled-components
+-   🟢 Supported
+-   🟡 Partially supported
+-   🔴 Not supported
+-   ⭕ Not documented
 
-<details>
-<summary>There are many relatively small but definite problems with the styled-components types, which are not fixable given the current design.</summary>
+|             | Feature                    | TSStyled | Goober | Styled Components | Emotion |
+| ----------- | -------------------------- | -------- | ------ | ----------------- | ------- |
+| **Library** |                            |          |        |                   |         |
+|             | Bundle size (kB)           | 3.2      | 1.3    | 12.7              | 4.8     |
+|             | Zero dependencies          | 🟢        | 🟢      | 🔴                 | 🔴       |
+|             | TypeScript native          | 🟢        | 🟢      | 🔴                 | 🟢       |
+| **API**     |                            |          |        |                   |         |
+|             | Styled component pattern   | 🟢        | 🟢      | 🟢                 | 🟢       |
+|             | Dynamic styles             | 🟢        | 🟢      | 🟢                 | 🟢       |
+|             | Tagged template styles     | 🟢        | 🟢      | 🟢                 | 🟢       |
+|             | Object styles              | 🔴        | 🟢      | 🟢                 | 🟢       |
+|             | Global styles              | 🟢        | 🟢      | 🟢                 | 🟢       |
+|             | Polymorphism (`as`)        | 🔴        | 🟢      | 🟢                 | 🟢       |
+|             | Property mapping (`attrs`) | 🔴        | 🔴      | 🟢                 | 🔴       |
+|             | Theming [1]                | 🟢        | 🟢      | 🟡                 | 🟡       |
+|             | Non-global config          | 🟢        | 🔴      | 🟢                 | 🟢       |
+|             | SSR                        | 🟢        | 🟢      | 🟢                 | 🟢       |
+| **Style**   |                            |          |        |                   |         |
+|             | CSS `@media`               | 🟢        | 🟢      | 🟢                 | 🟢       |
+|             | CSS `@keyframes`           | 🟢        | 🟢      | 🟢                 | 🟢       |
+|             | CSS `@font-face`           | 🟢        | ⭕      | ⭕                 | 🟢       |
+|             | CSS `@import`              | 🟢        | ⭕      | 🔴                 | 🟢       |
+|             | Other CSS `@` rules        | 🟢        | ⭕      | ⭕                 | ⭕       |
+|             | Vendor prefixing [2]       | 🔴        | 🟡      | 🟢                 | 🟢       |
+|             | Rule nesting               | 🟢        | 🟢      | 🟢                 | 🟢       |
+|             | Parent selectors (`&`)     | 🟢        | 🟢      | 🟢                 | 🟢       |
+|             | Style mixins [3]           | 🟢        | 🟡      | 🟢                 | 🟢       |
+|             | Styled component selectors | 🟢        | 🟢      | 🟢                 | 🟢       |
 
-- Type errors are surfaced late, when you try to use the component, not when you using the `styled` function, `attrs` method, or the tagged template.
-- It is possible to set the generics in ways that allow prop values to be assign without type errors, that will result in runtime errors.
-- You can only add new props to a component's props type (not remove them).
-- The types are messy, hard to parse, and break some type utilities (`React.ComponentProps`)
-- Setting generic types explicitly is hard to get right, because some orders of operation are reversed, and the type intersections are not the best solution for combining them.
-- Theme typing is fragile, because it relies on declaration merging which doesn't always seem to work as intended. More importantly, using declaration merging locks all components into sharing a common theme type.
-- See also the [DefinitlyTyped bugs for styled-components](https://github.com/DefinitelyTyped/DefinitelyTyped/issues?q=is%3Aissue+is%3Aopen+styled-components).
-</details>
+&nbsp;
 
-<details>
-<summary>Philosophically, the styled-components "re-styling" capability is too powerful. It can invalidate assumptions made by the originally styled component.</summary>
+- [1] Styled Components and Emotion support only a single theme, which must be typed using declaration merging.
+- [2] Goober allows a prefix callback function to be configured, but does not provide automatic vendor prefixing.
+- [3] Goober doesn't provide a `css` utility for creating mixins, but it does support function values in tagged templates.
 
-- The `as` property is allowed to change the base component to anything. This is lazy and incompatible with good design. If you want to implement your own component with an `as` property, that’s completely fine, _because you designed it that way._ But having it automatically added to every styled component opens up too many uncertainties, and paves the way for a fragile component hierarchy.
-- The order of applying `attrs` is reversed. This is the opposite of standard component design. In vanilla React, if you wrap a component with another component, the outer component now controls what reaches the inner component, _which is a good thing._ If you restyle (wrap) an already styled component, the restyle gets to reach around the inner styled component and apply properties directly to the base component. This is fragile because you are modifying internal behaviors that you don't have visibility on or control over.
+TSStyled omits three key features supported by other libraries: Polymorphism using the `as` property, vendor prefixing, and object styles.
 
-All of this means that when styling a component, you can’t assume you’re styling the component you think you are, you don’t really know what props will be passed to you, and your props might not be passed to the base component.
-</details>
+The automatic inclusion of the `as` property with support for any element or component, is inherently type unsafe. Full (non-styled) components can implement an `as` property and polymorphism safely, because they can limit the range of polymorphism. Strong typing is a key TSStyled goal, so this feature just doesn't fit.
 
-### Moving from styled-components
+Vendor prefixing [isn't as necessary as it used to be](https://css-tricks.com/is-vendor-prefixing-dead/). There are still a some uncommon cases where it might be needed, but prefixes can always be manually included. Style helpers are also a pretty good fit for this. The overhead and maintenance required to implement this didn't seem worth it.
 
-<details>
-<summary>Most styled-components capabilities (basic and advanced) are supported, with some notable differences and omissions.</summary>
+Omitting object styling is a purely stylistic choice. In my opinion, tagged templates provide a better experience in the following ways...
 
-- The `styled.div` syntax is not supported (only `styled('div')`).
-- The `attrs` method is replaced by `props`, which can only be used once as the first chained method call after `styled`, and it is applied in the intuitive (ie. functional) order when restyling (instead of the [reverse order](https://styled-components.com/docs/basics#overriding-attrs) used by `attrs`).
-- The template function returned by the `styled` function is not generic, because the `props` method is the only way to set the styled component's properties.
-- The `use`, `set`, and `map` functions have been added to support stronger typing when manipulating property values, and they are also applied in the intuitive order like `props` (instead of the reverse order used by `attrs`).
-- The [style object](https://styled-components.com/docs/advanced#style-objects) syntax is not supported, to keep the library size down, and because tagged templates provide a better developer experience overall.
-- The [as](https://styled-components.com/docs/api#as-polymorphic-prop) polymorphic prop is not supported, because it does not fit the philosophy of this library.
-- The attributes passed through to simple HTML elements (eg. `div`) are not [filtered based on known HTML attributes](https://styled-components.com/docs/basics#passed-props), but instead are filtered based on the following rules:
-  1. Props that start with `$` are _always_ filtered out.
-  2. The `style`, `children`, and `ref` props are _never_ filtered out.
-  3. Function props are filtered out _unless_ the prop name starts with `on`.
-  4. All other non-primitive (`string`, `number`, `boolean`) props are filtered out.
-- The [component selector](https://styled-components.com/docs/advanced#referring-to-other-components) pattern only works when a component is given an _explicit_ display name, because making every component selectable adds transfer size to the SSR output, and requiring a name can mitigate some potential SSR vs client rendering order gotchas.
-- The API is similar enough to the styled-components API for the [vscode-styled-components](https://marketplace.visualstudio.com/items?itemName=jpoissonnier.vscode-styled-components) plugin to provide syntax support.
-- No [theme](https://styled-components.com/docs/advanced#theming) is automatically injected into styled component props, because custom themes can be manually injected by using a theme hook with the `use` method.
-- No [keyframes](https://styled-components.com/docs/basics#animations) utility is included, because the `@keyframes` at-rule can be used in any styled template string, and the `getId` utility can be used if animation name collisions are a concern.
-- No [createGlobalStyle](https://styled-components.com/docs/api#createglobalstyle) utility is included, because global styles can be created by calling `styled('style')` which produces a global style component.
-- No automatic vendor prefixing is performed, to keep library size and complexity down, and because it's [unnecessary](http://shouldiprefix.com/) for most common styling scenarios.
-</details>
+- Cutting and pasting styles is simpler with tagged templates.
+- Learning tagged templates is easier because it's closer to vanilla CSS.
+- Intellisense and syntax checking are (arguably) better with tagged templates.
+- Defining multiple CSS property "fallback" values is cleaner with tagged templates.
+- Property ordering is guaranteed with tagged templates, whereas object property ordering is not part of the JS specification (especially when merging two objects).
+
+### Benchmarks
+
+You can run benchmarks by cloning the [TSStyled repository](https://github.com/Shakeskeyboarde/tsstyled), and running the `npm start` command. The benchmark application will be served at `https://localhost:3000`.
 
 ## The Basics
 
-### Style HTML elements
-
-Use string tag names to create simple HTML elements with styling. The styled component supports all of the same props (included refs) that the HTML element supports.
+First, create the styled API.
 
 ```tsx
-import { styled } from 'tsstyled';
+import { createStyled } from 'tsstyled';
 
+const styled = createStyled();
+```
+
+### Styling HTML elements and components
+
+Style any HTML element type by using the tag name. The styled component supports all of the same props (included refs, which are forwarded) that the HTML element supports.
+
+```tsx
 const StyledDiv = styled('div')`
-  color: red;
+  color: black;
 `;
 ```
 
-### Style React components
-
-Any component which accepts a `className` prop can be styled, just like an HTML tag. The styled component supports all of the same props (including refs) that the base component supports.
+Style any React component which accepts a `className` string property.
 
 ```tsx
-const Base = (props: { className?: string }): ReactElement => {
-  return <div className={props.className}>Foo</div>;
+const StyledComponent = styled(Component)`
+  color: black;
+`;
+```
+
+Extend the styling of an already styled component.
+
+```tsx
+const ReStyledComponent = styled(StyledComponent)`
+  color: gray;
+`;
+```
+
+Set the display name of the styled component.
+
+```tsx
+const StyledDiv = styled('div', 'StyledDiv')``;
+```
+
+### Extending the properties type
+
+The tagged template function returned by `styled` is generic. Any type passed to this the type parameter will extend (not replace) the styled component's properties.
+
+```tsx
+const StyledDiv = styled('div')<{ $font?: string }>`
+  font-family: ${(props) => props.$font};
+`;
+```
+
+**Note**: Any property name which starts with the `$` character will not be passed through to the underlying HTML element. So, the above `div` will not have a `$font` attribute when rendered.
+
+### Setting default property values
+
+React has the [defaultProps](https://reactjs.org/docs/typechecking-with-proptypes.html#default-prop-values) static property which can be used with styled components. However, there are some drawbacks...
+
+- It is [deprecated](https://github.com/facebook/react/pull/16210) for function components as part of an [initiative](https://github.com/reactjs/rfcs/blob/createlement-rfc/text/0000-create-element-changes.md) to update React's `createElement` function.
+- It is applied before `propTypes` which can lead to default values throwing errors.
+
+TSStyled provides an alternative custom implementation called `propDefaults`. This cannot be deprecated by React, and it is applied after `propTypes`.
+
+```tsx
+const StyledButton = styled('button')``;
+
+StyledButton.propDefaults = {
+  type: 'submit',
 };
-const StyledBase = styled(Base)`
-  color: red;
-`;
 ```
 
-### Override component props type
+### Creating global styles
 
-When you style an HTML element or a React component, the new styled component has the exact same props as the original component by default. You can override that default by using the generic `props` method to set a custom props type.
-
-**NOTE**: The `props` method must always be the first styled method called, and it can only be used once per styled component.
-
-The simplest case is a props type which extends the base props type. New props can be added, prop values can be narrowed, and optional props can be removed.
+Use the `styled.global` utility to create global style components.
 
 ```tsx
-const StyledDiv = styled('div').props<{
-    // Add a new prop.
-    $color?: string;
-    // Narrow the value type of a prop.
-    className?: 'foo' | 'bar';
-    // Remove an optional prop by narrowing the type to undefined.
-    style: undefined;
-  }>()`
-    color: ${(props) => props.$color};
-  `;
-```
-
-The styled component above accepts all of the intrinsic `div` props, except `style` which has been removed, and the `className` only accepts the values `foo` or `bar`. It also accepts an extra non-standard `$color` prop. Be sure to include the `$` prefix if you want keep a property from being passed to the base HTML element as an attribute.
-
-If you don't want to extend the base props, you can set the `extend` option to `false`.
-
-```tsx
-interface IStyledDivExtraProps {
-  color?: string;
-}
-
-const StyledDiv = styled('div').props<{ $color?: string }>({ extend: false })`
-  color: ${(props) => props.$color};
-`;
-```
-
-Now the styled component only accepts the `$color` prop, and no other props.
-
-If your custom props type is not "compatible" with the base component, then a mapping function to create props compatible with the base component is required. Compatible means that the new styled component props can be passed directly to the base component without modification. Changing a prop value type (eg. `string` to `string[]`), and removing a required prop, are examples of incompatible changes.
-
-```tsx
-interface IStyledDivProps {
-  // The standard className can only be a string. Allowing a string
-  // array makes this incompatible with the base component (div)
-  // props.
-  className?: string | string[];
-}
-
-const StyledDiv = styled('div').props((props: IStyleDivProps) => ({
-  // This mapping function is required to convert an incompatible
-  // array class name back to a string which is compatible with the
-  // div.
-  className: props.className instanceof Array ? props.join(' ') : props.className
-}))``;
-```
-
-Using the `props` with a callback does not extend the base props. So, the above styled component now only supports the `className` prop, and no other props. To keep any of the base component props, include them manually in your custom props type. The `InferProps` type utility can be used to access the properties of any HTML element or React component.
-
-```tsx
-import { InferProps } from 'tsstyled';
-
-interface IStyledDivProps extends Omit<InferProps<'div'>, 'className'> {
-  className?: string | string[];
-}
-```
-
-### Provide default prop values
-
-Default prop values can be provided for undefined props with the `use` method. Props returned by the callback will only be set if the current prop value is undefined. This method is an alternative to using the `map` method with `Object.assign({}, defaultProps, props)` or `{ ...defaultProps, ...props }`, which allows explicitly undefined props to overwrite and hide default props.
-
-```tsx
-const StyledDiv = styled('div').use((props) => ({
-  // Use the component ID as the default class name.
-  className: props.id,
-}))`
-  color: red;
-`;
-```
-
-### Add or update prop values
-
-Prop values can be added and modified (but not removed or set to undefined) with the `set` method. Props returned by the callback will be set as long as the new value is defined. This method is an alternative to using the `map` method with `Object.assign({}, props, newProps)` or `{ ...props, ...newProps }`, which can allow explicitly undefined new prop values to overwrite and hide defined prop values.
-
-```tsx
-const StyledDiv = styled('div').set((props) => ({
-  // Add a prefix to the existing class name.
-  className: props.className && `prefix-${props.className}`,
-}))`
-  color: red;
-`;
-```
-
-### Map prop values
-
-Prop values can be completely rewritten using the `map` method. Props returned by the callback replace the current props without condition.
-
-**NOTE**: Please give preference to the `use` and `set` methods. They provide better type support for their respective scenarios. Only use `map` when you need to _remove_ properties from the current props object.
-
-```tsx
-const StyledDiv = styled('div').map((props) => ({
-  id: props.id,
-  className: props.className,
-  children: props.children,
-  // Props that are not returned, are removed.
-}))`
-  color: red;
-`;
-```
-
-### Global styles
-
-A global stylesheet can be added by styling a `style` component.
-
-```tsx
-const GlobalStyle = styled('style')`
+const GlobalStyle = styled.global`
   body, html {
     margin: 0;
     padding: 0;
   }
 `;
-
-render(
-  <>
-    <GlobalStyle />
-    <div>Page content</div>
-  </>
-);
 ```
 
-### Keyframes and fonts
-
-Defining keyframes or font-faces is the same as defining any other style. Since they are not scoped to any particular component, you may want to limit them to global styles, but they will work in any style. If you are concerned about names colliding, you can use the `getId` utility to generate unique names.
+Extend the component properties type using the tagged template generic parameter.
 
 ```tsx
-import { styled, getId } from 'tsstyled';
+const GlobalStyle = styled.global<{ $font?: string }>`
+  body, html {
+    font-family: ${(props) => props.$font};
+  }
+`;
+```
 
-const openSans = getId('Open Sans');
-const slideIn = getId('slideIn');
+### Defining keyframes and fonts
 
-const GlobalStyle = styled('style')`
+Defining keyframes or font-faces is the same as defining any other style. Since they are not scoped to any particular component, they should probably only be used in global styles. To prevent name collisions, use the `getId` utility to generate unique names.
+
+```tsx
+const openSansFont = getId('Open Sans');
+const slideInAnimation = getId('slideIn');
+
+const GlobalStyle = styled.global`
   @font-face {
-    font-family: ${openSans};
+    font-family: ${openSansFont};
     src: url("/fonts/OpenSans-Regular-webfont.woff2") format("woff2"),
          url("/fonts/OpenSans-Regular-webfont.woff") format("woff");
   }
 
-  @keyframes ${slideIn} {
+  @keyframes ${slideInAnimation} {
     from {
       transform: translateX(0%);
     }
@@ -316,76 +262,63 @@ const GlobalStyle = styled('style')`
 `;
 
 const StyledDiv = styled('div')`
-  font-family: ${openSans};
-  animation-name: ${slideIn};
+  font-family: ${openSansFont};
+  animation-name: ${slideInAnimation};
 `;
 ```
 
 ## Theming
 
-Styled components created with `tsstyled` are not theme aware by default, and there is no default theme type or values. However, theming is trivial to setup, and requiring the extra setup makes it easier to support third party theme integration.
+A theme factory is provided instead of a single built-in theme. This makes themes strongly typed. It also loosely couples the theme implementation, so that third party theming is supported.
 
-### Create a theme
+### Creating a theme
 
 Themes are just values made available via a React context, and preferably using a React hook. The `createTheme` utility is provided to make that a one step process. It accepts the default theme value, and returns a theme hook function and provider component.
 
 ```tsx
-import { createTheme } from 'tsstyled';
-
 const [useTheme, ThemeProvider] = createTheme({
-  foregroundColor: black;
-  backgroundColor: white;
+  fgColor: 'black';
+  bgColor: 'white';
 });
-
-// The theme type can be inferred from the hook's return type.
-type Theme = ReturnType<typeof useTheme>;
 ```
 
-### Use a theme
+### Using a theme
 
-Themes can be integrated via React hooks in the `props`, `use`, `set`, or `map` method callbacks. Actually, any hook can be used in these callbacks (not just theme hooks) as long as hooks are not called conditionally. The recommended approach is to have hooks provide default values by calling them in a `use` method callback.
+Pass the `useTheme` hook to `createStyled` when creating the styled API. The returned `styled` API will now expose a `props.theme` in styled template callbacks.
 
 ```tsx
-const ThemedDiv = styled('div').use(() => ({
-  theme: useTheme(),
-}))`
-  color: ${(props) => props.theme.foregroundColor};
-  background: ${(props) => props.theme.backgroundColor};
+const styled = createStyled(useTheme);
+
+const ThemedDiv = styled('div')`
+  color: ${(props) => props.theme.fgColor};
+  background-color: ${(props) => props.theme.bgColor};
 `;
 ```
 
-### Override theme values
+**Note**: Any function that returns a theme can be used, not just the hook returned by `createTheme`.
 
-The provider returned by the `createTheme` utility allows the theme to be overridden for part of your React tree. It's not necessary to use the provider unless you want to override theme values.
+### Overriding theme values
+
+The provider returned by the `createTheme` utility allows theme values to be (all or partially) overridden. The following example inverts the fore and background colors.
 
 ```tsx
-const ThemeInvertedProvider = (props: { children?: ReactNode }) => {
-  return (
-    <ThemeProvider
-      value={(current) => ({
-        foregroundColor: current.backgroundColor,
-        backgroundColor: current.foregroundColor,
-      })}
-    >
-      {children}
-    </ThemeProvider>
-  );
-};
-
-render(
-  <ThemeInvertedProvider>
-    <ThemedDiv>Greetings from the dark side.</ThemedDiv>
-  </ThemeInvertedProvider>
-);
+<ThemeProvider
+  value={(current) => ({
+    fgColor: current.bgColor,
+    bgColor: current.fgColor,
+  })}
+>
+  <ThemedDiv />
+</ThemeProvider>
 ```
 
 ## Style syntax
 
 Style syntax is CSS-like, and all CSS properties, selectors, and at-rules are supported. In addition, SCSS-like nesting is supported with parent selector references (`&`).
 
-### Simple CSS
+### Styling self
 
-If you just want to style one element, use CSS properties at the top-level (no surrounding block).
+To apply styles directly to the HTML element or component being styled, use CSS properties at the top-level of the tagged template (no surrounding block).
 
 ```tsx
 const StyledDiv = styled('div')`
@@ -393,7 +326,7 @@ const StyledDiv = styled('div')`
 `;
 ```
 
-These CSS properties will be wrapped in a block with a selector for the styled dynamic class.
+Top-level CSS properties will be wrapped in a dynamic styled class selector
 
 ```css
 ._s7y13d {
@@ -401,13 +334,12 @@ These CSS properties will be wrapped in a block with a selector for the styled d
 }
 ```
 
-### Child selectors
+### Styling children
 
-You can use CSS selectors and blocks to style children of the styled component.
+Use CSS rule blocks to style children of the styled component.
 
 ```tsx
 const StyledDiv = styled('div')`
-  color: red;
   .child {
     color: blue;
   }
@@ -417,21 +349,39 @@ const StyledDiv = styled('div')`
 The styled dynamic class will be automatically prepended to all selectors to make them "scoped".
 
 ```css
-._s7y13d {
-  color: red;
-}
 ._s7y13d .child {
   color: blue;
 }
 ```
 
-### Nesting
+### Styling other styled components
 
-You can nest blocks to create more complex selectors.
+Every styled component (not global styles) has a static `selector` property which contains a unique class selector string that can be used to style that specific styled component.
 
 ```tsx
 const StyledDiv = styled('div')`
+  ${StyledOther.selector} {
+    color: red;
+  }
+`;
+```
+
+The selector value is a simple string (eg. `".tss_s7y13d"`), so the tagged template interpolates it like any other string value, and it behaves just like the literal `.child` selector in the prevous example.
+
+```css
+._s7y13d .tss_s7y13d {
   color: red;
+}
+```
+
+**Note**: This is slightly different than other styled-components libraries which will usually let you use the component itself as the template value (eg. `${StyledOther}` instead of `${StyledOther.selector}`). The static `selector` property improves type safety, clarity, and makes the selector string publicly accessible.
+
+### Nesting rules
+
+Nest rule blocks to create more complex selectors.
+
+```tsx
+const StyledDiv = styled('div')`
   .child {
     color: blue;
     .grandchild {
@@ -444,9 +394,6 @@ const StyledDiv = styled('div')`
 Just like the styled dynamic class is prepended to top-level selectors, so too are parent selectors prepended to child selectors.
 
 ```css
-._s7y13d {
-  color: red;
-}
 ._s7y13d .child {
   color: blue;
 }
@@ -455,9 +402,9 @@ Just like the styled dynamic class is prepended to top-level selectors, so too a
 }
 ```
 
-### Parent selector references
+### Using parent selector references
 
-As noted above, the parent selector is automatically prepended to child selectors. This behavior can be _overridden_ by using a parent selector reference (`&`) to inject the parent selector _anywhere_ in your child selector. This includes injecting the parent selector multiple times to increase specificity, and is necessary when using pseudo selectors like `:hover` which you will probably want to apply directly to the styled component instead of to its children.
+As noted above, the parent selector is automatically prepended to child selectors. This behavior can be overridden by using a parent selector reference (`&`) to inject the parent selector anywhere in the child selector. This includes injecting the parent selector multiple times to increase specificity, and is necessary when applying pseudo selectors (eg. `:hover`) directly to the styled component and not to a child element.
 
 ```tsx
 const StyledDiv = styled('div')`
@@ -473,7 +420,7 @@ const StyledDiv = styled('div')`
 `
 ```
 
-For any selector that contains an `&`, the parent selector will replace the `&` characters, and the parent selector will not be automatically prepended.
+For any selector that contains `&`, the parent selector will replace the `&` character, and the parent selector will not be automatically prepended.
 
 ```css
 ._s7y13d._s7y13d {
@@ -487,9 +434,9 @@ For any selector that contains an `&`, the parent selector will replace the `&` 
 }
 ```
 
-### At-rules
+### Using at-rules
 
-All CSS at-rules are supported (except `@charset` which isn't allowed inside `<style>` tags). Conditional group rules (ie. `@media` and `@supports`) which can have nested selector blocks, can themselves be nested, and can have deeply nested child selectors which use parent selector references.
+All CSS at-rules are supported (except `@charset` which isn't allowed in `<style>` elements).
 
 ```tsx
 const StyledDiv = styled('div')`
@@ -509,7 +456,7 @@ const StyledDiv = styled('div')`
 `;
 ```
 
-The at-rules will be hoisted as necessary, and parent selectors will be handled the same way they would be without the intervening at-rule.
+At-rules will be hoisted as necessary, and parent selectors will be handled the same way they would be without the intervening at-rule.
 
 ```css
 @media screen and (min-width: 900px) {
@@ -527,26 +474,14 @@ The at-rules will be hoisted as necessary, and parent selectors will be handled 
 }
 ```
 
-### Comments
+### Using empty values
 
-Styles can contain both block (`/* */`) and line comments (`//`). Comments are never included in stylesheets.
-
-```tsx
-const StyledDiv = styled('div')`
-  // This is a comment.
-  /* And so is...
-     this. */
-`;
-```
-
-### Empty values
-
-If a CSS property value is an empty string or null-ish (`null`, `undefined`), then the whole property will be omitted from the style.
+If a CSS property value is an empty string or null-ish (`null` or `undefined`), then the whole property will be omitted from the style.
 
 ```tsx
 const StyledDiv = styled('div')`
   color: ${null};
-  background: red;
+  background-color: red;
 `;
 ```
 
@@ -554,45 +489,55 @@ The color property is not included because it has no value.
 
 ```css
 ._s7y13d {
-  background: red;
+  background-color: red;
 }
 ```
 
-## Style helpers
+### Commenting
 
-The `css` utility provides syntax support when defining independent styles which are not immediately applied to a component.
-
-### Static helpers
-
-Static helpers are simple style strings. As long as the template doesn't include any function values, the `css` utility returns a string.
+Styles can contain both block (`/* */`) and line comments (`//`). Comments are never included in rendered stylesheets.
 
 ```tsx
-import { css, styled } from 'tsstyled';
+const StyledDiv = styled('div')`
+  // This is a comment.
+  /* And so...
+     ...is this. */
+`;
+```
 
-const font: string = css`
+## Style mixins (helpers)
+
+The `css` tagged template utility returns a mixin (AKA: helper) function. When the returned function is called, it returns a style string with all values interpolated.
+
+### Creating simple mixins
+
+Mixins do not accept any parameters by default.
+
+```tsx
+const font = css`
   font-family: Arial, sans-serif;
   font-weight: 400;
   font-size: 1rem;
 `;
-// typeof font === 'string'
 
 const StyledDiv = styled('div')`
-  ${font}
   color: red;
+  ${font}
 `;
 ```
 
-### Dynamic helpers
+**Note**: The above `font` constant is a function which accepts no arguments (ie. `() => string`).
 
-Dynamic helpers are functions that return style strings. If the template includes any function values, the `css` utility returns a function instead of a string. The generic type defines the properties that your helper will accept.
+### Creating parametric mixins
+
+Helpers which accept parameters can be created by setting the generic type of the css tagged template utility.
 
 ```tsx
 const font = css<{ scale?: number }>`
   font-family: Arial, sans-serif;
   font-weight: 400;
-  font-size: ${(props) => props.scale ?? 1}rem;
+  font-size: ${(props) => props.scale || 1}rem;
 `;
-// typeof font === 'function'
 
 const StyledDiv = styled('div')`
   ${font({ scale: 2 })}
@@ -600,85 +545,30 @@ const StyledDiv = styled('div')`
 `;
 ```
 
-### Themed helpers
-
-If you're using theming, you'll almost certainly need some of your helpers to use the theme. Themed helpers are just a specialized form of dynamic helper which accepts the theme as a prop. However, it's a good idea _not_ to depend on the entire theme, only the values you need. This makes it easier to use the helper in the case where you don't have the theme, and just want to manually fill in the required theme values.
-
-```tsx
-const font = css<{ theme: Pick<Theme, 'fontSize'> }>`
-  font-family: Arial, sans-serif;
-  font-weight: 400;
-  font-size: ${(props) => props.theme.fontSize};
-`;
-
-const ThemedDiv = styled('div').use(() => ({ theme: useTheme() }))`
-  ${font}
-  color: red;
-`;
-
-// Or, if you can't use the theme for some reason.
-const StyledDiv = styled('div')`
-  ${font({ theme: { fontSize: '1rem' } })}
-  color: red;
-`;
-```
-
-## Utilities
-
-### Detecting styled components
-
-The `isStyled` and `isStyledSelector` functions can be used to detect components that have been styled. The `isStyled` method detects any styled component, while the `isStyledSelector` function only returns true for styled components that can be used as selectors.
-
-```tsx
-import { isStyled, isStyledSelector } from 'tsstyled';
-
-const StyledComp = styled('div')``;
-const StyledCompAndSelector = styled('div', 'DisplayName')``;
-
-isStyled(StyledComp); // true
-isStyled(StyledCompAndSelector); // true
-isStyledSelector(StyledComp); // false
-isStyledSelector(StyledCompAndSelector); // true
-```
-
-### Building a class name string
-
-Joining multiple class names into a single string is a common problem. The `classNames` function takes possibly falsy class names, or maps of class names, and returns a clean class names string.
-
-```tsx
-import { isStyled, isStyledSelector } from 'tsstyled';
-
-const className = classNames('a', { b: true, c: false }, null); // "a b"
-```
-
 ## Server Side Rendering (SSR)
 
-No configuration is required to make SSR work. When rendered without a browser context (ie. a `document` global), styles are rendered inline, before the first element that uses a style. On the client, `tsstyled` will pull the inlined styles into the document `<head>` _before_ React rehydration occurs.
-
-If the default SSR support using inlined styles doesn't work for your scenario, you can use the `ServerStyleManager` and the `StyleConfig` component to capture styles rendered during SSR.
+During SSR, there is no DOM and therefore no `document` global. TSStyled detects this and uses a very minimal "virtual" DOM behind the scenes. So, after rendering the document body, use the `renderStylesToString` utility to get all of the `<style>` elements (generated by TSStyled components) as a string.
 
 ```tsx
-import { ServerStyleManager, StyleConfig } from 'tsstyled';
-
-const manager = new ServerStyleManager();
-const html = renderToString(
-  <StyleConfig serverManager={manager}>
-    <App />
-  </StyleConfig>
-);
-const styles = manager.getStyleTag();
+const appHtml = renderToString(<App />);
+const stylesHtml = renderStylesToString();
+const html = `
+<!doctype HTML>
+<html>
+<head>
+  ${stylesHtml}
+</head>
+<body>
+  <div id="root">${appHtml}</div>
+</body>
+</html>
+`;
 ```
 
-The `getStyleTag` method returns an HTML string containing a _single_ `<style>` tag. There is also a `getStyleElement` method that returns the same style as a React element, and a `getStyleData` method that returns an array of raw style data (`{ key: string, cssText: string }`).
+## Testing
 
-## Ecosystem
+During testing, there may be a DOM (eg. jsdom) and a `document` global. However, the `NODE_ENV` environment variable should also be set to `test` (Jest sets this automatically). If it is, the SSR implementation is used. So, use the same `renderStylesToString` utility used for SSR style rendering to check (eg. Jest snapshot test) your styles.
 
-A list of some of the cool stuff built with `tsstyled`. If you have something to share, please create a GitHub PR to add it to this README file.
-
-### Websites
-
-- _Your website here!_
-
-### Packages
-
-- _Your package here!_
+```tsx
+expect(renderStylesToString()).toMatchSnapshot();
+```

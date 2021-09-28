@@ -1,21 +1,24 @@
-import { styled } from '../../../styled';
+import React, { ComponentProps, ReactElement } from 'react';
 import { IDotProps } from '../../types/IDotProps';
-import View from './View';
+import { View } from './View';
+import { styled } from './styled';
 
-export const Dot = styled(View)
-  .props<IDotProps>()
-  .set((p) => ({ style: { borderBottomColor: p.$color } }))`
-    position: absolute;
-    cursor: pointer;
-    width: 0;
-    height: 0;
-    border-color: transparent;
-    border-style: solid;
-    border-top-width: 0;
-    transform: translate(50%, 50%);
-    margin-left: ${(props) => `${props.$x}px`};
-    margin-top: ${(props) => `${props.$y}px`};
-    border-right-width: ${(props) => `${props.$size / 2}px`};
-    border-bottom-width: ${(props) => `${props.$size / 2}px`};
-    border-left-width: ${(props) => `${props.$size / 2}px`};
-  `;
+const StyledDot = styled(View)<IDotProps>`
+  position: absolute;
+  cursor: pointer;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-top-width: 0;
+  transform: translate(50%, 50%);
+  margin-left: ${(props) => `${props.$x}px`};
+  margin-top: ${(props) => `${props.$y}px`};
+  border-right-width: ${(props) => `${props.$size / 2}px`};
+  border-bottom-width: ${(props) => `${props.$size / 2}px`};
+  border-left-width: ${(props) => `${props.$size / 2}px`};
+`;
+
+export const Dot = (props: ComponentProps<typeof StyledDot>): ReactElement => {
+  return <StyledDot {...props} style={{ borderBottomColor: props.$color }} />;
+};

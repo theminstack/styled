@@ -7,7 +7,7 @@ export interface IResultProps {
   $result: IBenchmarkResult;
 }
 
-export default function Result({ $library, $benchmark, $result }: IResultProps): ReactElement {
+export function Result({ $library, $benchmark, $result }: IResultProps): ReactElement {
   return (
     <div className={'result'}>
       <div className={'result__start'}>

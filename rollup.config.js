@@ -18,19 +18,17 @@ const external = [
 /** @type {import('rollup').RollupOptions[]} */
 const config = [
   {
-    input: 'src/index.ts',
+    input: ['src/index.ts'],
     output: [
-      { file: 'lib/esm.js', format: 'esm', sourcemap: true },
-      { file: 'lib/cjs.js', format: 'cjs', sourcemap: true },
+      { dir: 'lib/cjs', format: 'cjs', sourcemap: true },
+      { dir: 'lib/esm', format: 'esm', sourcemap: true },
     ],
     external,
-    plugins: [resolve(), commonjs(), typescript({ rootDir: 'src' }), json(), versionInjector({
-      
-    }), terser()],
+    plugins: [resolve(), commonjs(), typescript({ rootDir: 'src' }), json(), versionInjector(), terser()],
   },
   {
-    input: 'out/index.d.ts',
-    output: [{ file: 'lib/index.d.ts', format: 'esm' }],
+    input: ['out/index.d.ts'],
+    output: [{ dir: 'lib/types', entryFileNames: (chunk) => chunk.name.replace(/\.d$/, '') + '.d.ts', format: 'esm' }],
     plugins: [dts()],
   },
 ];

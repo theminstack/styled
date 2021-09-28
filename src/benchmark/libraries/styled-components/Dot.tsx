@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import View from './View';
 import { IDotProps } from '../../types/IDotProps';
+import { View } from './View';
 
 export const Dot = styled(View).attrs<IDotProps>((p) => ({ style: { borderBottomColor: p.$color } }))<IDotProps>`
   position: absolute;

@@ -1,5 +1,5 @@
-import React, { ElementType, ReactElement } from 'react';
 import { interpolatePurples, interpolateBuPu, interpolateRdPu } from 'd3-scale-chromatic';
+import React, { ElementType, ReactElement } from 'react';
 import { IDotProps } from '../types/IDotProps';
 
 const targetSize = 10;
@@ -13,7 +13,7 @@ export interface ISierpinskiTriangleProps {
   y?: number;
 }
 
-export default function SierpinskiTriangle({
+export function SierpinskiTriangle({
   Dot,
   depth = 0,
   renderCount = 0,

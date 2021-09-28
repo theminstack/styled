@@ -1,27 +1,25 @@
-import React, { ReactElement, useCallback, useState } from 'react';
 import { Trash } from 'iconoir-react';
-import Input from './Input';
-import Output from './Output';
-import Page from './Page';
-import Benchmark, { IBenchmarkConfig, IBenchmarkResult } from './Benchmark';
-import List from './List';
-import Form from './Form';
-import Separator from './Separator';
-import Button from './Button';
-import Select, { ISelectItem } from './Select';
-import Result from './Result';
-import Actions from './Actions';
-import libraryConfigs from '../libraries';
-import benchmarkConfigs from '../benchmarks';
+import React, { ReactElement, useCallback, useState } from 'react';
+import { benchmarks } from '../benchmarks';
+import { libraries } from '../libraries';
+import { Actions } from './Actions';
+import { Benchmark, IBenchmarkConfig, IBenchmarkResult } from './Benchmark';
+import { Button } from './Button';
+import { Form } from './Form';
+import { Input } from './Input';
+import { List } from './List';
+import { Output } from './Output';
+import { Page } from './Page';
+import { Result } from './Result';
+import { Select, ISelectItem } from './Select';
+import { Separator } from './Separator';
 
-const benchmarkItems = Object.keys(benchmarkConfigs)
-  .reduce<ISelectItem[]>((acc, key) => [...acc, { value: benchmarkConfigs[key].name }], [])
+const benchmarkItems = Object.keys(benchmarks)
+  .reduce<ISelectItem[]>((acc, key) => [...acc, { value: benchmarks[key].name }], [])
   .sort((a, b) => (a.label ?? a.value).localeCompare(b.label ?? b.value));
-const libraryItems = Object.keys(libraryConfigs)
-  .reduce<ISelectItem[]>((acc, key) => [...acc, { value: libraryConfigs[key].name }], [])
-  .sort((a, b) => (a.label ?? a.value).localeCompare(b.label ?? b.value));
+const libraryItems = libraries.map((library) => ({ value: library.name }));
 
-export default function App(): ReactElement {
+export function App(): ReactElement {
   const [library, setLibrary] = useState(libraryItems[0]?.value ?? '');
   const [benchmark, setBenchmark] = useState(benchmarkItems[0]?.value ?? '');
   const [config, setConfig] = useState<{ library: string; benchmark: string; value: IBenchmarkConfig } | null>(null);
@@ -29,14 +27,14 @@ export default function App(): ReactElement {
 
   const onRun = useCallback(() => {
     setConfig((current) => {
-      if (current) {
+      if (current != null) {
         return current;
       }
 
-      const benchmarkConfig = benchmarkConfigs[benchmark];
-      const libraryConfig = libraryConfigs[library];
+      const benchmarkConfig = benchmarks[benchmark];
+      const libraryConfig = libraries.find((item) => item.name === library);
 
-      if (!benchmarkConfig || !libraryConfig) {
+      if (benchmarkConfig == null || libraryConfig == null) {
         return current;
       }
 
@@ -58,14 +56,12 @@ export default function App(): ReactElement {
 
   const onResult = useCallback((result: IBenchmarkResult) => {
     setConfig((currentConfig) => {
-      if (currentConfig) {
-        const { library, benchmark } = currentConfig;
-
+      if (currentConfig != null) {
         setResults((current) => [
           ...current,
           {
-            library,
-            benchmark,
+            library: currentConfig.library,
+            benchmark: currentConfig.benchmark,
             value: result,
           },
         ]);
@@ -85,16 +81,16 @@ export default function App(): ReactElement {
       <Input>
         <Actions items={[{ content: <Trash />, tip: 'Clear benchmark results.', onClick: onClear }]} />
         <List>
-          {results.map(({ library, benchmark, value }, i) => (
-            <Result key={i} $library={library} $benchmark={benchmark} $result={value} />
+          {results.map((result, i) => (
+            <Result key={i} $library={result.library} $benchmark={result.benchmark} $result={result.value} />
           ))}
         </List>
         <Separator />
         <Form>
-          <Select $label={'Library'} items={libraryItems} value={library} onChange={setLibrary} />
-          <Select $label={'Benchmark'} items={benchmarkItems} value={benchmark} onChange={setBenchmark} />
+          <Select $label={'Library'} items={libraryItems} selectedValue={library} onChange={setLibrary} />
+          <Select $label={'Benchmark'} items={benchmarkItems} selectedValue={benchmark} onChange={setBenchmark} />
           <Button onClick={onRun} disabled={config != null}>
-            {config ? 'Running...' : 'Run'}
+            {config != null ? 'Running...' : 'Run'}
           </Button>
         </Form>
       </Input>

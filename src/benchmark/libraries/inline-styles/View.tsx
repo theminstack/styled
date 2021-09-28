@@ -1,7 +1,7 @@
 import React, { ReactElement, ReactNode } from 'react';
 import { CSSProperties } from 'styled-components';
 
-export default function View(props: { style?: CSSProperties; children?: ReactNode }): ReactElement {
+export function View(props: { style?: CSSProperties; children?: ReactNode }): ReactElement {
   return (
     <div
       style={{
