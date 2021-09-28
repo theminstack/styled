@@ -1,6 +1,6 @@
 {
   "name": "tsstyled",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
   "types": "./lib/types/index.d.ts",
@@ -15,7 +15,7 @@
     "start": "webpack serve",
     "test": "tsc --noEmit && eslint src && del-cli coverage && jest",
     "build": "del-cli out lib && tsc --noEmit false --emitDeclarationOnly --declaration --outDir out && cross-env NODE_ENV=production rollup -c rollup.config.js && check-es-compat lib/cjs/index.js",
-    "docs": "del-cli docs && make-dir docs && echo 'tsstyled.com' > docs/CNAME && typedoc src/index.ts --out docs --excludePrivate --excludeInternal --excludeExternals --cleanOutputDir --disableSources && webpack",
+    "docs": "typedoc src/index.ts --out docs --excludePrivate --excludeInternal --excludeExternals --cleanOutputDir --disableSources && echo 'tsstyled.com' > docs/CNAME && webpack",
     "coveralls": "cat ./out/coverage/lcov.info | coveralls"
   },
   "keywords": [
