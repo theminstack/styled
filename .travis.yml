@@ -39,5 +39,5 @@ deploy:
     github_token: $GITHUB_TOKEN
     on:
       # only on untagged versions.
-      condition: $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+$
+      condition: $TRAVIS_TAG =~ ^(main|v[0-9]+\.[0-9]+\.[0-9]+)$
       all_branches: true

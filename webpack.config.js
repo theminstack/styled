@@ -15,7 +15,7 @@ module.exports = (env) => {
       path: target,
       filename: 'bundle/[name].[chunkhash:8].js',
       assetModuleFilename: 'bundle/[name].[contenthash:8].[ext]',
-      publicPath: '/',
+      publicPath: '.',
     },
     stats: isBuild ? 'errors-warnings' : 'minimal',
     performance: {
