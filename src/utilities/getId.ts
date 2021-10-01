@@ -1,6 +1,13 @@
 import { getHash } from './getHash';
 import { isTest } from './isTest';
 
+function _getId(namespace: string): string {
+  const count = _getId._counters.get(namespace) ?? 0;
+  _getId._counters.set(namespace, count + 1);
+  return 'tss_' + getHash(...(isTest() ? [] : ['[VI]{version}[/VI]/', count.toString(10)]), namespace);
+}
+_getId._counters = new Map<string, number>();
+
 /**
  * Get a stable ID string which is safe to use as a CSS identifier.
  *
@@ -12,9 +19,4 @@ import { isTest } from './isTest';
  * this function returns a stable value for the given display name. This value
  * is *NOT* unique per invocation like it would be at runtime.
  */
-export function getId(namespace: string): string {
-  const count = getId.counters.get(namespace) ?? 0;
-  getId.counters.set(namespace, count + 1);
-  return 'tss_' + getHash(...(isTest() ? [] : ['[VI]{version}[/VI]/', count.toString(10)]), namespace);
-}
-getId.counters = new Map<string, number>();
+export const getId: (namespace: string) => string = _getId;
