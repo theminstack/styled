@@ -5,10 +5,10 @@
 [![build status](https://badgen.net/travis/Shakeskeyboarde/tsstyled?icon=travis&label=build)](https://www.travis-ci.com/github/Shakeskeyboarde/tsstyled)
 [![coverage status](https://badgen.net/coveralls/c/github/Shakeskeyboarde/tsstyled/main)](https://coveralls.io/github/Shakeskeyboarde/tsstyled)
 
-A lean CSS-in-JS solution for React with first-class TypeScript support.
+A small, fast, and simple CSS-in-JS solution for React.
 
-- **Fast**: Faster than styled-components (benchmarks included).
 - **Small**: Less than 4kb (minified and gzipped) and no dependencies.
+- **Fast**: Faster than styled-components (benchmarks included).
 - **Simple**: A minimal and intuitive API.
 - **Typed**: Written in TypeScript with a focus on type safety and clarity.
 
@@ -139,7 +139,7 @@ Omitting object styling is a purely stylistic choice. In my opinion, tagged temp
 
 ### Benchmarks
 
-You can run benchmarks by cloning the [TSStyled repository](https://github.com/Shakeskeyboarde/tsstyled), and running the `npm start` command. The benchmark application will be served at `https://localhost:3000`.
+The benchmark app is available [online](https://tsstyled.com/benchmark/), or by cloning the [TSStyled repository](https://github.com/Shakeskeyboarde/tsstyled) and running the `npm start` command.
 
 ## The Basics
 
