@@ -77,9 +77,17 @@ Do you have questions, suggestions, or issues? Join the [Discord](https://discor
 
 ## Motivation
 
-I wanted a small CSS-in-JS solution for React, with zero dependencies, and strong types. I love the styled-components pattern, but Styled Components itself is too big and it's typings are [not the best](https://github.com/DefinitelyTyped/DefinitelyTyped/issues?q=is%3Aissue+is%3Aopen+styled-components). Emotion is smaller and generally better, but still not ideal. Then I found [Goober](https://npmjs.com/package/goober) which nearly convincing me not to write this library. If you're looking for a good solution, check it out too.
+I want a CSS-in-JS solution for React+TypeScript that meets the following requirements.
 
-I still wrote this because it was just a fun side project, and because there were some different design choices I wanted to make. I've included a comparison of what I consider to be the key features of any CSS-in-JS library.
+- Strong types, without compromise for "convenience" features that don't belong in a style system.
+- Multiple instances can be used side-by-side without conflict (ie. component libraries).
+- Small and with zero dependencies to minimize bundling cost and risk.
+- Simple and opinionated API, which provides a single "correct" path to a goal.
+- Full and future-proof support for all CSS features.
+
+I love the styled components pattern, but Styled Components itself is too big and it's typings are [not the best](https://github.com/DefinitelyTyped/DefinitelyTyped/issues?q=is%3Aissue+is%3Aopen+styled-components). Emotion is smaller and generally better, but still not ideal. Then I found [Goober](https://npmjs.com/package/goober) which nearly convincing me not to write this library. If you're looking for a good solution, check it out too.
+
+I still wrote this because there were some different design choices I wanted to make (even from Goober). I've included a comparison of what I consider to be the key features of any CSS-in-JS library. But, it boils down to a _reduced_ feature set, focused on type safety and encapsulation.
 
 ### Compared with other libraries
 
@@ -102,7 +110,7 @@ I still wrote this because it was just a fun side project, and because there wer
 |             | Global styles              | 🟢        | 🟢      | 🟢                 | 🟢       |
 |             | Polymorphism (`as`)        | 🔴        | 🟢      | 🟢                 | 🟢       |
 |             | Property mapping (`attrs`) | 🔴        | 🔴      | 🟢                 | 🔴       |
-|             | Theming [1]                | 🟢        | 🟢      | 🟡                 | 🟡       |
+|             | Theming [1]                | 🟢        | 🟡      | 🟡                 | 🟡       |
 |             | Non-global config          | 🟢        | 🔴      | 🟢                 | 🟢       |
 |             | SSR                        | 🟢        | 🟢      | 🟢                 | 🟢       |
 | **Style**   |                            |          |        |                   |         |
@@ -119,8 +127,8 @@ I still wrote this because it was just a fun side project, and because there wer
 
 &nbsp;
 
-- [1] Styled Components and Emotion support only a single theme, which must be typed using declaration merging.
-- [2] Goober allows a prefix callback function to be configured, but does not provide automatic vendor prefixing.
+- [1] Goober, Styled Components, and Emotion, all support only a single theme, which must be typed using declaration merging.
+- [2] Goober provides vendor prefixing as an additional package.
 - [3] Goober doesn't provide a `css` utility for creating mixins, but it does support function values in tagged templates.
 
 TSStyled omits three key features supported by other libraries: Polymorphism using the `as` property, vendor prefixing, and object styles.
