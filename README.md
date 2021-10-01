@@ -99,7 +99,7 @@ I still wrote this because there were some different design choices I wanted to 
 |             | Feature                    | TSStyled | Goober | Styled Components | Emotion |
 | ----------- | -------------------------- | -------- | ------ | ----------------- | ------- |
 | **Library** |                            |          |        |                   |         |
-|             | Bundle size (kB)           | 3.3      | 1.3    | 12.7              | 4.8     |
+|             | Bundle size (kB)           | 3.3      | 1.3    | 12.7              | 7.4     |
 |             | Zero dependencies          | 🟢        | 🟢      | 🔴                 | 🔴       |
 |             | TypeScript native          | 🟢        | 🟢      | 🔴                 | 🟢       |
 | **API**     |                            |          |        |                   |         |
