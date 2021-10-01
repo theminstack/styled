@@ -12,15 +12,13 @@ deploy:
     skip_cleanup: true
     script: npm run coveralls
     on:
-      # only on untagged versions.
-      condition: $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+$
+      condition: $TRAVIS_BRANCH =~ ^(main|v[0-9]+\.[0-9]+\.[0-9]+)$
       all_branches: true
   - provider: npm
     skip_cleanup: true
     email: $NPM_EMAIL
     api_key: $NPM_API_TOKEN
     on:
-      # only on untagged versions.
       condition: $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+$
       all_branches: true
   - provider: npm
@@ -29,7 +27,6 @@ deploy:
     email: $NPM_EMAIL
     api_key: $NPM_API_TOKEN
     on:
-      # only on tagged versions.
       condition: $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+-[^[:space:]]+$
       all_branches: true
   - provider: pages
@@ -38,6 +35,5 @@ deploy:
     local_dir: docs
     github_token: $GITHUB_TOKEN
     on:
-      # only on untagged versions.
-      condition: $TRAVIS_TAG =~ ^(main|v[0-9]+\.[0-9]+\.[0-9]+)$
+      condition: $TRAVIS_BRANCH =~ ^(main|v[0-9]+\.[0-9]+\.[0-9]+)$
       all_branches: true
