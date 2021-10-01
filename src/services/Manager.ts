@@ -2,19 +2,20 @@ import { compareVersions } from '../utilities/compareVersions';
 import { isTest } from '../utilities/isTest';
 
 type ComponentStyle = {
-  update(textContent: string, hash: string): void;
+  readonly update: (textContent: string, hash: string) => void;
 };
 
 type GlobalStyle = {
-  update(textContent: string): void;
-  remove(): void;
+  readonly update: (textContent: string) => void;
+  readonly remove: () => void;
 };
 
 export type Manager = {
-  version: string;
-  createComponentStyle(): ComponentStyle;
-  createGlobalStyle(): GlobalStyle;
-  renderStyles(): string;
+  readonly version: string;
+  readonly rehydrate: () => void;
+  readonly createComponentStyle: () => ComponentStyle;
+  readonly createGlobalStyle: () => GlobalStyle;
+  readonly renderStyles: () => string;
 };
 
 type GlobalObject = {
@@ -33,12 +34,28 @@ declare global {
 }
 
 export function createDocumentManager(version: string, document: Document): Manager {
+  let ssrStyles: NodeListOf<Element> | undefined = document.querySelectorAll('style[data-tss]');
   let first: HTMLStyleElement | undefined;
   let last: { value?: HTMLStyleElement } = {};
 
-  return {
+  const manager = {
     version,
-    createComponentStyle() {
+    rehydrate(): void {
+      if (ssrStyles != null) {
+        const styles = ssrStyles;
+
+        ssrStyles = undefined;
+        manager.rehydrate = () => undefined;
+
+        requestAnimationFrame(() => {
+          for (let i = styles.length - 1; i >= 0; --i) {
+            const style = styles[i];
+            style.parentElement?.removeChild(style);
+          }
+        });
+      }
+    },
+    createComponentStyle(): ComponentStyle {
       const _last: { value?: HTMLStyleElement } = (last = Object.create(last));
 
       return {
@@ -63,7 +80,7 @@ export function createDocumentManager(version: string, document: Document): Mana
         },
       };
     },
-    createGlobalStyle() {
+    createGlobalStyle(): GlobalStyle {
       let style: HTMLStyleElement | undefined;
 
       return {
@@ -83,16 +100,18 @@ export function createDocumentManager(version: string, document: Document): Mana
         },
         remove(): void {
           if (style != null) {
-            document.head.removeChild(style);
+            style.parentElement?.removeChild(style);
             style = undefined;
           }
         },
       };
     },
-    renderStyles() {
+    renderStyles(): string {
       return '';
     },
   };
+
+  return manager;
 }
 
 function createVirtualManager(version: string): Manager {
@@ -101,6 +120,9 @@ function createVirtualManager(version: string): Manager {
 
   return {
     version,
+    rehydrate() {
+      // no-op
+    },
     createComponentStyle() {
       const styles: { textContent: string; hash: string }[] = [];
 
@@ -151,13 +173,13 @@ function createVirtualManager(version: string): Manager {
   };
 }
 
-function createStyleManager(version: string): Manager {
+function createManager(version: string): Manager {
   return typeof document === 'undefined' || isTest()
     ? createVirtualManager(version)
     : createDocumentManager(version, document);
 }
 
-function initStyleManager(): Manager {
+function initManager(): Manager {
   const version = '[VI]{version}[/VI]';
   const globalObject = (
     typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : {}
@@ -171,15 +193,15 @@ function initStyleManager(): Manager {
     globalObject.$$tss.styleManager == null ||
     compareVersions(version, globalObject.$$tss.styleManager.version) > 0
   ) {
-    globalObject.$$tss.styleManager = createStyleManager(version);
+    globalObject.$$tss.styleManager = createManager(version);
   }
 
   return globalObject.$$tss.styleManager;
 }
 
-const singleton = initStyleManager();
+const singleton = initManager();
 
-export function getStyleManager(): Manager {
+export function getManager(): Manager {
   return singleton;
 }
 

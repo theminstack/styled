@@ -29,6 +29,7 @@ export function createStyledGlobalComponent<
 
     useStyleEffect(() => style.update(compiler.compile(':root', styleString)), [style, styleString]);
     useEffect(() => style.remove, [style]);
+    useEffect(() => manager.rehydrate(), []);
 
     return null;
   }) as StyledGlobalComponent<TProps>;

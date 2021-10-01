@@ -5,6 +5,7 @@ import {
   ForwardRefExoticComponent,
   JSXElementConstructor,
   ReactElement,
+  useEffect,
   useLayoutEffect,
   useMemo,
 } from 'react';
@@ -71,6 +72,8 @@ export function createStyledComponent<
         style.update(newCssString, hash);
       }
     }, [newCssString, hash]);
+
+    useEffect(() => manager.rehydrate(), []);
 
     const elementProps = getProps(props);
     elementProps.ref = ref;

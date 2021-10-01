@@ -8,7 +8,7 @@
 A small, fast, and simple CSS-in-JS solution for React.
 
 - **Small**: Less than 4kb (minified and gzipped) and no dependencies.
-- **Fast**: Faster than styled-components (benchmarks included).
+- **Fast**: Faster than styled-components ([benchmarks](https://tsstyled.com/benchmark/) included).
 - **Simple**: A minimal and intuitive API.
 - **Typed**: Written in TypeScript with a focus on type safety and clarity.
 
@@ -79,7 +79,7 @@ Do you have questions, suggestions, or issues? Join the [Discord](https://discor
 
 I want a CSS-in-JS solution for React+TypeScript that meets the following requirements.
 
-- Strong types, without compromise for "convenience" features that don't belong in a style system.
+- Strong types, without compromise for "convenience" features that are out-of-scope for a style system.
 - Multiple instances can be used side-by-side without conflict (ie. component libraries).
 - Small and with zero dependencies to minimize bundling cost and risk.
 - Simple and opinionated API, which provides a single "correct" path to a goal.
@@ -135,7 +135,7 @@ TSStyled omits three key features supported by other libraries: Polymorphism usi
 
 The automatic inclusion of the `as` property with support for any element or component, is inherently type unsafe. Full (non-styled) components can implement an `as` property and polymorphism safely, because they can limit the range of polymorphism. Strong typing is a key TSStyled goal, so this feature just doesn't fit.
 
-Vendor prefixing [isn't as necessary as it used to be](https://css-tricks.com/is-vendor-prefixing-dead/). There are still a some uncommon cases where it might be needed, but prefixes can always be manually included. Style helpers are also a pretty good fit for this. The overhead and maintenance required to implement this didn't seem worth it.
+Vendor prefixing [isn't as necessary as it used to be](https://css-tricks.com/is-vendor-prefixing-dead/). There are still a some uncommon cases where it might be needed, but prefixes can always be manually included. Style mixins are also a pretty good fit for this. The overhead and maintenance required to implement this didn't seem worth it.
 
 Omitting object styling is a purely stylistic choice. In my opinion, tagged templates provide a better experience in the following ways...
 
@@ -157,6 +157,12 @@ First, create the styled API.
 import { createStyled } from 'tsstyled';
 
 const styled = createStyled();
+```
+
+Pass in a theme hook/factory function in to create a [themed](#theming) instance.
+
+```tsx
+const styled = createStyled(useTheme);
 ```
 
 ### Styling HTML elements and components

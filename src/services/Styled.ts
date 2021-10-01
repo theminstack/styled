@@ -2,7 +2,7 @@ import { ComponentType, JSXElementConstructor } from 'react';
 import { Resolve } from '../utilities/Resolve';
 import { css, StyledTemplateProps, StyledTemplateValues } from '../utilities/css';
 import { createCompiler } from './Compiler';
-import { getStyleManager } from './Manager';
+import { getManager } from './Manager';
 import { createStyledComponent, StyledComponent, StyledComponentProps } from './StyledComponent';
 import { StyledGlobalComponent, createStyledGlobalComponent } from './StyledGlobalComponent';
 
@@ -65,7 +65,7 @@ export type Styled<TTheme extends Record<string, unknown> | undefined> = {
 export function createStyled<TTheme extends Record<string, unknown> | undefined>(
   useTheme: () => TTheme = () => undefined as TTheme,
 ): Styled<TTheme> {
-  const manager = getStyleManager();
+  const manager = getManager();
   const compiler = createCompiler();
 
   function styled<
