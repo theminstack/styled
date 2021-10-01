@@ -19,13 +19,13 @@ test('default theme', () => {
   );
 
   expect(renderStylesToString()).toMatchInlineSnapshot(`
-"<style data-tss=\\"vvpswx\\">
-._vvpswx {
+"<style data-tss=\\"\\">
+:root {
   color: blue;
 }
 </style>
-<style data-tss=\\"15iv4u5\\">
-:root {
+<style data-tss=\\"vvpswx\\">
+._vvpswx {
   color: blue;
 }
 </style>"
@@ -45,10 +45,12 @@ test('theme overrides', () => {
   const A = styled('div')`
     color: ${(props) => props.theme.color};
     background-color: ${(props) => props.theme.backgroundColor};
+    font: serif;
   `;
   const B = styled.global`
     color: ${(props) => props.theme.color};
     background-color: ${(props) => props.theme.backgroundColor};
+    font: sans-serif;
   `;
   const { container } = render(
     <ThemeProvider value={{ color: 'purple' }}>
@@ -58,22 +60,24 @@ test('theme overrides', () => {
   );
 
   expect(renderStylesToString()).toMatchInlineSnapshot(`
-"<style data-tss=\\"hz4yuv\\">
-._hz4yuv {
-  color: purple;
-  background-color: red;
-}
-</style>
-<style data-tss=\\"11k1p4b\\">
+"<style data-tss=\\"\\">
 :root {
   color: purple;
   background-color: red;
+  font: sans-serif;
+}
+</style>
+<style data-tss=\\"112wt5w\\">
+._112wt5w {
+  color: purple;
+  background-color: red;
+  font: serif;
 }
 </style>"
 `);
   expect(container.firstChild).toMatchInlineSnapshot(`
 <div
-  class="tss_txgcgv _hz4yuv"
+  class="tss_txgcgv _112wt5w"
 />
 `);
 });
@@ -97,14 +101,14 @@ test('theme updates', () => {
   );
 
   expect(renderStylesToString()).toMatchInlineSnapshot(`
-"<style data-tss=\\"hz4yuv\\">
-._hz4yuv {
+"<style data-tss=\\"\\">
+:root {
   color: purple;
   background-color: red;
 }
 </style>
-<style data-tss=\\"11k1p4b\\">
-:root {
+<style data-tss=\\"hz4yuv\\">
+._hz4yuv {
   color: purple;
   background-color: red;
 }
@@ -119,14 +123,14 @@ test('theme updates', () => {
   );
 
   expect(renderStylesToString()).toMatchInlineSnapshot(`
-"<style data-tss=\\"15n3pcy\\">
-._15n3pcy {
+"<style data-tss=\\"\\">
+:root {
   color: green;
   background-color: red;
 }
 </style>
-<style data-tss=\\"2jt48u\\">
-:root {
+<style data-tss=\\"15n3pcy\\">
+._15n3pcy {
   color: green;
   background-color: red;
 }

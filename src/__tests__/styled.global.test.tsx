@@ -20,17 +20,17 @@ test('global styles order', () => {
   );
 
   expect(renderStylesToString()).toMatchInlineSnapshot(`
-"<style data-tss=\\"15iv4u5\\">
+"<style data-tss=\\"\\">
 :root {
   color: blue;
 }
 </style>
-<style data-tss=\\"1tezuq8\\">
+<style data-tss=\\"\\">
 :root {
   color: red;
 }
 </style>
-<style data-tss=\\"15iv4u5\\">
+<style data-tss=\\"\\">
 :root {
   color: blue;
 }
@@ -61,12 +61,12 @@ test('remove global style', () => {
   );
 
   expect(renderStylesToString()).toMatchInlineSnapshot(`
-"<style data-tss=\\"1tezuq8\\">
+"<style data-tss=\\"\\">
 :root {
   color: red;
 }
 </style>
-<style data-tss=\\"15iv4u5\\">
+<style data-tss=\\"\\">
 :root {
   color: blue;
 }
@@ -75,12 +75,12 @@ test('remove global style', () => {
   expect(container.firstChild).toMatchInlineSnapshot(`<div />`);
 });
 
-test('global styles always follow component styles', () => {
-  const A = styled.global`
-    color: red;
-  `;
-  const B = styled('div')`
+test('global styles always precede component styles', () => {
+  const A = styled('div')`
     color: blue;
+  `;
+  const B = styled.global`
+    color: red;
   `;
   const { container } = render(
     <div>
@@ -90,14 +90,14 @@ test('global styles always follow component styles', () => {
   );
 
   expect(renderStylesToString()).toMatchInlineSnapshot(`
-"<style data-tss=\\"vvpswx\\">
-._vvpswx {
-  color: blue;
-}
-</style>
-<style data-tss=\\"1tezuq8\\">
+"<style data-tss=\\"\\">
 :root {
   color: red;
+}
+</style>
+<style data-tss=\\"vvpswx\\">
+._vvpswx {
+  color: blue;
 }
 </style>"
 `);
@@ -119,7 +119,7 @@ test('parameterized global style', () => {
   const { container } = render(<A color={'green'} />);
 
   expect(renderStylesToString()).toMatchInlineSnapshot(`
-"<style data-tss=\\"1qxvy7n\\">
+"<style data-tss=\\"\\">
 :root {
   color: green;
   background-color: blue;

@@ -5,17 +5,16 @@ import {
   ForwardRefExoticComponent,
   JSXElementConstructor,
   ReactElement,
+  useLayoutEffect,
   useMemo,
 } from 'react';
 import { StyledTemplateProps } from '../utilities/css';
 import { getClassNamesString } from '../utilities/getClassNamesString';
 import { getFilteredProps } from '../utilities/getFilteredProps';
 import { getHash } from '../utilities/getHash';
-import { PartialDocument } from './Document';
-import { createStyleElement } from './StyleElement';
-import { StyledCompiler } from './StyledCompiler';
-import { applyStyledMetadata, getStyledMetadata } from './StyledMetadata';
-import { StyledState } from './StyledState';
+import { Compiler } from './Compiler';
+import { Manager } from './Manager';
+import { applyMetadata, getMetadata } from './Metadata';
 
 export type StyledComponentProps<TComponent extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>> =
   ComponentPropsWithRef<TComponent>;
@@ -30,15 +29,17 @@ export function createStyledComponent<
   TProps extends StyledComponentProps<TComponent>,
   TTheme extends Record<string, unknown> | undefined,
 >(
-  doc: PartialDocument,
-  compiler: StyledCompiler,
-  state: StyledState,
+  manager: Manager,
+  compiler: Compiler,
   useTheme: () => TTheme | undefined,
   getStyleString: (props: StyledTemplateProps<TProps, TTheme>) => string,
   component: TComponent,
   displayName?: string,
 ): StyledComponent<TProps> {
-  const metadata = getStyledMetadata(component, displayName, getStyleString);
+  const useStyleEffect = typeof document === 'undefined' ? useMemo : useLayoutEffect;
+  const cache = new Map<string, string>();
+  const style = manager.createComponentStyle();
+  const metadata = getMetadata(component, displayName, getStyleString);
   const getProps =
     typeof metadata.component === 'string' ? getFilteredProps : (props: Record<string, unknown>) => ({ ...props });
 
@@ -50,45 +51,30 @@ export function createStyledComponent<
 
     const theme = useTheme();
     const styleString = metadata.getStyleString(theme != null ? { ...props, ref, theme } : { ...props, ref });
+    const [newCssString, hash] = useMemo(() => {
+      const cachedHash = cache.get(styleString);
 
-    // This is intentionally using useMemo for a side effect. This is against
-    // the rules, but it seems like the most efficient solution here, and the
-    // "unsafe" side effects are exactly the goal.
-    const styleClassName = useMemo(() => {
-      let className = state.styleStringToClassNameMap.get(styleString);
-
-      if (!className) {
-        const hash = getHash(metadata.id, styleString);
-
-        className = '_' + hash;
-
-        const cssString = compiler.compile('.' + className, styleString);
-        const style = createStyleElement(doc, cssString, hash);
-
-        if (state.prevStyle != null) {
-          state.prevStyle.insertAdjacentElement('afterend', style);
-        } else {
-          if (state.headStyle.value != null) {
-            state.headStyle.value.insertAdjacentElement('beforebegin', style);
-          } else {
-            doc.head.insertAdjacentElement('beforeend', style);
-          }
-
-          state.headStyle.value = style;
-        }
-
-        state.prevStyle = style;
-        state.styleStringToClassNameMap.set(styleString, className);
+      if (cachedHash != null) {
+        return [undefined, cachedHash];
       }
 
-      return className;
+      const newHash = getHash(metadata.id, styleString);
+      const cssString = compiler.compile('._' + newHash, styleString);
 
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [styleString, state.styleStringToClassNameMap]);
+      cache.set(styleString, newHash);
+
+      return [cssString, newHash];
+    }, [styleString]);
+
+    useStyleEffect(() => {
+      if (newCssString != null) {
+        style.update(newCssString, hash);
+      }
+    }, [newCssString, hash]);
 
     const elementProps = getProps(props);
     elementProps.ref = ref;
-    elementProps.className = getClassNamesString(elementProps.className, metadata.staticClassNames, styleClassName);
+    elementProps.className = getClassNamesString(elementProps.className, metadata.staticClassNames, '_' + hash);
 
     return createElement(metadata.component, elementProps);
   }) as StyledComponent<StyledComponentProps<TComponent>>;
@@ -104,7 +90,7 @@ export function createStyledComponent<
     }
   }
 
-  applyStyledMetadata(Styled, metadata);
+  applyMetadata(Styled, metadata);
 
   return Styled;
 }

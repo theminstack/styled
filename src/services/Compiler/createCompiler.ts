@@ -2,11 +2,11 @@ import { createCssBuilder } from './createCssBuilder';
 import { createTokenizer } from './createTokenizer';
 import { processStyleBlock } from './processStyleBlock';
 
-export type StyledCompiler = {
+export type Compiler = {
   compile(styleSelector: string, styleString: string): string;
 };
 
-export function createStyledCompiler(): StyledCompiler {
+export function createCompiler(): Compiler {
   return {
     compile(styleSelector, styleString) {
       const cssBuilder = createCssBuilder();

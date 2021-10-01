@@ -4,9 +4,7 @@ import { getClassNamesString } from '../utilities/getClassNamesString';
 import { getDisplayName } from '../utilities/getDisplayName';
 import { getId } from '../utilities/getId';
 
-const metadataKey = '$$tss/[VI]version[/VI]';
-
-type StyledMetadata<TProps extends Record<string, unknown>, TTheme extends Record<string, unknown> | undefined> = {
+type Metadata<TProps extends Record<string, unknown>, TTheme extends Record<string, unknown> | undefined> = {
   component: keyof JSX.IntrinsicElements | JSXElementConstructor<any>;
   displayName: string;
   id: string;
@@ -14,26 +12,26 @@ type StyledMetadata<TProps extends Record<string, unknown>, TTheme extends Recor
   getStyleString: (props: StyledTemplateProps<TProps, TTheme>) => string;
 };
 
-type StyledMetadataProps<TProps extends Record<string, unknown>, TTheme extends Record<string, unknown> | undefined> = {
-  [metadataKey]: StyledMetadata<TProps, TTheme>;
+type MetadataProps<TProps extends Record<string, unknown>, TTheme extends Record<string, unknown> | undefined> = {
+  ['$$tss/[VI]version[/VI]']: Metadata<TProps, TTheme>;
 };
 
-export function applyStyledMetadata<
+export function applyMetadata<
   TProps extends Record<string, unknown>,
   TTheme extends Record<string, unknown> | undefined,
->(component: {}, metadata: StyledMetadata<TProps, TTheme>): void {
-  (component as StyledMetadataProps<TProps, TTheme>)[metadataKey] = metadata;
+>(component: {}, metadata: Metadata<TProps, TTheme>): void {
+  (component as MetadataProps<TProps, TTheme>)['$$tss/[VI]version[/VI]'] = metadata;
 }
 
-export function getStyledMetadata<
-  TProps extends Record<string, unknown>,
-  TTheme extends Record<string, unknown> | undefined,
->(
-  _component: keyof JSX.IntrinsicElements | JSXElementConstructor<any> | StyledMetadataProps<TProps, TTheme>,
+export function getMetadata<TProps extends Record<string, unknown>, TTheme extends Record<string, unknown> | undefined>(
+  _component: keyof JSX.IntrinsicElements | JSXElementConstructor<any> | MetadataProps<TProps, TTheme>,
   _displayName: string | undefined,
   _getStyleString: (props: StyledTemplateProps<TProps, TTheme>) => string,
-): StyledMetadata<TProps, TTheme> {
-  const metadata = typeof _component !== 'string' && metadataKey in _component ? _component[metadataKey] : null;
+): Metadata<TProps, TTheme> {
+  const metadata =
+    typeof _component !== 'string' && '$$tss/[VI]version[/VI]' in _component
+      ? _component['$$tss/[VI]version[/VI]']
+      : null;
   const component = (metadata?.component ?? _component) as keyof JSX.IntrinsicElements | JSXElementConstructor<any>;
   const displayName = _displayName ?? getDisplayName(component);
   const id = getId(displayName);

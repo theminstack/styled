@@ -11,19 +11,28 @@ test('style ordering', () => {
   const B = styled('div')<{ $color: string }>`
     color: ${(props) => props.$color};
   `;
+  const C = styled('div')<{ $color: string }>`
+    color: ${(props) => props.$color};
+  `;
 
   const { container } = render(
     <div>
-      <B $color="red">
-        <A $color="black" />
-        <A $color="white" />
-      </B>
-      <B $color="purple" />
+      <C $color="red">
+        <B $color="black" />
+        <B $color="white" />
+      </C>
+      <A $color="yellow" />
+      <C $color="purple" />
     </div>,
   );
 
   expect(renderStylesToString()).toMatchInlineSnapshot(`
-"<style data-tss=\\"1316060\\">
+"<style data-tss=\\"13ocvkr\\">
+._13ocvkr {
+  color: yellow;
+}
+</style>
+<style data-tss=\\"1316060\\">
 ._1316060 {
   color: black;
 }
@@ -56,6 +65,9 @@ test('style ordering', () => {
       class="tss_txgcgv _1sxgnaw"
     />
   </div>
+  <div
+    class="tss_txgcgv _13ocvkr"
+  />
   <div
     class="tss_txgcgv _1m5aoh"
   />
@@ -203,8 +215,4 @@ test('update', () => {
   class="tss_txgcgv _vvpswx"
 />
 `);
-});
-
-test('themed', () => {
-  //
 });

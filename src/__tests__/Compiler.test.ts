@@ -1,7 +1,7 @@
 import { css } from '..';
-import { createStyledCompiler } from '../services/StyledCompiler';
+import { createCompiler } from '../services/Compiler';
 
-const compiler = createStyledCompiler();
+const compiler = createCompiler();
 
 test('empty', () => {
   expect(compiler.compile(':root', '')).toMatchInlineSnapshot(`""`);

@@ -1,9 +1,6 @@
 import { getHash } from './getHash';
 import { isTest } from './isTest';
 
-const version = '[VI]{version}[/VI]';
-const namespaceCounters = new Map<string, number>();
-
 /**
  * Get a stable ID string which is safe to use as a CSS identifier.
  *
@@ -16,7 +13,8 @@ const namespaceCounters = new Map<string, number>();
  * is *NOT* unique per invocation like it would be at runtime.
  */
 export function getId(namespace: string): string {
-  const count = namespaceCounters.get(namespace) ?? 0;
-  namespaceCounters.set(namespace, count + 1);
-  return 'tss_' + getHash(...(isTest() ? [] : [version, '/', count.toString(10)]), namespace);
+  const count = getId.counters.get(namespace) ?? 0;
+  getId.counters.set(namespace, count + 1);
+  return 'tss_' + getHash(...(isTest() ? [] : ['[VI]{version}[/VI]/', count.toString(10)]), namespace);
 }
+getId.counters = new Map<string, number>();

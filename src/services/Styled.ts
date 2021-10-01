@@ -1,13 +1,10 @@
 import { ComponentType, JSXElementConstructor } from 'react';
 import { Resolve } from '../utilities/Resolve';
 import { css, StyledTemplateProps, StyledTemplateValues } from '../utilities/css';
-import { getDocument } from './Document';
-import { createStyledCompiler } from './StyledCompiler';
+import { createCompiler } from './Compiler';
+import { getStyleManager } from './Manager';
 import { createStyledComponent, StyledComponent, StyledComponentProps } from './StyledComponent';
 import { StyledGlobalComponent, createStyledGlobalComponent } from './StyledGlobalComponent';
-import { createStyledState } from './StyledState';
-
-const doc = getDocument();
 
 type StyledTemplate<TProps extends Record<string, unknown>, TTheme extends Record<string, unknown> | undefined> = <
   TExtraProps extends Partial<TProps> & Record<string, any> = {},
@@ -68,22 +65,20 @@ export type Styled<TTheme extends Record<string, unknown> | undefined> = {
 export function createStyled<TTheme extends Record<string, unknown> | undefined>(
   useTheme: () => TTheme = () => undefined as TTheme,
 ): Styled<TTheme> {
-  const compiler = createStyledCompiler();
+  const manager = getStyleManager();
+  const compiler = createCompiler();
 
   function styled<
     TComponent extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>,
     TProps extends StyledComponentProps<TComponent>,
   >(component: TComponent, displayName?: string): StyledTemplate<StyledComponentProps<TComponent>, TTheme> {
-    const state = createStyledState();
-
     return <TExtraProps extends Partial<TProps> & Record<string, unknown>>(
       template: TemplateStringsArray,
       ...values: StyledTemplateValues<TProps & TExtraProps, TTheme>
     ): StyledComponent<Resolve<TProps & TExtraProps>> =>
       createStyledComponent<TComponent, TProps & TExtraProps, TTheme>(
-        doc,
+        manager,
         compiler,
-        state,
         useTheme,
         css<StyledTemplateProps<TProps & TExtraProps, TTheme>>(template, ...values),
         component,
@@ -95,12 +90,9 @@ export function createStyled<TTheme extends Record<string, unknown> | undefined>
     template: TemplateStringsArray,
     ...values: StyledTemplateValues<TProps, TTheme>
   ): ComponentType<TProps> => {
-    const state = createStyledState();
-
     return createStyledGlobalComponent<TProps, TTheme>(
-      doc,
+      manager,
       compiler,
-      state,
       useTheme,
       css<StyledTemplateProps<TProps, TTheme>>(template, ...values),
     );

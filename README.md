@@ -91,7 +91,7 @@ I still wrote this because it was just a fun side project, and because there wer
 |             | Feature                    | TSStyled | Goober | Styled Components | Emotion |
 | ----------- | -------------------------- | -------- | ------ | ----------------- | ------- |
 | **Library** |                            |          |        |                   |         |
-|             | Bundle size (kB)           | 3.2      | 1.3    | 12.7              | 4.8     |
+|             | Bundle size (kB)           | 3.3      | 1.3    | 12.7              | 4.8     |
 |             | Zero dependencies          | 🟢        | 🟢      | 🔴                 | 🔴       |
 |             | TypeScript native          | 🟢        | 🟢      | 🔴                 | 🟢       |
 | **API**     |                            |          |        |                   |         |
