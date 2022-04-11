@@ -118,5 +118,7 @@ dist
 .pnp.*
 
 .DS_Store
-/docs
+.vscode/
+/docs/*
+!/docs/CNAME
 /lib
