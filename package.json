@@ -1,6 +1,6 @@
 {
   "name": "tsstyled",
-  "version": "3.0.0-prerelease.0",
+  "version": "3.0.0-prerelease.1",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
   "types": "./lib/types/index.d.ts",
@@ -53,7 +53,6 @@
     "@types/react-dom": "^16.9.13",
     "@types/react-is": "^17.0.3",
     "@types/styled-components": "^5.1.25",
-    "@types/webpack-env": "^1.16.3",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
     "check-es-compat": "^2.0.0",

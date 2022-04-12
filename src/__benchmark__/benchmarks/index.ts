@@ -1,8 +1,10 @@
-import { type BenchmarkConfig, schemaBenchmarkConfig } from '../types/schema-benchmark-config';
+import { type BenchmarkConfig } from '../types/schema-benchmark-config';
+import * as mountDeep from './mount-deep';
+import * as mountWide from './mount-wide';
+import * as updateStyles from './update-styles';
 
-const context = require.context('.', true, /\/.+\/index\.tsx?$/);
-
-export const benchmarks = context.keys().reduce<Record<string, BenchmarkConfig>>((acc, key) => {
-  const value = schemaBenchmarkConfig.parse(context(key));
-  return { ...acc, [value.name]: value };
-}, {});
+export const benchmarks: Record<string, BenchmarkConfig> = {
+  [mountDeep.name]: mountDeep,
+  [mountWide.name]: mountWide,
+  [updateStyles.name]: updateStyles,
+};

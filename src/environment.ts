@@ -1,3 +1,5 @@
+declare const process: { env: Record<string, string> } | undefined;
+
 interface Environment {
   readonly isTest: boolean;
   readonly isBrowser: boolean;
