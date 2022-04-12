@@ -1,6 +1,6 @@
 {
   "name": "tsstyled",
-  "version": "3.0.0-prerelease.1",
+  "version": "3.0.0",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
   "types": "./lib/types/index.d.ts",
