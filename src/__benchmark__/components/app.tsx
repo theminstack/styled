@@ -1,4 +1,4 @@
-import { type ReactElement, useCallback, useState } from 'react';
+import { type ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trash } from 'react-feather';
 
 import { benchmarks } from '../benchmarks';
@@ -18,66 +18,71 @@ import { Separator } from './separator';
 const benchmarkItems = Object.keys(benchmarks)
   .reduce<SelectItem[]>((acc, key) => [...acc, { value: benchmarks[key].name }], [])
   .sort((a, b) => (a.label ?? a.value).localeCompare(b.label ?? b.value));
-const libraryItems = libraries.map((library) => ({ value: library.name }));
+const libraryItems = libraries.map((library) => ({ value: library.name as typeof library['name'] }));
 
 export function App(): ReactElement {
-  const [library, setLibrary] = useState(libraryItems[0]?.value ?? '');
-  const [benchmark, setBenchmark] = useState(benchmarkItems[0]?.value ?? '');
-  const [config, setConfig] = useState<{ library: string; benchmark: string; value: BenchmarkConfig } | null>(null);
+  const [library, setLibrary] = useState<typeof libraries[number]['name']>(libraryItems[0].value);
   const [results, setResults] = useState<{ library: string; benchmark: string; value: BenchmarkResult }[]>([]);
+  const [benchmark, setBenchmark] = useState<string | undefined>(benchmarkItems[0]?.value);
+  const config = useMemo((): { library: string; benchmark: string; value: BenchmarkConfig } | null => {
+    if (benchmark == null) {
+      return null;
+    }
+
+    const benchmarkConfig = benchmarks[benchmark];
+    const libraryConfig = libraries.find((item) => item.name === library);
+
+    if (benchmarkConfig == null || libraryConfig == null) {
+      return null;
+    }
+
+    const { Dot, Box } = libraryConfig;
+    const { render, ...benchmarkConfigRest } = benchmarkConfig;
+
+    return {
+      library,
+      benchmark,
+      value: {
+        ...benchmarkConfigRest,
+        render: (i) => render({ Dot, Box }, i),
+      },
+    };
+  }, [library, benchmark]);
+  const [isRunning, setIsRunning] = useState(false);
+
+  useEffect(() => {
+    setIsRunning(false);
+  }, [config, benchmark, library]);
 
   const onRun = useCallback(() => {
-    setConfig((current) => {
-      if (current != null) {
-        return current;
-      }
-
-      const benchmarkConfig = benchmarks[benchmark];
-      const libraryConfig = libraries.find((item) => item.name === library);
-
-      if (benchmarkConfig == null || libraryConfig == null) {
-        return current;
-      }
-
-      const { Dot, Box } = libraryConfig;
-      const { render, ...benchmarkConfigRest } = benchmarkConfig;
-
-      return (
-        current ?? {
-          library,
-          benchmark,
-          value: {
-            ...benchmarkConfigRest,
-            render: (i) => render({ Dot, Box }, i),
-          },
-        }
-      );
-    });
-  }, [library, benchmark]);
-
-  const onResult = useCallback((result: BenchmarkResult) => {
-    setConfig((currentConfig) => {
-      if (currentConfig != null) {
-        setResults((current) => [
-          ...current,
-          {
-            library: currentConfig.library,
-            benchmark: currentConfig.benchmark,
-            value: result,
-          },
-        ]);
-      }
-
-      return null;
-    });
+    setIsRunning(true);
   }, []);
+
+  const onResult = useCallback(
+    (result: BenchmarkResult) => {
+      if (!isRunning || config == null) {
+        return;
+      }
+
+      setIsRunning(false);
+      setResults((current) => [
+        ...current,
+        {
+          library: config.library,
+          benchmark: config.benchmark,
+          value: result,
+        },
+      ]);
+    },
+    [isRunning, config],
+  );
 
   const onClear = useCallback(() => setResults([]), []);
 
   return (
     <Page>
       <Output>
-        <Benchmark config={config?.value} onResult={onResult} />
+        {config && isRunning ? <Benchmark config={config.value} onResult={onResult} /> : config?.value.render(0)}
       </Output>
       <Input>
         <Actions items={[{ content: <Trash />, tip: 'Clear benchmark results.', onClick: onClear }]} />
@@ -88,10 +93,22 @@ export function App(): ReactElement {
         </List>
         <Separator />
         <Form>
-          <Select $label={'Library'} items={libraryItems} selectedValue={library} onChange={setLibrary} />
-          <Select $label={'Benchmark'} items={benchmarkItems} selectedValue={benchmark} onChange={setBenchmark} />
-          <Button onClick={onRun} disabled={config != null}>
-            {config != null ? 'Running...' : 'Run'}
+          <Select
+            $label={'Library'}
+            items={libraryItems}
+            selectedValue={library}
+            disabled={isRunning}
+            onChange={setLibrary as any}
+          />
+          <Select
+            $label={'Benchmark'}
+            items={benchmarkItems}
+            selectedValue={benchmark}
+            disabled={isRunning}
+            onChange={setBenchmark as any}
+          />
+          <Button onClick={onRun} disabled={config == null || isRunning}>
+            {isRunning ? 'Running...' : 'Run'}
           </Button>
         </Form>
       </Input>

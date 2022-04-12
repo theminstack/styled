@@ -1,5 +1,5 @@
 import { Tree } from '../../components/tree';
-import { type BenchmarkRender, type BenchmarkType } from '../../types/schema-benchmark-config';
+import { type BenchmarkRender, type BenchmarkType } from '../../types/benchmark-config';
 
 export const name = 'Mount wide tree';
 export const type: BenchmarkType = 'mount';
