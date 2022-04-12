@@ -29,37 +29,37 @@ test('style ordering', () => {
   expect(document.querySelectorAll('head style')).toMatchInlineSnapshot(`
     NodeList [
       <style
-        data-tss="_1buk3pm"
+        data-tss="_1a0doa9"
       >
-        ._1buk3pm {
+        ._1a0doa9 {
       color: black;
     }
       </style>,
       <style
-        data-tss="_iv6lka"
+        data-tss="_7wuc41"
       >
-        ._iv6lka {
+        ._7wuc41 {
       color: white;
     }
       </style>,
       <style
-        data-tss="_ga4f32"
+        data-tss="_xq7739"
       >
-        ._ga4f32 {
+        ._xq7739 {
       color: red;
     }
       </style>,
       <style
-        data-tss="_1hejvwp"
+        data-tss="_10netjm"
       >
-        ._1hejvwp {
+        ._10netjm {
       color: yellow;
     }
       </style>,
       <style
-        data-tss="_1t908ub"
+        data-tss="_4zh4ew"
       >
-        ._1t908ub {
+        ._4zh4ew {
       color: purple;
     }
       </style>,
@@ -68,20 +68,20 @@ test('style ordering', () => {
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div>
       <div
-        class="tss_<hash> _ga4f32"
+        class="tss_<hash> _xq7739"
       >
         <div
-          class="tss_<hash> _1buk3pm"
+          class="tss_<hash> _1a0doa9"
         />
         <div
-          class="tss_<hash> _iv6lka"
+          class="tss_<hash> _7wuc41"
         />
       </div>
       <div
-        class="tss_<hash> _1hejvwp"
+        class="tss_<hash> _10netjm"
       />
       <div
-        class="tss_<hash> _1t908ub"
+        class="tss_<hash> _4zh4ew"
       />
     </div>
   `);
@@ -108,24 +108,24 @@ test('direct restyle', () => {
   expect(document.querySelectorAll('head style')).toMatchInlineSnapshot(`
     NodeList [
       <style
-        data-tss="_ga4f32"
+        data-tss="_xq7739"
       >
-        ._ga4f32 {
+        ._xq7739 {
       color: red;
     }
       </style>,
       <style
-        data-tss="_aks53w"
+        data-tss="_1j1b7vr"
       >
-        ._aks53w {
+        ._1j1b7vr {
       color: red;
       color: blue;
     }
       </style>,
       <style
-        data-tss="_1tlkeuz"
+        data-tss="_1fv5bds"
       >
-        ._1tlkeuz {
+        ._1fv5bds {
       color: red;
       color: blue;
       color: green;
@@ -136,13 +136,13 @@ test('direct restyle', () => {
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div>
       <div
-        class="tss_<hash> _ga4f32"
+        class="tss_<hash> _xq7739"
       />
       <div
-        class="tss_<hash> _aks53w"
+        class="tss_<hash> _1j1b7vr"
       />
       <div
-        class="tss_<hash> _1tlkeuz"
+        class="tss_<hash> _1fv5bds"
       />
     </div>
   `);
@@ -161,16 +161,16 @@ test('indirect restyle', () => {
   expect(document.querySelectorAll('head style')).toMatchInlineSnapshot(`
     NodeList [
       <style
-        data-tss="_ga4f32"
+        data-tss="_xq7739"
       >
-        ._ga4f32 {
+        ._xq7739 {
       color: red;
     }
       </style>,
       <style
-        data-tss="_1ctbf8z"
+        data-tss="_136lazs"
       >
-        ._1ctbf8z {
+        ._136lazs {
       color: blue;
     }
       </style>,
@@ -178,7 +178,7 @@ test('indirect restyle', () => {
   `);
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div
-      class="tss_<hash> _1ctbf8z tss_<hash> _ga4f32"
+      class="tss_<hash> _136lazs tss_<hash> _xq7739"
     />
   `);
 });
@@ -201,16 +201,16 @@ test('style other', () => {
   expect(document.querySelectorAll('head style')).toMatchInlineSnapshot(`
     NodeList [
       <style
-        data-tss="_ga4f32"
+        data-tss="_xq7739"
       >
-        ._ga4f32 {
+        ._xq7739 {
       color: red;
     }
       </style>,
       <style
-        data-tss="_1cr3af4"
+        data-tss="_cb9na3"
       >
-        ._1cr3af4 .tss_&lt;hash&gt; {
+        ._cb9na3 .tss_&lt;hash&gt; {
       color: blue;
     }
       </style>,
@@ -218,10 +218,10 @@ test('style other', () => {
   `);
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div
-      class="tss_<hash> _1cr3af4"
+      class="tss_<hash> _cb9na3"
     >
       <div
-        class="tss_<hash> _ga4f32"
+        class="tss_<hash> _xq7739"
       />
     </div>
   `);
@@ -237,9 +237,9 @@ test('update', () => {
   expect(document.querySelectorAll('head style')).toMatchInlineSnapshot(`
     NodeList [
       <style
-        data-tss="_ga4f32"
+        data-tss="_xq7739"
       >
-        ._ga4f32 {
+        ._xq7739 {
       color: red;
     }
       </style>,
@@ -247,7 +247,7 @@ test('update', () => {
   `);
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div
-      class="tss_<hash> _ga4f32"
+      class="tss_<hash> _xq7739"
     />
   `);
 
@@ -256,16 +256,16 @@ test('update', () => {
   expect(document.querySelectorAll('head style')).toMatchInlineSnapshot(`
     NodeList [
       <style
-        data-tss="_ga4f32"
+        data-tss="_xq7739"
       >
-        ._ga4f32 {
+        ._xq7739 {
       color: red;
     }
       </style>,
       <style
-        data-tss="_1ctbf8z"
+        data-tss="_136lazs"
       >
-        ._1ctbf8z {
+        ._136lazs {
       color: blue;
     }
       </style>,
@@ -273,7 +273,7 @@ test('update', () => {
   `);
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div
-      class="tss_<hash> _1ctbf8z"
+      class="tss_<hash> _136lazs"
     />
   `);
 });

@@ -75,7 +75,7 @@ test('remove global style', () => {
   expect(container.firstChild).toMatchInlineSnapshot(`<div />`);
 });
 
-test('global styles always precede component styles', () => {
+test('global styles and component styles are rendered in order', () => {
   const A = styled('div')`
     color: blue;
   `;
@@ -84,14 +84,20 @@ test('global styles always precede component styles', () => {
   `;
   const { container } = render(
     <div>
+      <B />
       <A />
       <B />
     </div>,
   );
 
   expect(renderStylesToString()).toMatchInlineSnapshot(`
-    "<style data-tss=\\"_1ctbf8z\\">
-    ._1ctbf8z {
+    "<style data-tss=\\"global\\">
+    :root {
+      color: red;
+    }
+    </style>
+    <style data-tss=\\"_136lazs\\">
+    ._136lazs {
       color: blue;
     }
     </style>
@@ -104,7 +110,7 @@ test('global styles always precede component styles', () => {
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div>
       <div
-        class="tss_<hash> _1ctbf8z"
+        class="tss_<hash> _136lazs"
       />
     </div>
   `);

@@ -19,8 +19,8 @@ test('default theme', () => {
   );
 
   expect(renderStylesToString()).toMatchInlineSnapshot(`
-    "<style data-tss=\\"_1ctbf8z\\">
-    ._1ctbf8z {
+    "<style data-tss=\\"_136lazs\\">
+    ._136lazs {
       color: blue;
     }
     </style>
@@ -33,7 +33,7 @@ test('default theme', () => {
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div>
       <div
-        class="tss_<hash> _1ctbf8z"
+        class="tss_<hash> _136lazs"
       />
     </div>
   `);
@@ -60,8 +60,8 @@ test('theme overrides', () => {
   );
 
   expect(renderStylesToString()).toMatchInlineSnapshot(`
-    "<style data-tss=\\"_1tn6lbq\\">
-    ._1tn6lbq {
+    "<style data-tss=\\"_1g3aazx\\">
+    ._1g3aazx {
       color: purple;
       background-color: red;
       font: serif;
@@ -77,7 +77,7 @@ test('theme overrides', () => {
   `);
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div
-      class="tss_<hash> _1tn6lbq"
+      class="tss_<hash> _1g3aazx"
     />
   `);
 });
@@ -101,8 +101,8 @@ test('theme updates', () => {
   );
 
   expect(renderStylesToString()).toMatchInlineSnapshot(`
-    "<style data-tss=\\"_1b75kmd\\">
-    ._1b75kmd {
+    "<style data-tss=\\"_6zieqm\\">
+    ._6zieqm {
       color: purple;
       background-color: red;
     }
@@ -123,8 +123,8 @@ test('theme updates', () => {
   );
 
   expect(renderStylesToString()).toMatchInlineSnapshot(`
-    "<style data-tss=\\"_1b75kmd\\">
-    ._1b75kmd {
+    "<style data-tss=\\"_6zieqm\\">
+    ._6zieqm {
       color: purple;
       background-color: red;
     }
@@ -135,8 +135,8 @@ test('theme updates', () => {
       background-color: red;
     }
     </style>
-    <style data-tss=\\"_fnpvxs\\">
-    ._fnpvxs {
+    <style data-tss=\\"_otd6i3\\">
+    ._otd6i3 {
       color: green;
       background-color: red;
     }
@@ -144,7 +144,7 @@ test('theme updates', () => {
   `);
   expect(container.firstChild).toMatchInlineSnapshot(`
     <div
-      class="tss_<hash> _fnpvxs"
+      class="tss_<hash> _otd6i3"
     />
   `);
 });
