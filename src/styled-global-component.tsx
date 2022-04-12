@@ -1,4 +1,4 @@
-import { type ComponentType, useMemo } from 'react';
+import { type ReactElement, type VFC, useMemo, useState } from 'react';
 
 import { context } from './context';
 import { type Style } from './style';
@@ -8,11 +8,12 @@ function createStyledGlobalComponent<TProps extends {}, TTheme extends {} | unde
   styleCompiler: StyleStringCompiler,
   style: Style<TProps, [TTheme]>,
   useTheme: () => TTheme,
-): ComponentType<TProps> {
-  function StyledGlobal(props: TProps): null {
+): VFC<TProps> {
+  function StyledGlobal(props: TProps & { children?: unknown }): ReactElement | null {
     const theme = useTheme();
     const stylesheet = useMemo(() => context.createStylesheet(), []);
     const styleString = style.getString(props, theme);
+    const [isStylesheetAdded, setIsStylesheetAdded] = useState(false);
 
     context.useLayoutEffect(() => {
       stylesheet.update(styleCompiler.compile(':root', styleString), 'global');
@@ -20,10 +21,11 @@ function createStyledGlobalComponent<TProps extends {}, TTheme extends {} | unde
 
     context.useLayoutEffect(() => {
       context.stylesheetCollection.add(stylesheet);
+      setIsStylesheetAdded(true);
       return () => context.stylesheetCollection.remove(stylesheet);
     }, []);
 
-    return null;
+    return isStylesheetAdded ? <>{props.children}</> : null;
   }
 
   return StyledGlobal;
