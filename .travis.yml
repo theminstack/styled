@@ -17,8 +17,7 @@ deploy:
   - provider: npm
     skip_cleanup: true
     email: chris@topher.land
-    api_key:
-      secure: LA76nGYetDj4wHP9vn+ZYNeisjKy2eQvNNzB5qZyv9RriKr11WtpIq4iIk32O12/8jz+I60s5FR/DRDZfj6yxWCxUu1XspEOvA6qhUzkhBdhd5k/tjwSP2qKl4c64scaNsX+rxn1GwOOCg1TNh1RS7DYno29ukURi7q2cklU16jKcohG5dbvAm1HzJ0XPmJsk/ea8lLoQCsYVhIvrI5T5ZpLCKKzvt2cE9Xdvl6jK+GTJG/W1fLSPupsX/WZ4sVsMeJChhkHphzth7M3rNipFLG6pCZbq9GUCYTNh4U/sreokJRCJade6Ycri743mHRntxFs/tMdwUb6599tqNUQ9wcYkNC0qR5pNUvctLUR6dHmbDMv89m9nhRmKvQJW9qtocqhXmbCVv8wf33cqMLnFU132lw7GIAKcL/os4P+uRC7/6ag8/rQpeAMGXj70C4FVyuLUTbhPe0ZjEce54xYG8iXdlVCo3W6t5r09hfQGnNF53lygHCdwzAJyeBvwIUmdDhC5nUwMWzKhFb4rYcMVHLr+YfzeuaxlxFXKdgZCisdTMVB+MfzmYtM2Xlvy75mmEgBhNTBX/+jHs5/QhFwyRkQ//iR+gY+GfnM1/HMIqf9lNW1d0uq2nsGc6hT6ioCNMYaeT9htKtMy//des/UIMipS7aY4qI8w/A3cyAL1lE=
+    api_key: $NPM_API_TOKEN
     on:
       condition: $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+$
       all_branches: true
@@ -26,8 +25,7 @@ deploy:
     skip_cleanup: true
     tag: prerelease
     email: chris@topher.land
-    api_key:
-      secure: LA76nGYetDj4wHP9vn+ZYNeisjKy2eQvNNzB5qZyv9RriKr11WtpIq4iIk32O12/8jz+I60s5FR/DRDZfj6yxWCxUu1XspEOvA6qhUzkhBdhd5k/tjwSP2qKl4c64scaNsX+rxn1GwOOCg1TNh1RS7DYno29ukURi7q2cklU16jKcohG5dbvAm1HzJ0XPmJsk/ea8lLoQCsYVhIvrI5T5ZpLCKKzvt2cE9Xdvl6jK+GTJG/W1fLSPupsX/WZ4sVsMeJChhkHphzth7M3rNipFLG6pCZbq9GUCYTNh4U/sreokJRCJade6Ycri743mHRntxFs/tMdwUb6599tqNUQ9wcYkNC0qR5pNUvctLUR6dHmbDMv89m9nhRmKvQJW9qtocqhXmbCVv8wf33cqMLnFU132lw7GIAKcL/os4P+uRC7/6ag8/rQpeAMGXj70C4FVyuLUTbhPe0ZjEce54xYG8iXdlVCo3W6t5r09hfQGnNF53lygHCdwzAJyeBvwIUmdDhC5nUwMWzKhFb4rYcMVHLr+YfzeuaxlxFXKdgZCisdTMVB+MfzmYtM2Xlvy75mmEgBhNTBX/+jHs5/QhFwyRkQ//iR+gY+GfnM1/HMIqf9lNW1d0uq2nsGc6hT6ioCNMYaeT9htKtMy//des/UIMipS7aY4qI8w/A3cyAL1lE=
+    api_key: $NPM_API_TOKEN
     on:
       condition: $TRAVIS_TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+-[^[:space:]]+$
       all_branches: true
