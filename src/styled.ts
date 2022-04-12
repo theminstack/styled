@@ -1,9 +1,4 @@
-import {
-  type ComponentProps,
-  type ComponentType,
-  type ForwardRefExoticComponent,
-  type JSXElementConstructor,
-} from 'react';
+import { type ComponentProps, type ForwardRefExoticComponent, type JSXElementConstructor, type VFC } from 'react';
 
 import { type StyleTemplateValues, createStyle } from './style';
 import { createStyleStringCompiler } from './style-string-compiler';
@@ -57,7 +52,7 @@ interface Styled<TTheme extends {} | undefined> {
   global: <TExtraProps extends {} = {}>(
     template: TemplateStringsArray,
     ...values: StyleTemplateValues<TExtraProps, [TTheme]>
-  ) => ComponentType<TExtraProps>;
+  ) => VFC<TExtraProps>;
 
   /**
    * Create a style mixin function.
@@ -101,7 +96,7 @@ function createStyled<TTheme extends {} | undefined>(
   styled.global = <TProps extends {}>(
     template: TemplateStringsArray,
     ...values: StyleTemplateValues<TProps, [TTheme]>
-  ): ComponentType<TProps> => {
+  ): VFC<TProps> => {
     const style = createStyle(template, values);
     const component = createStyledGlobalComponent(styleCompiler, style, useTheme);
 
