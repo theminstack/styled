@@ -1,27 +1,11 @@
 import { type ComponentType, type ProviderProps, createContext, createElement, useContext } from 'react';
 
 /**
- * Create a theme hook and provider component.
+ * Create a theme context, with a hook for theme access, and a provider for
+ * theme overriding.
  *
  * ```tsx
  * const [useTheme, ThemeProvider] = createTheme({ color: 'red' });
- * ```
- *
- * Use the theme in a styled component.
- *
- * ```tsx
- * const Styled = styled('div', () => ({ theme: useTheme() })`
- *   color: ${(props) => props.theme.color};
- * `;
- * ```
- *
- * Use the theme provider to override theme values. Using the provider
- * isn't necessary if you just want to use the default theme values.
- *
- * ```tsx
- * <ThemeProvider value={{ color: 'blue' }}>
- *   <StyledDiv />
- * </ThemeProvider>
  * ```
  */
 export function createTheme<TTheme extends {}>(

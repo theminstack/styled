@@ -1,5 +1,4 @@
-export { getId, renderStylesToHtmlString } from './context';
+export { getId, renderStylesToString } from './context';
 export { type StyleTemplateValues } from './style';
-export { type Styled, type StyledMixin, type StyledTemplate, createStyled } from './styled';
-export { type StyledComponent } from './styled-component';
+export { type Styled, type StyleMixin, type StyleTaggedTemplateFunction, createStyled } from './styled';
 export { createTheme } from './theme';

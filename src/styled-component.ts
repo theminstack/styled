@@ -14,8 +14,6 @@ import { getHtmlAttributes } from './html-attributes';
 import { type Style } from './style';
 import { type StyleStringCompiler } from './style-string-compiler';
 
-type StyledComponent<TProps extends {}> = ForwardRefExoticComponent<TProps> & string;
-
 function createStyledComponent<
   TComponent extends keyof JSX.IntrinsicElements | JSXElementConstructor<{}>,
   TProps extends ComponentProps<TComponent>,
@@ -25,7 +23,7 @@ function createStyledComponent<
   style: Style<TProps, [TTheme]>,
   useTheme: () => TTheme,
   component: TComponent,
-): StyledComponent<TProps> {
+): ForwardRefExoticComponent<TProps> {
   const parent = typeof component !== 'string' ? context.styledComponentCache.get(component) : undefined;
   const [baseComponent, currentStyle] =
     parent != null ? [parent.component, parent.style.extend(style)] : [component, style];
@@ -35,14 +33,14 @@ function createStyledComponent<
     props: TProps,
   ) => TProps & { className?: string; children?: ReactNode };
 
-  const styledComponent: StyledComponent<TProps> = Object.assign(
+  const styledComponent: ForwardRefExoticComponent<TProps> = Object.assign(
     // eslint-disable-next-line react/display-name
     forwardRef<unknown, TProps>((props, ref): ReactElement | null => {
       const theme = useTheme();
       const styleString = currentStyle.getString(props, theme);
       const { className, children, ...innerProps } = getInnerProps(props);
       const styleState = useMemo(() => {
-        const [isNew, hash] = context.styleStringCache.register(styleString);
+        const [isNew, hash] = context.styleStringCache.register(styleString + staticClassName);
         const className = '_' + hash;
         return { isNew, className };
       }, [styleString]);
@@ -66,7 +64,7 @@ function createStyledComponent<
         } as TProps,
         children,
       );
-    }) as StyledComponent<TProps>,
+    }) as ForwardRefExoticComponent<TProps>,
     {
       toString: () => selector,
     },
@@ -77,4 +75,4 @@ function createStyledComponent<
   return styledComponent;
 }
 
-export { type StyledComponent, createStyledComponent };
+export { createStyledComponent };

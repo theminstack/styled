@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import { createServerStylesheet } from './server-stylesheet';
 import { type Stylesheet } from './stylesheet';
 
@@ -10,7 +8,7 @@ interface ServerContext {
 
 function createServerContext(): ServerContext {
   const context = {
-    useLayoutEffect: useMemo,
+    useLayoutEffect: (cb: () => void) => cb(),
     createStylesheet: createServerStylesheet,
   };
 

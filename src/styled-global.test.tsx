@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 
-import { createStyled, renderStylesToHtmlString } from '.';
+import { createStyled, renderStylesToString } from '.';
 
 const styled = createStyled();
 
@@ -19,7 +19,7 @@ test('global styles order', () => {
     </div>,
   );
 
-  expect(renderStylesToHtmlString()).toMatchInlineSnapshot(`
+  expect(renderStylesToString()).toMatchInlineSnapshot(`
     "<style data-tss=\\"global\\">
     :root {
       color: blue;
@@ -60,7 +60,7 @@ test('remove global style', () => {
     </div>,
   );
 
-  expect(renderStylesToHtmlString()).toMatchInlineSnapshot(`
+  expect(renderStylesToString()).toMatchInlineSnapshot(`
     "<style data-tss=\\"global\\">
     :root {
       color: red;
@@ -89,7 +89,7 @@ test('global styles always precede component styles', () => {
     </div>,
   );
 
-  expect(renderStylesToHtmlString()).toMatchInlineSnapshot(`
+  expect(renderStylesToString()).toMatchInlineSnapshot(`
     "<style data-tss=\\"_1ctbf8z\\">
     ._1ctbf8z {
       color: blue;
@@ -118,7 +118,7 @@ test('parameterized global style', () => {
   A.defaultProps = { color: 'red', backgroundColor: 'blue' };
   const { container } = render(<A color={'green'} />);
 
-  expect(renderStylesToHtmlString()).toMatchInlineSnapshot(`
+  expect(renderStylesToString()).toMatchInlineSnapshot(`
     "<style data-tss=\\"global\\">
     :root {
       color: green;

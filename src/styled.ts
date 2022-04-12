@@ -1,37 +1,57 @@
-import { type ComponentProps, type ComponentType, type JSXElementConstructor } from 'react';
+import {
+  type ComponentProps,
+  type ComponentType,
+  type ForwardRefExoticComponent,
+  type JSXElementConstructor,
+} from 'react';
 
 import { type StyleTemplateValues, createStyle } from './style';
 import { createStyleStringCompiler } from './style-string-compiler';
-import { type StyledComponent, createStyledComponent } from './styled-component';
+import { createStyledComponent } from './styled-component';
 import { createStyledGlobalComponent } from './styled-global-component';
 
-type StyledTemplate<TProps extends {}, TTheme extends {} | undefined> = <TExtraProps extends {} = {}>(
+/**
+ * Intermediate tagged template function returned by the {@link Styled styled}
+ * function.
+ */
+type StyleTaggedTemplateFunction<TProps extends {}, TTheme extends {} | undefined> = <TExtraProps extends {} = {}>(
   template: TemplateStringsArray,
   ...values: StyleTemplateValues<TProps & TExtraProps, [TTheme]>
-) => StyledComponent<TProps & TExtraProps>;
-
-type StyledMixin<TProps extends {}> = {} extends TProps ? (props?: TProps) => string : (props: TProps) => string;
+) => ForwardRefExoticComponent<TProps & TExtraProps>;
 
 /**
- * Create a styled component.
+ * Style mixin functions returned by the
+ * {@link Styled.mixin styled.mixin} method.
+ */
+type StyleMixin<TProps extends {}> = {} extends TProps ? (props?: TProps) => string : (props: TProps) => string;
+
+/**
+ * The `styled` API returned by the {@link createStyled} factory function.
+ *
+ * Create's a styled component when called as a function.
  *
  * ```tsx
- * const Styled = styled('div')``;
- * const Styled = styled('div')<ExtraProps>``;
+ * const StyledComponent = styled('div')``;
+ * const StyledComponent = styled('div')<ExtraProps>``;
  * ```
+ *
+ * See also:
+ *
+ * - {@link Styled.global styled.global} for creating global styles
+ * - {@link Styled.mixin styled.mixin} for creating style mixins.
  */
 interface Styled<TTheme extends {} | undefined> {
   <TComponent extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>>(
     component: TComponent,
     displayName?: string,
-  ): StyledTemplate<ComponentProps<TComponent>, TTheme>;
+  ): StyleTaggedTemplateFunction<ComponentProps<TComponent>, TTheme>;
 
   /**
    * Create a global style component.
    *
    * ```tsx
-   * const Global = styled.global``;
-   * const Global = styled.global<Props>``;
+   * const GlobalStyle = styled.global``;
+   * const GlobalStyle = styled.global<Props>``;
    * ```
    */
   global: <TExtraProps extends {} = {}>(
@@ -52,25 +72,11 @@ interface Styled<TTheme extends {} | undefined> {
   mixin: <TProps extends {}>(
     template: TemplateStringsArray,
     ...values: StyleTemplateValues<TProps>
-  ) => StyledMixin<TProps>;
+  ) => StyleMixin<TProps>;
 }
 
 /**
- * Create a `styled` function/namespace, with an optional theme.
- *
- * ```tsx
- * const styled = createStyled();
- * const styled = createStyled(useTheme);
- * ```
- *
- * Once created, use the API as follows.
- *
- * ```tsx
- * const Styled = styled('div')``;
- * const Styled = styled('div')<ExtraProps>``;
- * const Global = styled.global``;
- * const Global = styled.global<ExtraProps>``;
- * ```
+ * Create a {@link Styled styled} API, with an optional theme.
  */
 function createStyled<TTheme extends {} | undefined>(
   useTheme: () => TTheme = () => undefined as TTheme,
@@ -80,11 +86,11 @@ function createStyled<TTheme extends {} | undefined>(
   function styled<
     TComponent extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>,
     TProps extends ComponentProps<TComponent>,
-  >(baseComponent: TComponent): StyledTemplate<ComponentProps<TComponent>, TTheme> {
+  >(baseComponent: TComponent): StyleTaggedTemplateFunction<ComponentProps<TComponent>, TTheme> {
     return <TExtraProps extends Partial<TProps>>(
       template: TemplateStringsArray,
       ...values: StyleTemplateValues<TProps & TExtraProps, [TTheme]>
-    ): StyledComponent<TProps & TExtraProps> => {
+    ): ForwardRefExoticComponent<TProps & TExtraProps> => {
       const style = createStyle(template, values);
       const component = createStyledComponent(styleCompiler, style, useTheme, baseComponent);
 
@@ -105,9 +111,9 @@ function createStyled<TTheme extends {} | undefined>(
   styled.mixin = <TProps extends {}>(
     template: TemplateStringsArray,
     ...values: StyleTemplateValues<TProps>
-  ): StyledMixin<TProps> => {
+  ): StyleMixin<TProps> => {
     const style = createStyle(template, values);
-    const mixin: StyledMixin<TProps> = (props = {} as TProps) => style.getString(props);
+    const mixin: StyleMixin<TProps> = (props = {} as TProps) => style.getString(props);
 
     return mixin;
   };
@@ -115,4 +121,4 @@ function createStyled<TTheme extends {} | undefined>(
   return styled;
 }
 
-export { type Styled, type StyledMixin, type StyledTemplate, createStyled };
+export { type Styled, type StyleMixin, type StyleTaggedTemplateFunction, createStyled };

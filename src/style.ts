@@ -1,9 +1,16 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { type Styled } from './styled';
+
+/**
+ * Values provided as part of a {@link Styled styled} template string.
+ */
 type StyleTemplateValues<TProps extends {}, TArgs extends readonly unknown[] = []> = (
   | string
   | number
   | null
   | undefined
-  | ((props: TProps, ...args: TArgs) => string | number | null | undefined)
+  | { toString: () => string }
+  | ((props: TProps, ...args: TArgs) => string | number | null | undefined | { toString: () => string })
 )[];
 
 interface Style<TProps extends {}, TArgs extends unknown[] = []> {

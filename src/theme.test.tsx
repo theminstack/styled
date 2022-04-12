@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 
-import { createStyled, createTheme, renderStylesToHtmlString } from '.';
+import { createStyled, createTheme, renderStylesToString } from '.';
 
 test('default theme', () => {
   const [useTheme] = createTheme({ color: 'blue' });
@@ -18,7 +18,7 @@ test('default theme', () => {
     </div>,
   );
 
-  expect(renderStylesToHtmlString()).toMatchInlineSnapshot(`
+  expect(renderStylesToString()).toMatchInlineSnapshot(`
     "<style data-tss=\\"_1ctbf8z\\">
     ._1ctbf8z {
       color: blue;
@@ -59,7 +59,7 @@ test('theme overrides', () => {
     </ThemeProvider>,
   );
 
-  expect(renderStylesToHtmlString()).toMatchInlineSnapshot(`
+  expect(renderStylesToString()).toMatchInlineSnapshot(`
     "<style data-tss=\\"_1tn6lbq\\">
     ._1tn6lbq {
       color: purple;
@@ -100,7 +100,7 @@ test('theme updates', () => {
     </ThemeProvider>,
   );
 
-  expect(renderStylesToHtmlString()).toMatchInlineSnapshot(`
+  expect(renderStylesToString()).toMatchInlineSnapshot(`
     "<style data-tss=\\"_1b75kmd\\">
     ._1b75kmd {
       color: purple;
@@ -122,7 +122,7 @@ test('theme updates', () => {
     </ThemeProvider>,
   );
 
-  expect(renderStylesToHtmlString()).toMatchInlineSnapshot(`
+  expect(renderStylesToString()).toMatchInlineSnapshot(`
     "<style data-tss=\\"_1b75kmd\\">
     ._1b75kmd {
       color: purple;
