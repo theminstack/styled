@@ -50,13 +50,9 @@ function createStyle<TProps extends {}, TArgs extends unknown[] = []>(
       let styleString = '';
 
       for (let i = template.raw.length - 1; i >= 0; --i) {
-        let value = values[i];
-
-        if (typeof value === 'function') {
-          value = value(props, ...args);
-        }
-
-        styleString = template.raw[i] + (value == null ? '' : value) + styleString;
+        const value = values[i];
+        styleString =
+          template.raw[i] + (typeof value === 'function' ? value(props, ...args) : value ?? '') + styleString;
       }
 
       return styleString;

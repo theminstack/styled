@@ -272,6 +272,12 @@ test('omit blank declarations', () => {
     h: ${() => ''};
     i: ${() => 0};
     j: blue;
+    k: null;
+    l: undefined;
+    m: false;
+    n: true;
+    o: ${false};
+    p: ${true};
   `;
 
   expect(compiler.compile(':root', style())).toMatchInlineSnapshot(`
@@ -280,6 +286,8 @@ test('omit blank declarations', () => {
       e: 0;
       i: 0;
       j: blue;
+      n: 1;
+      p: 1;
     }"
   `);
 });

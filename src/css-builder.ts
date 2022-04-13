@@ -34,8 +34,8 @@ function createCssBuilder(): CssBuilder {
         cssString += indent + '}\n';
       }
     },
-    addDeclaration: (key, value = '') => {
-      if (!key || !value) {
+    addDeclaration: (key, value) => {
+      if (!key || value == null || value === 'false' || value === 'null' || value === 'undefined') {
         return;
       }
 
@@ -43,7 +43,7 @@ function createCssBuilder(): CssBuilder {
         cssString += openBlockBuffer.shift();
       }
 
-      cssString += indent + key + ': ' + value + ';\n';
+      cssString += indent + key + ': ' + (value === 'true' ? '1' : value) + ';\n';
     },
     addAtDeclaration: (identifier, value = '') => {
       if (identifier.length < 2 || identifier === '@charset' || !value) {

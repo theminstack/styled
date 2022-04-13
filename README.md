@@ -427,7 +427,7 @@ At-rules will be hoisted as necessary, and parent selectors will be handled the 
 
 ### Using empty values
 
-If a CSS property value is an empty string or null-ish (`null` or `undefined`), then the whole property will be omitted from the style.
+If a CSS property value is "empty" (empty string, `false`, `null` or `undefined`), then the whole property will be omitted from the style.
 
 ```tsx
 const StyledComponent = styled('div')`
