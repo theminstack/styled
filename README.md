@@ -118,7 +118,7 @@ const StyledComponent = styled('div')<ComponentStyleProps>`
 `;
 ```
 
-## global styles
+## Global styles
 
 Use the `styled.global` utility to create global style components.
 
