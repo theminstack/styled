@@ -1,9 +1,11 @@
 import { type ReactElement, type ReactNode } from 'react';
 
-export interface PageProps {
+interface PageProps {
   children?: ReactNode;
 }
 
-export function Page({ children }: PageProps): ReactElement {
+function Page({ children }: PageProps): ReactElement {
   return <div className={'page'}>{children}</div>;
 }
+
+export { Page };

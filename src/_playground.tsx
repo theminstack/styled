@@ -1,13 +1,13 @@
 /* eslint-disable */
 import { type LegacyRef, createRef } from 'react';
-import { createTheme, createStyled } from '.';
+import { createReactTheme, createStyled } from '.';
 
 // This file is not part of the library. It's a sandbox for
 // experimentation during development.
 
 // Theme
 
-const [useTheme, ThemeProvider] = createTheme({
+const [useTheme, ThemeProvider] = createReactTheme({
   foreground: 'black',
   background: 'white',
 });

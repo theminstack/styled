@@ -2,13 +2,13 @@ import { type ReactElement } from 'react';
 
 import { type BenchmarkResult } from './benchmark';
 
-export interface ResultProps {
+interface ResultProps {
   $library: string;
   $benchmark: string;
   $result: BenchmarkResult;
 }
 
-export function Result({ $library, $benchmark, $result }: ResultProps): ReactElement {
+function Result({ $library, $benchmark, $result }: ResultProps): ReactElement {
   return (
     <div className={'result'}>
       <div className={'result__start'}>
@@ -28,3 +28,5 @@ export function Result({ $library, $benchmark, $result }: ResultProps): ReactEle
     </div>
   );
 }
+
+export { Result };

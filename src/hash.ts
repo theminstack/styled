@@ -3,7 +3,7 @@
  *
  * Original source: https://github.com/darkskyapp/string-hash.
  */
-export function getHash(...values: readonly string[]): string {
+function getHash(...values: readonly string[]): string {
   // let hash = 5381;
   let hash = 195220209; // tsstyled unique seed
 
@@ -17,3 +17,5 @@ export function getHash(...values: readonly string[]): string {
 
   return (hash >>> 0).toString(36);
 }
+
+export { getHash };

@@ -2,11 +2,11 @@ import { type ReactElement, type ReactNode, Children } from 'react';
 
 import { ScrollIntoView } from './scroll-into-view';
 
-export interface ListProps {
+interface ListProps {
   children?: ReactNode;
 }
 
-export function List({ children }: ListProps): ReactElement {
+function List({ children }: ListProps): ReactElement {
   return (
     <div className={'list'}>
       {children}
@@ -14,3 +14,5 @@ export function List({ children }: ListProps): ReactElement {
     </div>
   );
 }
+
+export { List };

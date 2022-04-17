@@ -20,7 +20,7 @@ const benchmarkItems = Object.keys(benchmarks)
   .sort((a, b) => (a.label ?? a.value).localeCompare(b.label ?? b.value));
 const libraryItems = libraries.map((library) => ({ value: library.name as typeof library['name'] }));
 
-export function App(): ReactElement {
+function App(): ReactElement {
   const [library, setLibrary] = useState<typeof libraries[number]['name']>(libraryItems[0].value);
   const [results, setResults] = useState<{ library: string; benchmark: string; value: BenchmarkResult }[]>([]);
   const [benchmark, setBenchmark] = useState<string | undefined>(benchmarkItems[0]?.value);
@@ -115,3 +115,5 @@ export function App(): ReactElement {
     </Page>
   );
 }
+
+export { App };

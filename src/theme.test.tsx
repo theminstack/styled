@@ -1,9 +1,9 @@
 import { render } from '@testing-library/react';
 
-import { createStyled, createTheme, renderStylesToString } from '.';
+import { createReactTheme, createStyled, renderStylesToString } from '.';
 
 test('default theme', () => {
-  const [useTheme] = createTheme({ color: 'blue' });
+  const [useTheme] = createReactTheme({ color: 'blue' });
   const styled = createStyled(useTheme);
   const A = styled('div')`
     color: ${(_props, theme) => theme.color};
@@ -40,7 +40,7 @@ test('default theme', () => {
 });
 
 test('theme overrides', () => {
-  const [useTheme, ThemeProvider] = createTheme({ color: 'blue', backgroundColor: 'red' });
+  const [useTheme, ThemeProvider] = createReactTheme({ color: 'blue', backgroundColor: 'red' });
   const styled = createStyled(useTheme);
   const A = styled('div')`
     color: ${(_props, theme) => theme.color};
@@ -83,7 +83,7 @@ test('theme overrides', () => {
 });
 
 test('theme updates', () => {
-  const [useTheme, ThemeProvider] = createTheme({ color: 'blue', backgroundColor: 'red' });
+  const [useTheme, ThemeProvider] = createReactTheme({ color: 'blue', backgroundColor: 'red' });
   const styled = createStyled(useTheme);
   const A = styled('div')`
     color: ${(_props, theme) => theme.color};

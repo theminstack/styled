@@ -35,6 +35,7 @@ module.exports = {
         'import/prefer-default-export': 'off',
         'import/extensions': ['warn', 'never', { json: 'always', png: 'always' }],
         'import/exports-last': 'warn',
+        'import/group-exports': 'warn',
         'import/order': 'off',
         'simple-import-sort/imports': 'warn',
         'simple-import-sort/exports': 'warn',

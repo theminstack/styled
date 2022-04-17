@@ -16,15 +16,10 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
 
 ---
 
-- [Getting Started](#getting-started)
 - [Goals](#goals)
-  - [Non-goals](#non-goals)
-- [Comparison](#comparison)
-  - [Benchmarks](#benchmarks)
-- [The Basics](#the-basics)
-  - [Styling HTML elements and components](#styling-html-elements-and-components)
-  - [Adding style properties](#adding-style-properties)
-  - [Creating global styles](#creating-global-styles)
+- [Getting Started](#getting-started)
+- [Style properties](#style-properties)
+- [Global styles](#global-styles)
   - [Defining keyframes and fonts](#defining-keyframes-and-fonts)
 - [Theming](#theming)
   - [Creating a theme](#creating-a-theme)
@@ -43,19 +38,10 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
   - [Creating parametric mixins](#creating-parametric-mixins)
 - [Server Side Rendering (SSR)](#server-side-rendering-ssr)
 - [Testing](#testing)
+- [Comparison](#comparison)
+  - [Benchmarks](#benchmarks)
 
 ---
-
-## Getting Started
-
-Install the `tsstyled` package and its `react` peer dependency.
-
-```sh
-npm add tsstyled react
-yarn add tsstyled react
-```
-
-This library uses semantic versioning. Breaking changes will only be introduced in major version updates.
 
 ## Goals
 
@@ -69,7 +55,7 @@ This library uses semantic versioning. Breaking changes will only be introduced 
   - Support IE >= 11
   - Support Webpack tree-shaking
 
-### Non-goals
+There are also some things that are non-goals. They were considered, and then the choice was made to explicitly not include support for them.
 
 - No auto vendor prefixing
 - No object styles
@@ -77,54 +63,16 @@ This library uses semantic versioning. Breaking changes will only be introduced 
 - No "non-style" features (eg. `.attrs()` method)
 - No React Native support
 
-## Comparison
+## Getting Started
 
-TSStyled compared to other styled component solutions.
+Install the `tsstyled` package and its `react` peer dependency.
 
-- 🟢 Supported
-- 🟡 Partially supported
-- 🔴 Not supported
-- ⭕ Not documented
+```sh
+npm add tsstyled react
+yarn add tsstyled react
+```
 
-|             | Feature                    | TSStyled | Goober | Styled Components | Emotion |
-| ----------- | -------------------------- | -------- | ------ | ----------------- | ------- |
-| **Library** |                            |          |        |                   |         |
-|             | Bundle size (approx. kB)   | 4        | 2      | 13                | 8       |
-|             | Zero dependencies          | 🟢       | 🟢     | 🔴                | 🔴      |
-|             | Typescript native          | 🟢       | 🟢     | 🔴                | 🟢      |
-| **API**     |                            |          |        |                   |         |
-|             | Tagged template styles     | 🟢       | 🟢     | 🟢                | 🟢      |
-|             | Object styles              | 🔴       | 🟢     | 🟢                | 🟢      |
-|             | Global styles              | 🟢       | 🟢     | 🟢                | 🟢      |
-|             | Polymorphism (`as`)        | 🔴       | 🟢     | 🟢                | 🟢      |
-|             | Property mapping (`attrs`) | 🔴       | 🔴     | 🟢                | 🔴      |
-|             | Theming [1]                | 🟢       | 🟡     | 🟡                | 🟡      |
-|             | SSR                        | 🟢       | 🟢     | 🟢                | 🟢      |
-| **Style**   |                            |          |        |                   |         |
-|             | CSS `@media`               | 🟢       | 🟢     | 🟢                | 🟢      |
-|             | CSS `@keyframes`           | 🟢       | 🟢     | 🟢                | 🟢      |
-|             | CSS `@font-face`           | 🟢       | ⭕     | ⭕                | 🟢      |
-|             | CSS `@import`              | 🟢       | ⭕     | 🔴                | 🟢      |
-|             | Other CSS `@` rules        | 🟢       | ⭕     | ⭕                | ⭕      |
-|             | Vendor prefixing [2]       | 🔴       | 🟡     | 🟢                | 🟢      |
-|             | Rule nesting               | 🟢       | 🟢     | 🟢                | 🟢      |
-|             | Parent selectors (`&`)     | 🟢       | 🟢     | 🟢                | 🟢      |
-|             | Style mixins [3]           | 🟢       | 🟡     | 🟢                | 🟢      |
-|             | Styled component selectors | 🟢       | 🟢     | 🟢                | 🟢      |
-
-&nbsp;
-
-- [1] Goober, Styled Components, and Emotion, all support only a single theme, which must be typed using declaration merging.
-- [2] Goober provides vendor prefixing as an additional package.
-- [3] Goober doesn't provide a `css` utility for creating mixins, but it does support function values in tagged templates.
-
-### Benchmarks
-
-The benchmark app is available [online](https://tsstyled.com/benchmark/), or by cloning the [TSStyled repository](https://github.com/Shakeskeyboarde/tsstyled) and running the `npm start` command.
-
-## The Basics
-
-First, create the styled API.
+Create the styled API. Usually this is done only once per package.
 
 ```tsx
 import { createStyled } from 'tsstyled';
@@ -132,15 +80,7 @@ import { createStyled } from 'tsstyled';
 const styled = createStyled();
 ```
 
-Optionally, pass in a theme hook (or simple factory) function to create a [themed](#theming) instance.
-
-```tsx
-const styled = createStyled(useTheme);
-```
-
-### Styling HTML elements and components
-
-Style any HTML element type by using the tag name. The styled component supports all of the same props (included refs, which are forwarded) that the HTML element supports.
+Style any HTML element type by using the tag name. The styled component supports all of the same props (included refs, which are forwarded) that the HTML element supports. Styling basic HTML elements is what you should be doing most of the time.
 
 ```tsx
 const StyledComponent = styled('div')`
@@ -148,7 +88,7 @@ const StyledComponent = styled('div')`
 `;
 ```
 
-Style any React component which accepts a `className` string property.
+Style any React component which accepts a `className` property. This comes with more tech debt than styling HTML elements, because you can't be sure how the style class is being applied inside the component. This should be done rarely and with careful consideration.
 
 ```tsx
 const StyledComponent = styled(Component)`
@@ -156,7 +96,7 @@ const StyledComponent = styled(Component)`
 `;
 ```
 
-Extend the styling of an already styled component.
+Extend the styling of an already styled component. Just like you want to keep your CSS specificity as low as possible, you also want to avoid trying to "patch" an already styled component. Styles can be dynamic, which means applying overrides can quickly get complicated. This should be an absolute last resort.
 
 ```tsx
 const ReStyledComponent = styled(StyledComponent)`
@@ -164,13 +104,7 @@ const ReStyledComponent = styled(StyledComponent)`
 `;
 ```
 
-Most of the time, you will be styling plain HTML elements. In fact, that is the recommended pattern. These are what's known as "style primitives" and making them the lowest level component in your project will significantly reduce your tech debt.
-
-Sometimes, you'll need to style a React component which accepts a `className`. This comes with more tech debt, because you can't be sure what the style class is being applied to inside the component. It's supported, because it's definitely a necessary evil sometimes. But, style primitives are better.
-
-You might also need to re-style a previously styled component. This should be a last resort. Just like you want to keep your CSS specificity as low as possible, you also want to avoid trying to "patch" an already styled component. Styles can be dynamic, which means applying overrides can quickly get complicated. It _has_ to be supported, because someone will use `styled` on an already styled component (no way to prevent it), and without explicit support the style precedence is guaranteed to cause a problem.
-
-### Adding style properties
+## Style properties
 
 You can add extra properties to the styled component by setting the generic parameter of the template string. Generally, you should prefix style properties with `$` to indicate that they are only used for styling. Any property name which starts with the `$` character will not be passed through to the underlying HTML element as an attribute.
 
@@ -184,7 +118,7 @@ const StyledComponent = styled('div')<ComponentStyleProps>`
 `;
 ```
 
-### Creating global styles
+## global styles
 
 Use the `styled.global` utility to create global style components.
 
@@ -250,16 +184,16 @@ A theme factory is provided instead of a single built-in theme. This allows them
 
 ### Creating a theme
 
-A theme is essentially a context which provides theme constants. The `createTheme` utility makes it easy to create that kind of context, returning a hook for theme access, and a provider for theme overriding.
+A theme is essentially a context which provides theme constants. The `createReactTheme` utility makes it easy to create that kind of context, returning a hook for theme access, and a provider for theme overriding.
 
 ```tsx
-const [useTheme, ThemeProvider] = createTheme({
+const [useTheme, ThemeProvider] = createReactTheme({
   fgColor: 'black';
   bgColor: 'white';
 });
 ```
 
-**Note**: The `createTheme` helper is only for convenience. _Any_ hook could potentially be used, including theme hooks from other libraries.
+**Note**: The `createReactTheme` helper is only for convenience. _Any_ hook could potentially be used, including theme hooks from other libraries.
 
 ### Using a theme
 
@@ -525,3 +459,48 @@ During testing, there may be a DOM (eg. jsdom) and a `document` global. However,
 ```tsx
 expect(renderStylesToString()).toMatchSnapshot();
 ```
+
+## Comparison
+
+TSStyled compared to other styled component solutions.
+
+- 🟢 Supported
+- 🟡 Partially supported
+- 🔴 Not supported
+- ⭕ Not documented
+
+|             | Feature                    | TSStyled | Goober | Styled Components | Emotion |
+| ----------- | -------------------------- | -------- | ------ | ----------------- | ------- |
+| **Library** |                            |          |        |                   |         |
+|             | Bundle size (approx. kB)   | 4        | 2      | 13                | 8       |
+|             | Zero dependencies          | 🟢       | 🟢     | 🔴                | 🔴      |
+|             | Typescript native          | 🟢       | 🟢     | 🔴                | 🟢      |
+| **API**     |                            |          |        |                   |         |
+|             | Tagged template styles     | 🟢       | 🟢     | 🟢                | 🟢      |
+|             | Object styles              | 🔴       | 🟢     | 🟢                | 🟢      |
+|             | Global styles              | 🟢       | 🟢     | 🟢                | 🟢      |
+|             | Polymorphism (`as`)        | 🔴       | 🟢     | 🟢                | 🟢      |
+|             | Property mapping (`attrs`) | 🔴       | 🔴     | 🟢                | 🔴      |
+|             | Theming [1]                | 🟢       | 🟡     | 🟡                | 🟡      |
+|             | SSR                        | 🟢       | 🟢     | 🟢                | 🟢      |
+| **Style**   |                            |          |        |                   |         |
+|             | CSS `@media`               | 🟢       | 🟢     | 🟢                | 🟢      |
+|             | CSS `@keyframes`           | 🟢       | 🟢     | 🟢                | 🟢      |
+|             | CSS `@font-face`           | 🟢       | ⭕     | ⭕                | 🟢      |
+|             | CSS `@import`              | 🟢       | ⭕     | 🔴                | 🟢      |
+|             | Other CSS `@` rules        | 🟢       | ⭕     | ⭕                | ⭕      |
+|             | Vendor prefixing [2]       | 🔴       | 🟡     | 🟢                | 🟢      |
+|             | Rule nesting               | 🟢       | 🟢     | 🟢                | 🟢      |
+|             | Parent selectors (`&`)     | 🟢       | 🟢     | 🟢                | 🟢      |
+|             | Style mixins [3]           | 🟢       | 🟡     | 🟢                | 🟢      |
+|             | Styled component selectors | 🟢       | 🟢     | 🟢                | 🟢      |
+
+&nbsp;
+
+- [1] Goober, Styled Components, and Emotion, all support only a single theme, which must be typed using declaration merging.
+- [2] Goober provides vendor prefixing as an additional package.
+- [3] Goober doesn't provide a `css` utility for creating mixins, but it does support function values in tagged templates.
+
+### Benchmarks
+
+The benchmark app is available [online](https://tsstyled.com/benchmark/), or by cloning the [TSStyled repository](https://github.com/Shakeskeyboarde/tsstyled) and running the `npm start` command.

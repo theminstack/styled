@@ -1,7 +1,7 @@
 import { type ReactElement, type ReactNode } from 'react';
 import { type CSSProperties } from 'styled-components';
 
-export function View(props: { style?: CSSProperties; children?: ReactNode }): ReactElement {
+function View(props: { style?: CSSProperties; children?: ReactNode }): ReactElement {
   return (
     <div
       style={{
@@ -25,3 +25,5 @@ export function View(props: { style?: CSSProperties; children?: ReactNode }): Re
     </div>
   );
 }
+
+export { View };

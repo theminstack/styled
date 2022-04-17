@@ -14,7 +14,7 @@ function array<T>(length: number, factory: (i: number) => T): T[] {
   return value;
 }
 
-export interface TreeProps {
+interface TreeProps {
   breadth: number;
   depth: number;
   wrap: number;
@@ -22,7 +22,7 @@ export interface TreeProps {
   Box: ElementType<BoxProps>;
 }
 
-export function Tree({ breadth, depth, wrap, colorIndex = 0, Box }: TreeProps): ReactElement {
+function Tree({ breadth, depth, wrap, colorIndex = 0, Box }: TreeProps): ReactElement {
   let result = (
     <Box $color={colors[colorIndex % 3]} $layout={depth % 2 === 0 ? 'column' : 'row'} $outer>
       {depth === 0 && <Box $color={colors[(colorIndex % 3) + 3]} $fixed />}
@@ -39,3 +39,5 @@ export function Tree({ breadth, depth, wrap, colorIndex = 0, Box }: TreeProps): 
 
   return result;
 }
+
+export { Tree };

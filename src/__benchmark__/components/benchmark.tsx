@@ -22,19 +22,19 @@ function getStdDev(values: number[]): number {
   return Math.sqrt(getMean(squareDiffs));
 }
 
-export interface BenchmarkValue {
+interface BenchmarkValue {
   mean: number;
   stdDev: number;
 }
 
-export interface BenchmarkResult {
+interface BenchmarkResult {
   sampleCount: number;
   total: BenchmarkValue;
   scripting: BenchmarkValue;
   layout: BenchmarkValue;
 }
 
-export interface BenchmarkConfig {
+interface BenchmarkConfig {
   name: string;
   type: 'mount' | 'unmount' | 'update';
   timeout?: number | undefined;
@@ -42,12 +42,12 @@ export interface BenchmarkConfig {
   render: (i: number) => ReactElement;
 }
 
-export interface BenchmarkProps {
+interface BenchmarkProps {
   config?: BenchmarkConfig | null;
   onResult?: (results: BenchmarkResult) => void;
 }
 
-export function Benchmark({ config: _config = null, onResult }: BenchmarkProps): ReactElement | null {
+function Benchmark({ config: _config = null, onResult }: BenchmarkProps): ReactElement | null {
   const [config, setConfig] = useState<BenchmarkConfig | null>(null);
   const [cycle, setCycle] = useState(NaN);
   const startTime = useRef(0);
@@ -173,3 +173,5 @@ export function Benchmark({ config: _config = null, onResult }: BenchmarkProps):
 
   return mount ? config.render(samples.current.length) : null;
 }
+
+export { type BenchmarkConfig, type BenchmarkProps, type BenchmarkResult, type BenchmarkValue, Benchmark };

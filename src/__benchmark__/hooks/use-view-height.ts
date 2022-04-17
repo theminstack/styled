@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-export function useViewHeight(): string {
-  const [value, setValue] = useState('1vh');
+function useViewHeight(): string {
+  const [value, setValue] = useState('100vh');
 
   useEffect(() => {
     const onResize = () => setValue(`${window.innerHeight * 0.01}px`);
@@ -12,3 +12,5 @@ export function useViewHeight(): string {
 
   return value;
 }
+
+export { useViewHeight };

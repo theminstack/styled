@@ -1,5 +1,7 @@
 import { type ReactElement } from 'react';
 
-export function Separator(): ReactElement {
+function Separator(): ReactElement {
   return <div className={'separator'} />;
 }
+
+export { Separator };

@@ -1,4 +1,4 @@
-export function getHtmlAttributes<TProps extends {}>(props: TProps): Partial<TProps> {
+function getHtmlAttributes<TProps extends {}>(props: TProps): Partial<TProps> {
   const keys = Object.keys(props) as Array<keyof TProps & string>;
   const filtered: Partial<TProps> = {};
 
@@ -12,3 +12,5 @@ export function getHtmlAttributes<TProps extends {}>(props: TProps): Partial<TPr
 
   return filtered;
 }
+
+export { getHtmlAttributes };

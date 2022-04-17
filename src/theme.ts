@@ -1,23 +1,36 @@
-import { type ProviderProps, type VFC, createContext, createElement, useContext } from 'react';
+import { type Context, type ProviderProps, type VFC, createContext, useContext } from 'react';
 
 /**
- * Create a theme context, with a hook for theme access, and a provider for
- * theme overriding.
+ * Create a React theme hook function and provider component.
  *
  * ```tsx
- * const [useTheme, ThemeProvider] = createTheme({ color: 'red' });
+ * const [useTheme, ThemeProvider, ThemeContext] = createReactTheme({ color: 'red' });
  * ```
  */
-export function createTheme<TTheme extends {}>(
+function createReactTheme<TTheme extends {}>(
   defaultTheme: TTheme,
-  providerDisplayName = '',
-): [useTheme: () => TTheme, ThemeProvider: VFC<ProviderProps<TTheme>>] {
-  const Context = createContext(defaultTheme);
-  const useTheme = () => useContext(Context);
-  const ThemeProvider = ({ children, ...props }: ProviderProps<TTheme>) =>
-    createElement(Context.Provider, props, children);
+): [useTheme: () => TTheme, ThemeProvider: VFC<ProviderProps<TTheme>>, ThemeContext: Context<TTheme>];
+/**
+ * @deprecated `displayName` is no longer supported and has no effect.
+ * @ignore
+ */
+function createReactTheme<TTheme extends {}>(
+  defaultTheme: TTheme,
+  displayName?: string,
+): [useTheme: () => TTheme, ThemeProvider: VFC<ProviderProps<TTheme>>, ThemeContext: Context<TTheme>];
+function createReactTheme<TTheme extends {}>(
+  defaultTheme: TTheme,
+): [useTheme: () => TTheme, ThemeProvider: VFC<ProviderProps<TTheme>>, ThemeContext: Context<TTheme>] {
+  const ThemeContext = createContext(defaultTheme);
+  const useTheme = () => useContext(ThemeContext);
 
-  ThemeProvider.displayName = providerDisplayName || 'ThemeProvider';
-
-  return [useTheme, ThemeProvider];
+  return [useTheme, ThemeContext.Provider, ThemeContext];
 }
+
+/**
+ * @deprecated Use {@link createReactTheme} instead.
+ * @ignore
+ */
+const createTheme = createReactTheme;
+
+export { createReactTheme, createTheme };

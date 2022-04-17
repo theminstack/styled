@@ -1,13 +1,15 @@
 import { type ReactElement, type ReactNode } from 'react';
 
-export interface OutputProps {
+interface OutputProps {
   children?: ReactNode;
 }
 
-export function Output({ children }: OutputProps): ReactElement {
+function Output({ children }: OutputProps): ReactElement {
   return (
     <div className={'output'}>
       <div className={'output__content'}>{children}</div>
     </div>
   );
 }
+
+export { Output };

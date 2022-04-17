@@ -5,7 +5,7 @@ import { type DotProps } from '../types/dot-props';
 
 const targetSize = 10;
 
-export interface SierpinskiTriangleProps {
+interface SierpinskiTriangleProps {
   Dot: ElementType<DotProps>;
   depth?: number;
   renderCount?: number;
@@ -14,7 +14,7 @@ export interface SierpinskiTriangleProps {
   y?: number;
 }
 
-export function SierpinskiTriangle({
+function SierpinskiTriangle({
   Dot,
   depth = 0,
   renderCount = 0,
@@ -51,3 +51,5 @@ export function SierpinskiTriangle({
     </>
   );
 }
+
+export { SierpinskiTriangle };

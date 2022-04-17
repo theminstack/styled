@@ -14,17 +14,17 @@ function Action({ onClick, title, children }: ActionProps): ReactElement {
   );
 }
 
-export interface ActionItem {
+interface ActionItem {
   content: ReactElement;
   tip?: string;
   onClick?: () => void;
 }
 
-export interface ActionsProps {
+interface ActionsProps {
   items?: ActionItem[];
 }
 
-export function Actions({ items = [] }: ActionsProps): ReactElement {
+function Actions({ items = [] }: ActionsProps): ReactElement {
   return (
     <div className={'actions'}>
       {items.map((action, i) => (
@@ -35,3 +35,5 @@ export function Actions({ items = [] }: ActionsProps): ReactElement {
     </div>
   );
 }
+
+export { Actions };

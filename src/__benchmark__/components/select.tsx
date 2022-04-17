@@ -1,11 +1,11 @@
 import { type ChangeEvent, type ReactElement, useCallback } from 'react';
 
-export interface SelectItem {
+interface SelectItem {
   value: string;
   label?: string;
 }
 
-export interface SelectProps {
+interface SelectProps {
   $label: string;
   items: SelectItem[];
   selectedValue?: string;
@@ -13,7 +13,7 @@ export interface SelectProps {
   onChange?: (value: string) => void;
 }
 
-export function Select({ $label, items, selectedValue, disabled = false, onChange }: SelectProps): ReactElement {
+function Select({ $label, items, selectedValue, disabled = false, onChange }: SelectProps): ReactElement {
   const $onChange = useCallback((ev: ChangeEvent<HTMLSelectElement>) => onChange?.(ev.target.value), [onChange]);
 
   return (
@@ -29,3 +29,5 @@ export function Select({ $label, items, selectedValue, disabled = false, onChang
     </div>
   );
 }
+
+export { type SelectItem, Select };
