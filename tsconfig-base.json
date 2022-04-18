@@ -16,7 +16,6 @@
     "sourceMap": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "removeComments": true,
     "downlevelIteration": true
   }
 }

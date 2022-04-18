@@ -34,8 +34,7 @@ function createStyledComponent<
   ) => TProps & { className?: string; children?: ReactNode };
 
   const styledComponent: ForwardRefExoticComponent<TProps> = Object.assign(
-    // eslint-disable-next-line react/display-name
-    forwardRef<unknown, TProps>((props, ref): ReactElement | null => {
+    forwardRef<unknown, TProps>(function Styled(props, ref): ReactElement | null {
       const theme = useTheme();
       const styleString = currentStyle.getString(props, theme);
       const { className, children, ...innerProps } = getInnerProps(props);
