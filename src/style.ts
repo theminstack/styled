@@ -1,6 +1,11 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { type Styled } from './styled';
 
+type StyleTemplateDynamicValue<TProps extends {}, TArgs extends readonly unknown[] = []> = (
+  props: TProps,
+  ...args: TArgs
+) => string | number | null | undefined | { toString: () => string };
+
 /**
  * Values provided as part of a {@link Styled styled} template string.
  */
@@ -10,7 +15,7 @@ type StyleTemplateValues<TProps extends {}, TArgs extends readonly unknown[] = [
   | null
   | undefined
   | { toString: () => string }
-  | ((props: TProps, ...args: TArgs) => string | number | null | undefined | { toString: () => string })
+  | StyleTemplateDynamicValue<TProps, TArgs>
 )[];
 
 interface Style<TProps extends {}, TArgs extends unknown[] = []> {
@@ -19,6 +24,33 @@ interface Style<TProps extends {}, TArgs extends unknown[] = []> {
   ) => Style<TExtendedProps, TExtendedArgs>;
 
   getString: (props: TProps, ...args: TArgs) => string;
+}
+
+function getSimplifiedTemplate<TProps extends {}, TArgs extends unknown[] = []>(
+  templateRaw: readonly string[],
+  templateValues: StyleTemplateValues<TProps, TArgs>,
+): [template: readonly string[], values: StyleTemplateDynamicValue<TProps, TArgs>[]] {
+  const strings: string[] = [];
+  const values: StyleTemplateDynamicValue<TProps, TArgs>[] = [];
+
+  let buffer = templateRaw[templateRaw.length - 1];
+
+  for (let i = templateValues.length - 1; i >= 0; i--) {
+    const string = templateRaw[i];
+    const value = templateValues[i];
+
+    if (typeof value === 'function') {
+      strings.unshift(buffer);
+      values.unshift(value as StyleTemplateDynamicValue<TProps, TArgs>);
+      buffer = string;
+    } else {
+      buffer = string + value + buffer;
+    }
+  }
+
+  strings.unshift(buffer);
+
+  return [strings, values];
 }
 
 function createCompoundStyle<TProps extends {}, TArgs extends unknown[] = []>(
@@ -42,17 +74,16 @@ function createCompoundStyle<TProps extends {}, TArgs extends unknown[] = []>(
 
 function createStyle<TProps extends {}, TArgs extends unknown[] = []>(
   template: TemplateStringsArray,
-  values: StyleTemplateValues<TProps, TArgs>,
+  templateValues: StyleTemplateValues<TProps, TArgs>,
 ): Style<TProps, TArgs> {
+  const [strings, values] = getSimplifiedTemplate(template.raw, templateValues);
   const style: Style<TProps, TArgs> = {
     extend: (newStyle) => createCompoundStyle(style, newStyle),
     getString: (props, ...args) => {
-      let styleString = '';
+      let styleString = strings[strings.length - 1];
 
-      for (let i = template.raw.length - 1; i >= 0; --i) {
-        const value = values[i];
-        styleString =
-          template.raw[i] + (typeof value === 'function' ? value(props, ...args) : value ?? '') + styleString;
+      for (let i = values.length - 1; i >= 0; --i) {
+        styleString = strings[i] + values[i](props, ...args) + styleString;
       }
 
       return styleString;
