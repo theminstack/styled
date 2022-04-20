@@ -1,11 +1,11 @@
-interface CssStatementBuilder {
-  isAt: () => boolean;
-  addToken: (token: string) => void;
-  build: () => [key: string, value?: string];
-}
+type CssStatementBuilder = {
+  readonly addToken: (token: string) => void;
+  readonly build: () => readonly [key: string, value?: string];
+  readonly isAt: () => boolean;
+};
 
-function createCssStatementBuilder(): CssStatementBuilder {
-  let separator: ':' | ' ' = ':';
+const createCssStatementBuilder = (): CssStatementBuilder => {
+  let separator: ' ' | ':' = ':';
   let key = '';
   let value = '';
   let space = '';
@@ -14,7 +14,6 @@ function createCssStatementBuilder(): CssStatementBuilder {
   let isAt = false;
 
   return {
-    isAt: () => isAt,
     addToken: (token) => {
       if (token === separator && isKey) {
         isKey = false;
@@ -43,7 +42,8 @@ function createCssStatementBuilder(): CssStatementBuilder {
     build: () => {
       return value ? [key, value] : [key];
     },
+    isAt: () => isAt,
   };
-}
+};
 
 export { type CssStatementBuilder, createCssStatementBuilder };

@@ -1,10 +1,10 @@
 import { getHash } from './hash';
 
-interface StyleStringCache {
-  register: (styleString: string) => [isNew: boolean, hash: string];
-}
+type StyleStringCache = {
+  readonly register: (styleString: string) => readonly [isNew: boolean, hash: string];
+};
 
-function createStyleStringCache(): StyleStringCache {
+const createStyleStringCache = (): StyleStringCache => {
   const entries = new Map<string, string>();
 
   return {
@@ -21,6 +21,6 @@ function createStyleStringCache(): StyleStringCache {
       return [isNew, hash];
     },
   };
-}
+};
 
 export { type StyleStringCache, createStyleStringCache };

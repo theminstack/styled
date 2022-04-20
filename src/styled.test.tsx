@@ -5,13 +5,13 @@ import { createStyled } from '.';
 const styled = createStyled();
 
 test('style ordering', () => {
-  const A = styled('div')<{ $color: string }>`
+  const A = styled('div')<{ readonly $color: string }>`
     color: ${(props) => props.$color};
   `;
-  const B = styled('div')<{ $color: string }>`
+  const B = styled('div')<{ readonly $color: string }>`
     color: ${(props) => props.$color};
   `;
-  const C = styled('div')<{ $color: string }>`
+  const C = styled('div')<{ readonly $color: string }>`
     color: ${(props) => props.$color};
   `;
 
@@ -152,7 +152,7 @@ test('indirect restyle', () => {
   const A = styled('div')`
     color: red;
   `;
-  const B = (props: { className?: string }) => <A className={props.className} />;
+  const B = (props: { readonly className?: string }) => <A className={props.className} />;
   const C = styled(B)`
     color: blue;
   `;
@@ -228,7 +228,7 @@ test('style other', () => {
 });
 
 test('update', () => {
-  const A = styled('div')<{ $color?: string }>`
+  const A = styled('div')<{ readonly $color?: string }>`
     color: ${(props) => props.$color};
   `;
   A.defaultProps = { $color: 'red' };

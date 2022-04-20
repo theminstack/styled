@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-abusive-eslint-disable */
 /* eslint-disable */
 import { type LegacyRef, createRef } from 'react';
 import { createReactTheme, createStyled } from '.';
@@ -25,10 +26,10 @@ const styled = createStyled(useTheme);
 // Styled Component
 
 function Component(props: {
-  ref?: LegacyRef<{ foo(): void }>;
-  className?: string;
-  $value1?: string | number;
-  $value2?: string | number;
+  readonly ref?: LegacyRef<{ readonly foo: () => void }>;
+  readonly className?: string;
+  readonly $value1?: string | number;
+  readonly $value2?: string | number;
 }): null {
   return null;
 }
@@ -37,7 +38,7 @@ const StyledComponent = styled(Component)<{ $value2?: string | number; $other1?:
   color: ${(props) => props.className};
   color: ${(props) => props.$value1};
 `;
-const refComponent = createRef<{ foo(): void }>();
+const refComponent = createRef<{ readonly foo: () => void }>();
 <StyledComponent ref={refComponent} />;
 
 const ReStyledComponent = styled(StyledComponent)<{ $other2?: string }>`
@@ -50,7 +51,7 @@ const ReStyledComponent = styled(StyledComponent)<{ $other2?: string }>`
 `;
 <ReStyledComponent ref={refComponent} />;
 
-const Div = styled('div')<{ foo: string }>`
+const Div = styled('div')<{ readonly foo: string }>`
   color: ${(_props, theme) => theme.foreground};
   color: blue;
 `;
@@ -81,11 +82,11 @@ const GlobalStyle3 = styled.global`
 
 // Styled Helper
 
-const helper1 = styled.mixin<{ foo: string }>`
+const helper1 = styled.mixin<{ readonly foo: string }>`
   color: ${(props) => props.foo};
 `;
 
-const helper2 = styled.mixin<{ foo?: string }>`
+const helper2 = styled.mixin<{ readonly foo?: string }>`
   color: ${(props) => props.foo};
 `;
 

@@ -1,39 +1,39 @@
 import { type ReactElement, type ReactNode } from 'react';
 
-interface ActionProps {
-  onClick?: () => void;
-  title?: string;
-  children: ReactNode;
-}
+type ActionProps = {
+  readonly children: ReactNode;
+  readonly onClick?: () => void;
+  readonly title?: string;
+};
 
-function Action({ onClick, title, children }: ActionProps): ReactElement {
+const Action = ({ onClick, title, children }: ActionProps): ReactElement => {
   return (
     <div className={'action'} onClick={onClick} title={title}>
       {children}
     </div>
   );
-}
+};
 
-interface ActionItem {
-  content: ReactElement;
-  tip?: string;
-  onClick?: () => void;
-}
+type ActionItem = {
+  readonly content: ReactElement;
+  readonly onClick?: () => void;
+  readonly tip?: string;
+};
 
-interface ActionsProps {
-  items?: ActionItem[];
-}
+type ActionsProps = {
+  readonly items?: readonly ActionItem[];
+};
 
-function Actions({ items = [] }: ActionsProps): ReactElement {
+const Actions = ({ items = [] }: ActionsProps): ReactElement => {
   return (
     <div className={'actions'}>
-      {items.map((action, i) => (
-        <Action key={i} onClick={action.onClick} title={action.tip}>
+      {items.map((action, index) => (
+        <Action key={index} onClick={action.onClick} title={action.tip}>
           {action.content}
         </Action>
       ))}
     </div>
   );
-}
+};
 
 export { Actions };

@@ -1,7 +1,7 @@
-import type { StyleTemplateValues } from './style';
-import { createStyle } from './style';
+import { type StyleTemplateValues, createStyle } from './style';
 
-const css = (template: TemplateStringsArray, ...values: StyleTemplateValues<{}, []>) => [template, values] as const;
+const css = (template: TemplateStringsArray, ...values: StyleTemplateValues<{}, readonly []>) =>
+  [template, values] as const;
 
 test('static style', () => {
   const [template, values] = css`

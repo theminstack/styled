@@ -1,33 +1,33 @@
 import { type ChangeEvent, type ReactElement, useCallback } from 'react';
 
-interface SelectItem {
-  value: string;
-  label?: string;
-}
+type SelectItem = {
+  readonly label?: string;
+  readonly value: string;
+};
 
-interface SelectProps {
-  $label: string;
-  items: SelectItem[];
-  selectedValue?: string;
-  disabled?: boolean;
-  onChange?: (value: string) => void;
-}
+type SelectProps = {
+  readonly $label: string;
+  readonly disabled?: boolean;
+  readonly items: readonly SelectItem[];
+  readonly onChange?: (value: string) => void;
+  readonly selectedValue?: string;
+};
 
-function Select({ $label, items, selectedValue, disabled = false, onChange }: SelectProps): ReactElement {
-  const $onChange = useCallback((ev: ChangeEvent<HTMLSelectElement>) => onChange?.(ev.target.value), [onChange]);
+const Select = ({ $label, items, selectedValue, disabled = false, onChange }: SelectProps): ReactElement => {
+  const $onChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => onChange?.(event.target.value), [onChange]);
 
   return (
     <div className={'select'}>
       <label className={'select__label'}>{$label}</label>
       <select className={'select__input'} value={selectedValue} onChange={$onChange} disabled={disabled}>
-        {items.map(({ value, label = value }, i) => (
-          <option key={i} value={value}>
+        {items.map(({ value, label = value }, index) => (
+          <option key={index} value={value}>
             {label}
           </option>
         ))}
       </select>
     </div>
   );
-}
+};
 
 export { type SelectItem, Select };

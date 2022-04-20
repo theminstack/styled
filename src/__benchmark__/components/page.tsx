@@ -1,11 +1,11 @@
 import { type ReactElement, type ReactNode } from 'react';
 
-interface PageProps {
-  children?: ReactNode;
-}
+type PageProps = {
+  readonly children?: ReactNode;
+};
 
-function Page({ children }: PageProps): ReactElement {
+const Page = ({ children }: PageProps): ReactElement => {
   return <div className={'page'}>{children}</div>;
-}
+};
 
 export { Page };

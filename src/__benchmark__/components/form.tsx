@@ -1,11 +1,11 @@
 import { type ReactElement, type ReactNode } from 'react';
 
-interface FormProps {
-  children?: ReactNode;
-}
+type FormProps = {
+  readonly children?: ReactNode;
+};
 
-function Form({ children }: FormProps): ReactElement {
+const Form = ({ children }: FormProps): ReactElement => {
   return <div className={'form'}>{children}</div>;
-}
+};
 
 export { Form };

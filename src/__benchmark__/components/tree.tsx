@@ -4,40 +4,40 @@ import { type BoxProps } from '../types/box-props';
 
 const colors = ['#14171A', '#AAB8C2', '#E6ECF0', '#FFAD1F', '#F45D22', '#E0245E'];
 
-function array<T>(length: number, factory: (i: number) => T): T[] {
-  const value = new Array(length);
+const array = function <T>(length: number, factory: (index: number) => T): T[] {
+  const value = Array.from<T>({ length });
 
-  for (let i = length - 1; i >= 0; i--) {
-    value[i] = factory(i);
+  for (let index = length - 1; index >= 0; index--) {
+    value[index] = factory(index);
   }
 
   return value;
-}
+};
 
-interface TreeProps {
-  breadth: number;
-  depth: number;
-  wrap: number;
-  colorIndex?: number;
-  Box: ElementType<BoxProps>;
-}
+type TreeProps = {
+  readonly Box: ElementType<BoxProps>;
+  readonly breadth: number;
+  readonly colorIndex?: number;
+  readonly depth: number;
+  readonly wrap: number;
+};
 
-function Tree({ breadth, depth, wrap, colorIndex = 0, Box }: TreeProps): ReactElement {
+const Tree = ({ breadth, depth, wrap, colorIndex = 0, Box }: TreeProps): ReactElement => {
   let result = (
     <Box $color={colors[colorIndex % 3]} $layout={depth % 2 === 0 ? 'column' : 'row'} $outer>
       {depth === 0 && <Box $color={colors[(colorIndex % 3) + 3]} $fixed />}
       {depth !== 0 &&
-        array(breadth, (i) => (
-          <Tree breadth={breadth} Box={Box} depth={depth - 1} colorIndex={i} key={i} wrap={wrap} />
+        array(breadth, (index) => (
+          <Tree breadth={breadth} Box={Box} depth={depth - 1} colorIndex={index} key={index} wrap={wrap} />
         ))}
     </Box>
   );
 
-  for (let i = 0; i < wrap; i++) {
+  for (let index = 0; index < wrap; index++) {
     result = <Box $color={colors[0]}>{result}</Box>;
   }
 
   return result;
-}
+};
 
 export { Tree };

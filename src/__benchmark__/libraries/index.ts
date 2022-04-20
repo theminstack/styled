@@ -4,4 +4,4 @@ import * as styledComponents from './styled-components';
 import * as tsstyled from './tsstyled';
 import * as unstyled from './unstyled';
 
-export const libraries: LibraryConfig[] = [tsstyled, styledComponents, inlineStyles, unstyled];
+export const libraries: readonly LibraryConfig[] = [tsstyled, styledComponents, inlineStyles, unstyled];

@@ -1,12 +1,12 @@
 import { type ReactElement, type ReactNode, useCallback } from 'react';
 
-interface ButtonProps {
-  disabled?: boolean;
-  children?: ReactNode;
-  onClick?: () => void;
-}
+type ButtonProps = {
+  readonly children?: ReactNode;
+  readonly disabled?: boolean;
+  readonly onClick?: () => void;
+};
 
-function Button({ disabled = false, children, onClick }: ButtonProps): ReactElement {
+const Button = ({ disabled = false, children, onClick }: ButtonProps): ReactElement => {
   const $onClick = useCallback(() => {
     if (!disabled) {
       onClick?.();
@@ -18,6 +18,6 @@ function Button({ disabled = false, children, onClick }: ButtonProps): ReactElem
       {children}
     </button>
   );
-}
+};
 
 export { Button };

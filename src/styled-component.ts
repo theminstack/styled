@@ -14,16 +14,16 @@ import { getHtmlAttributes } from './html-attributes';
 import { type Style } from './style';
 import { type StyleStringCompiler } from './style-string-compiler';
 
-function createStyledComponent<
-  TComponent extends keyof JSX.IntrinsicElements | JSXElementConstructor<{}>,
+const createStyledComponent = <
+  TComponent extends JSXElementConstructor<{}> | keyof JSX.IntrinsicElements,
   TProps extends ComponentProps<TComponent>,
   TTheme extends {} | undefined,
 >(
   styleCompiler: StyleStringCompiler,
-  style: Style<TProps, [TTheme]>,
+  style: Style<TProps, readonly [TTheme]>,
   useTheme: () => TTheme,
   component: TComponent,
-): ForwardRefExoticComponent<TProps> {
+): ForwardRefExoticComponent<TProps> => {
   const parent = typeof component !== 'string' ? context.styledComponentCache.get(component) : undefined;
   const [baseComponent, currentStyle] =
     parent != null ? [parent.component, parent.style.extend(style)] : [component, style];
@@ -31,17 +31,18 @@ function createStyledComponent<
   const selector = '.' + staticClassName;
   const getInnerProps = (typeof baseComponent === 'string' ? getHtmlAttributes : (props) => props) as (
     props: TProps,
-  ) => TProps & { className?: string; children?: ReactNode };
+  ) => TProps & { children?: ReactNode; className?: string };
 
   const styledComponent: ForwardRefExoticComponent<TProps> = Object.assign(
-    forwardRef<unknown, TProps>(function Styled(props, ref): ReactElement | null {
+    // eslint-disable-next-line react/display-name
+    forwardRef<unknown, TProps>((props, ref): ReactElement | null => {
       const theme = useTheme();
       const styleString = currentStyle.getString(props, theme);
       const { className, children, ...innerProps } = getInnerProps(props);
       const styleState = useMemo(() => {
         const [isNew, hash] = context.styleStringCache.register(styleString + staticClassName);
-        const className = '_' + hash;
-        return { isNew, className };
+        const styleClassName = '_' + hash;
+        return { className: styleClassName, isNew };
       }, [styleString]);
 
       context.useLayoutEffect(() => {
@@ -72,6 +73,6 @@ function createStyledComponent<
   context.styledComponentCache.register(styledComponent, baseComponent, currentStyle);
 
   return styledComponent;
-}
+};
 
 export { createStyledComponent };

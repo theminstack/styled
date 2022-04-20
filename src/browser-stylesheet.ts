@@ -1,12 +1,12 @@
-interface BrowserStylesheet {
+type BrowserStylesheet = {
   readonly cssString: string;
   readonly data: string;
-  update: (cssString: string, data: string) => BrowserStylesheet;
-  mount: () => void;
-  unmount: () => void;
-}
+  readonly mount: () => void;
+  readonly unmount: () => void;
+  readonly update: (cssString: string, data: string) => BrowserStylesheet;
+};
 
-function createBrowserStylesheet(): BrowserStylesheet {
+const createBrowserStylesheet = (): BrowserStylesheet => {
   const styleElement = document.createElement('style');
   const stylesheet: BrowserStylesheet = {
     get cssString() {
@@ -14,11 +14,6 @@ function createBrowserStylesheet(): BrowserStylesheet {
     },
     get data() {
       return styleElement?.getAttribute('data-tss') ?? '';
-    },
-    update: (newCssString, newData) => {
-      styleElement.textContent = newCssString;
-      styleElement.setAttribute('data-tss', newData);
-      return stylesheet;
     },
     mount: () => {
       if (!styleElement.parentElement) {
@@ -30,9 +25,14 @@ function createBrowserStylesheet(): BrowserStylesheet {
         styleElement.parentElement.removeChild(styleElement);
       }
     },
+    update: (newCssString, newData) => {
+      styleElement.textContent = newCssString;
+      styleElement.setAttribute('data-tss', newData);
+      return stylesheet;
+    },
   };
 
   return stylesheet;
-}
+};
 
 export { createBrowserStylesheet };

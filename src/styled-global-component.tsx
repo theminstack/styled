@@ -4,12 +4,12 @@ import { context } from './context';
 import { type Style } from './style';
 import { type StyleStringCompiler } from './style-string-compiler';
 
-function createStyledGlobalComponent<TProps extends {}, TTheme extends {} | undefined>(
+const createStyledGlobalComponent = <TProps extends {}, TTheme extends {} | undefined>(
   styleCompiler: StyleStringCompiler,
-  style: Style<TProps, [TTheme]>,
+  style: Style<TProps, readonly [TTheme]>,
   useTheme: () => TTheme,
-): VFC<TProps> {
-  function StyledGlobal(props: TProps & { children?: unknown }): ReactElement | null {
+): VFC<TProps> => {
+  const StyledGlobal = (props: TProps & { readonly children?: unknown }): ReactElement | null => {
     const theme = useTheme();
     const stylesheet = useMemo(() => context.createStylesheet(), []);
     const styleString = style.getString(props, theme);
@@ -26,9 +26,9 @@ function createStyledGlobalComponent<TProps extends {}, TTheme extends {} | unde
     }, []);
 
     return isStylesheetAdded ? <>{props.children}</> : null;
-  }
+  };
 
   return StyledGlobal;
-}
+};
 
 export { createStyledGlobalComponent };

@@ -9,7 +9,7 @@ import { type Context, type ProviderProps, type VFC, createContext, useContext }
  */
 function createReactTheme<TTheme extends {}>(
   defaultTheme: TTheme,
-): [useTheme: () => TTheme, ThemeProvider: VFC<ProviderProps<TTheme>>, ThemeContext: Context<TTheme>];
+): readonly [useTheme: () => TTheme, ThemeProvider: VFC<ProviderProps<TTheme>>, ThemeContext: Context<TTheme>];
 /**
  * @deprecated `displayName` is no longer supported and has no effect.
  * @ignore
@@ -17,10 +17,11 @@ function createReactTheme<TTheme extends {}>(
 function createReactTheme<TTheme extends {}>(
   defaultTheme: TTheme,
   displayName?: string,
-): [useTheme: () => TTheme, ThemeProvider: VFC<ProviderProps<TTheme>>, ThemeContext: Context<TTheme>];
+): readonly [useTheme: () => TTheme, ThemeProvider: VFC<ProviderProps<TTheme>>, ThemeContext: Context<TTheme>];
+// eslint-disable-next-line func-style
 function createReactTheme<TTheme extends {}>(
   defaultTheme: TTheme,
-): [useTheme: () => TTheme, ThemeProvider: VFC<ProviderProps<TTheme>>, ThemeContext: Context<TTheme>] {
+): readonly [useTheme: () => TTheme, ThemeProvider: VFC<ProviderProps<TTheme>>, ThemeContext: Context<TTheme>] {
   const ThemeContext = createContext(defaultTheme);
   const useTheme = () => useContext(ThemeContext);
 

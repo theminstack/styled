@@ -1,12 +1,12 @@
 import { type Stylesheet } from './stylesheet';
 
-interface StylesheetCollection {
-  add: (stylesheet: Stylesheet) => Stylesheet;
-  remove: (stylesheet: Stylesheet) => Stylesheet;
-  toHtmlString: () => string;
-}
+type StylesheetCollection = {
+  readonly add: (stylesheet: Stylesheet) => Stylesheet;
+  readonly remove: (stylesheet: Stylesheet) => Stylesheet;
+  readonly toHtmlString: () => string;
+};
 
-function createStylesheetCollection(): StylesheetCollection {
+const createStylesheetCollection = (): StylesheetCollection => {
   const items = new Set<Stylesheet>();
 
   return {
@@ -31,6 +31,6 @@ function createStylesheetCollection(): StylesheetCollection {
       return html.trim();
     },
   };
-}
+};
 
 export { type StylesheetCollection, createStylesheetCollection };

@@ -1,13 +1,13 @@
-interface CssBuilder {
-  openBlock: (selectors: readonly [string, ...string[]]) => void;
-  openAtBlock: (identifier: string, rule?: string) => void;
-  closeBlock: () => void;
-  addDeclaration: (property: string, value?: string) => void;
-  addAtDeclaration: (identifier: string, value?: string) => void;
-  build: () => string;
-}
+type CssBuilder = {
+  readonly addAtDeclaration: (identifier: string, value?: string) => void;
+  readonly addDeclaration: (property: string, value?: string) => void;
+  readonly build: () => string;
+  readonly closeBlock: () => void;
+  readonly openAtBlock: (identifier: string, rule?: string) => void;
+  readonly openBlock: (selectors: readonly [string, ...(readonly string[])]) => void;
+};
 
-function createCssBuilder(): CssBuilder {
+const createCssBuilder = (): CssBuilder => {
   const openBlockBuffer: string[] = [];
 
   let atImports = '';
@@ -17,34 +17,6 @@ function createCssBuilder(): CssBuilder {
   let indent = '';
 
   const builder: CssBuilder = {
-    openBlock: (selectors) => {
-      openBlockBuffer.push(indent + selectors.join(',\n' + indent) + ' {\n');
-      indent += '  ';
-    },
-    openAtBlock: (identifier, rule) => {
-      openBlockBuffer.push(indent + (rule ? identifier + ' ' + rule : identifier) + ' {\n');
-      indent += '  ';
-    },
-    closeBlock: () => {
-      indent = indent.slice(0, -2);
-
-      if (openBlockBuffer.length) {
-        openBlockBuffer.pop();
-      } else {
-        cssString += indent + '}\n';
-      }
-    },
-    addDeclaration: (key, value) => {
-      if (!key || value == null || value === 'false' || value === 'null' || value === 'undefined') {
-        return;
-      }
-
-      while (openBlockBuffer.length) {
-        cssString += openBlockBuffer.shift();
-      }
-
-      cssString += indent + key + ': ' + (value === 'true' ? '1' : value) + ';\n';
-    },
     addAtDeclaration: (identifier, value = '') => {
       if (identifier.length < 2 || identifier === '@charset' || !value) {
         return;
@@ -60,12 +32,40 @@ function createCssBuilder(): CssBuilder {
         atOthers += declaration;
       }
     },
+    addDeclaration: (key, value) => {
+      if (!key || value == null || value === 'false' || value === 'null' || value === 'undefined') {
+        return;
+      }
+
+      while (openBlockBuffer.length) {
+        cssString += openBlockBuffer.shift();
+      }
+
+      cssString += indent + key + ': ' + (value === 'true' ? '1' : value) + ';\n';
+    },
     build: () => {
       return atImports + atNamespaces + atOthers + cssString;
+    },
+    closeBlock: () => {
+      indent = indent.slice(0, -2);
+
+      if (openBlockBuffer.length) {
+        openBlockBuffer.pop();
+      } else {
+        cssString += indent + '}\n';
+      }
+    },
+    openAtBlock: (identifier, rule) => {
+      openBlockBuffer.push(indent + (rule ? identifier + ' ' + rule : identifier) + ' {\n');
+      indent += '  ';
+    },
+    openBlock: (selectors) => {
+      openBlockBuffer.push(indent + selectors.join(',\n' + indent) + ' {\n');
+      indent += '  ';
     },
   };
 
   return builder;
-}
+};
 
 export { type CssBuilder, createCssBuilder };

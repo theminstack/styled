@@ -117,11 +117,11 @@ test('global styles and component styles are rendered in order', () => {
 });
 
 test('parameterized global style', () => {
-  const A = styled.global<{ color?: string; backgroundColor?: string }>`
+  const A = styled.global<{ readonly backgroundColor?: string; readonly color?: string }>`
     color: ${(props) => props.color};
     background-color: ${(props) => props.backgroundColor};
   `;
-  A.defaultProps = { color: 'red', backgroundColor: 'blue' };
+  A.defaultProps = { backgroundColor: 'blue', color: 'red' };
   const { container } = render(<A color={'green'} />);
 
   expect(renderStylesToString()).toMatchInlineSnapshot(`

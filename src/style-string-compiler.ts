@@ -1,25 +1,22 @@
 import { type CssBuilder, createCssBuilder } from './css-builder';
 import { createCssSelectorBuilder } from './css-selector-builder';
 import { createCssStatementBuilder } from './css-statement-builder';
-import { type StyleToken, type StyleTokenizer, createStyleTokenizer } from './style-tokenizer';
+import { type StyleTokenizer, createStyleTokenizer } from './style-tokenizer';
 
-function isConditionalGroup(atRuleKey: string): atRuleKey is '@media' | '@supports' | '@document' {
+const isConditionalGroup = (atRuleKey: string): atRuleKey is '@document' | '@media' | '@supports' => {
   return atRuleKey === '@media' || atRuleKey === '@supports' || atRuleKey === '@document';
-}
+};
 
-function compileBlock(
+const compileBlock = (
   cssBuilder: CssBuilder,
   tokenizer: StyleTokenizer,
-  parentSelectors: readonly [string, ...string[]],
+  parentSelectors: readonly [string, ...(readonly string[])],
   isAt: boolean,
-): boolean {
+): boolean => {
   let statementBuilder = createCssStatementBuilder();
   let selectorBuilder = createCssSelectorBuilder(parentSelectors);
-  let match: StyleToken | null;
 
-  while (null != (match = tokenizer.next())) {
-    const [literal, comment, terminator, whitespace] = match;
-
+  for (const [literal, comment, terminator, whitespace] of tokenizer) {
     if (comment) {
       continue;
     }
@@ -89,13 +86,13 @@ function compileBlock(
   }
 
   return false;
-}
+};
 
-interface StyleStringCompiler {
-  compile: (selector: string, styleString: string) => string;
-}
+type StyleStringCompiler = {
+  readonly compile: (selector: string, styleString: string) => string;
+};
 
-function createStyleStringCompiler(): StyleStringCompiler {
+const createStyleStringCompiler = (): StyleStringCompiler => {
   return {
     compile: (styleSelector: string, styleString: string): string => {
       const cssBuilder = createCssBuilder();
@@ -108,6 +105,6 @@ function createStyleStringCompiler(): StyleStringCompiler {
       return cssBuilder.build().trim();
     },
   };
-}
+};
 
 export { type StyleStringCompiler, createStyleStringCompiler };

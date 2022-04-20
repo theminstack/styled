@@ -5,32 +5,32 @@ type StyleToken = readonly [
   whitespace: string | undefined,
 ];
 
-interface StyleTokenizer {
-  next: () => null | StyleToken;
-}
+type StyleTokenizer = Iterable<StyleToken> & Iterator<StyleToken, null>;
 
-function createStyleTokenizer(value: string): StyleTokenizer {
+const createStyleTokenizer = (value: string): StyleTokenizer => {
   const rx =
     /\\.|(\s+\/{2}(?:[\s\S]*?(?:(?=\n)\s+|\s+$))|\/\*(?:[\s\S]*?\*\/\s+|[\s\S]*$))|([;{}])|(\s+)|'(?:(?:\\.|[^'])*(?:'|$))|"(?:(?:\\.|[^"])*(?:"|$))|[&@,:]|[^&@,:;{}'"\s]+/g;
 
-  let isDone = false;
+  let done = false;
 
-  return {
+  const tokenizer: StyleTokenizer = {
     next() {
-      if (isDone) {
-        return null;
+      if (!done) {
+        const match = rx.exec(value);
+
+        if (match != null) {
+          return { done: false, value: match as unknown as StyleToken };
+        }
+
+        done = true;
       }
 
-      const match = rx.exec(value);
-
-      if (match == null) {
-        isDone = true;
-        return null;
-      }
-
-      return match as unknown as StyleToken;
+      return { done: true, value: null };
     },
+    [Symbol.iterator]: () => tokenizer,
   };
-}
+
+  return tokenizer;
+};
 
 export { type StyleToken, type StyleTokenizer, createStyleTokenizer };

@@ -1,10 +1,10 @@
-interface ServerStylesheet {
+type ServerStylesheet = {
   readonly cssString: string;
   readonly data: string;
-  update: (cssString: string, data: string) => ServerStylesheet;
-}
+  readonly update: (cssString: string, data: string) => ServerStylesheet;
+};
 
-function createServerStylesheet(): ServerStylesheet {
+const createServerStylesheet = (): ServerStylesheet => {
   let cssString = '';
   let data = '';
 
@@ -23,6 +23,6 @@ function createServerStylesheet(): ServerStylesheet {
   };
 
   return stylesheet;
-}
+};
 
 export { createServerStylesheet };

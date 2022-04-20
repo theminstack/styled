@@ -1,17 +1,17 @@
 import { type ReactElement, useLayoutEffect, useRef, useState } from 'react';
 
-interface Sample {
-  scriptStart: number;
-  layoutStart: number;
-  end: number;
-}
+type Sample = {
+  readonly end: number;
+  readonly layoutStart: number;
+  readonly scriptStart: number;
+};
 
-function getMean(values: number[]): number {
-  const sum = values.reduce((acc: number, value: number) => acc + value, 0);
+const getMean = (values: readonly number[]): number => {
+  const sum = values.reduce((result: number, value: number) => result + value, 0);
   return sum / values.length;
-}
+};
 
-function getStdDev(values: number[]): number {
+const getStandardDeviation = (values: readonly number[]): number => {
   const avg = getMean(values);
 
   const squareDiffs = values.map((value: number) => {
@@ -20,45 +20,45 @@ function getStdDev(values: number[]): number {
   });
 
   return Math.sqrt(getMean(squareDiffs));
-}
+};
 
-interface BenchmarkValue {
-  mean: number;
-  stdDev: number;
-}
+type BenchmarkValue = {
+  readonly mean: number;
+  readonly stdDev: number;
+};
 
-interface BenchmarkResult {
-  sampleCount: number;
-  total: BenchmarkValue;
-  scripting: BenchmarkValue;
-  layout: BenchmarkValue;
-}
+type BenchmarkResult = {
+  readonly layout: BenchmarkValue;
+  readonly sampleCount: number;
+  readonly scripting: BenchmarkValue;
+  readonly total: BenchmarkValue;
+};
 
-interface BenchmarkConfig {
-  name: string;
-  type: 'mount' | 'unmount' | 'update';
-  timeout?: number | undefined;
-  sampleCount?: number | undefined;
-  render: (i: number) => ReactElement;
-}
+type BenchmarkConfig = {
+  readonly name: string;
+  readonly render: (index: number) => ReactElement;
+  readonly sampleCount?: number | undefined;
+  readonly timeout?: number | undefined;
+  readonly type: 'mount' | 'unmount' | 'update';
+};
 
-interface BenchmarkProps {
-  config?: BenchmarkConfig | null;
-  onResult?: (results: BenchmarkResult) => void;
-}
+type BenchmarkProps = {
+  readonly config?: BenchmarkConfig | null;
+  readonly onResult?: (results: BenchmarkResult) => void;
+};
 
-function Benchmark({ config: _config = null, onResult }: BenchmarkProps): ReactElement | null {
+const Benchmark = ({ config: _config = null, onResult }: BenchmarkProps): ReactElement | null => {
   const [config, setConfig] = useState<BenchmarkConfig | null>(null);
-  const [cycle, setCycle] = useState(NaN);
+  const [cycle, setCycle] = useState(Number.NaN);
   const startTime = useRef(0);
   const samples = useRef<Sample[]>([]);
   const raf = useRef<number>();
 
   const type = config?.type ?? 'update';
   const sampleCount = config?.sampleCount ?? 1000;
-  const timeout = config?.timeout ?? 30000;
-  const mount = isNaN(cycle) ? false : type === 'mount' || type === 'unmount' ? !((cycle + 1) % 2) : true;
-  const record = isNaN(cycle)
+  const timeout = config?.timeout ?? 30_000;
+  const mount = Number.isNaN(cycle) ? false : type === 'mount' || type === 'unmount' ? !((cycle + 1) % 2) : true;
+  const record = Number.isNaN(cycle)
     ? false
     : type === 'mount'
     ? !((cycle + 1) % 2)
@@ -89,29 +89,32 @@ function Benchmark({ config: _config = null, onResult }: BenchmarkProps): ReactE
         raf.current = undefined;
       }
 
-      const totals = samples.current.reduce<number[]>((acc, sample) => [...acc, sample.end - sample.scriptStart], []);
+      const totals = samples.current.reduce<number[]>(
+        (result, sample) => [...result, sample.end - sample.scriptStart],
+        [],
+      );
       const scriptTotals = samples.current.reduce<number[]>(
-        (acc, sample) => [...acc, sample.layoutStart - sample.scriptStart],
+        (result, sample) => [...result, sample.layoutStart - sample.scriptStart],
         [],
       );
       const layoutTotals = samples.current.reduce<number[]>(
-        (acc, sample) => [...acc, sample.end - sample.layoutStart],
+        (result, sample) => [...result, sample.end - sample.layoutStart],
         [],
       );
 
       onResult?.({
-        sampleCount: samples.current.length,
-        total: {
-          mean: getMean(totals),
-          stdDev: getStdDev(totals),
-        },
-        scripting: {
-          mean: getMean(scriptTotals),
-          stdDev: getStdDev(scriptTotals),
-        },
         layout: {
           mean: getMean(layoutTotals),
-          stdDev: getStdDev(layoutTotals),
+          stdDev: getStandardDeviation(layoutTotals),
+        },
+        sampleCount: samples.current.length,
+        scripting: {
+          mean: getMean(scriptTotals),
+          stdDev: getStandardDeviation(scriptTotals),
+        },
+        total: {
+          mean: getMean(totals),
+          stdDev: getStandardDeviation(totals),
         },
       });
 
@@ -127,18 +130,17 @@ function Benchmark({ config: _config = null, onResult }: BenchmarkProps): ReactE
     }
 
     if (record) {
-      const sample = samples.current[cycle];
-
-      sample.layoutStart = performance.now();
+      const layoutStart = performance.now();
       document.body.offsetWidth; // Force update.
-      sample.end = performance.now();
+      const end = performance.now();
+      samples.current[cycle] = { ...samples.current[cycle], end, layoutStart };
     } else {
       document.body.offsetWidth; // Force update.
     }
 
     if (startTime.current + timeout <= performance.now() || samples.current.length >= sampleCount) {
       setConfig(null);
-      setCycle(NaN);
+      setCycle(Number.NaN);
       return;
     }
 
@@ -165,13 +167,13 @@ function Benchmark({ config: _config = null, onResult }: BenchmarkProps): ReactE
 
   if (record) {
     samples.current[cycle] = {
-      scriptStart: performance.now(),
-      layoutStart: 0,
       end: 0,
+      layoutStart: 0,
+      scriptStart: performance.now(),
     };
   }
 
   return mount ? config.render(samples.current.length) : null;
-}
+};
 
 export { type BenchmarkConfig, type BenchmarkProps, type BenchmarkResult, type BenchmarkValue, Benchmark };

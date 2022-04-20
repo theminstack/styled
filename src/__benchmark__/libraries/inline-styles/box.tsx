@@ -8,11 +8,11 @@ export const Box: FC<BoxProps> = ({ $layout, $outer = false, $fixed = false, $co
     <View
       style={{
         alignSelf: 'flex-start',
-        flexDirection: $layout === 'column' ? 'column' : 'row',
-        padding: $outer ? '4px' : 0,
-        height: $fixed ? '6px' : undefined,
-        width: $fixed ? '6px' : undefined,
         backgroundColor: $color,
+        flexDirection: $layout === 'column' ? 'column' : 'row',
+        height: $fixed ? '6px' : undefined,
+        padding: $outer ? '4px' : 0,
+        width: $fixed ? '6px' : undefined,
       }}
     >
       {children}

@@ -2,31 +2,31 @@ import { type JSXElementConstructor } from 'react';
 
 import { type Style } from './style';
 
-interface StyledComponentCacheItem {
-  component: keyof JSX.IntrinsicElements | JSXElementConstructor<any>;
-  style: Style<any, any>;
-}
+type StyledComponentCacheItem = {
+  readonly component: JSXElementConstructor<any> | keyof JSX.IntrinsicElements;
+  readonly style: Style<any, any>;
+};
 
-interface StyledComponentCache {
-  register: (
+type StyledComponentCache = {
+  readonly get: (component: JSXElementConstructor<any>) => StyledComponentCacheItem | undefined;
+  readonly register: (
     component: JSXElementConstructor<any>,
-    baseComponent: keyof JSX.IntrinsicElements | JSXElementConstructor<any>,
+    baseComponent: JSXElementConstructor<any> | keyof JSX.IntrinsicElements,
     style: Style<any, any>,
   ) => void;
-  get: (component: JSXElementConstructor<any>) => StyledComponentCacheItem | undefined;
-}
+};
 
-function createStyledComponentCache(): StyledComponentCache {
+const createStyledComponentCache = (): StyledComponentCache => {
   const entries = new WeakMap<JSXElementConstructor<any>, StyledComponentCacheItem>();
 
   return {
-    register: (styledComponent, component, style) => {
-      entries.set(styledComponent, { component, style });
-    },
     get: (component) => {
       return entries.get(component);
     },
+    register: (styledComponent, component, style) => {
+      entries.set(styledComponent, { component, style });
+    },
   };
-}
+};
 
 export { type StyledComponentCache, createStyledComponentCache };

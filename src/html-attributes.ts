@@ -1,9 +1,9 @@
-function getHtmlAttributes<TProps extends {}>(props: TProps): Partial<TProps> {
-  const keys = Object.keys(props) as Array<keyof TProps & string>;
+const getHtmlAttributes = <TProps extends {}>(props: TProps): Partial<TProps> => {
+  const keys = Object.keys(props) as Array<string & keyof TProps>;
   const filtered: Partial<TProps> = {};
 
-  for (let i = keys.length - 1; i >= 0; --i) {
-    const key = keys[i];
+  for (let index = keys.length - 1; index >= 0; --index) {
+    const key = keys[index];
 
     if (key[0] !== '$') {
       filtered[key] = props[key];
@@ -11,6 +11,6 @@ function getHtmlAttributes<TProps extends {}>(props: TProps): Partial<TProps> {
   }
 
   return filtered;
-}
+};
 
 export { getHtmlAttributes };

@@ -11,8 +11,8 @@ import { createStyledGlobalComponent } from './styled-global-component';
  */
 type StyleTaggedTemplateFunction<TProps extends {}, TTheme extends {} | undefined> = <TExtraProps extends {} = {}>(
   template: TemplateStringsArray,
-  ...values: StyleTemplateValues<TProps & TExtraProps, [TTheme]>
-) => ForwardRefExoticComponent<TProps & TExtraProps>;
+  ...values: StyleTemplateValues<TExtraProps & TProps, readonly [TTheme]>
+) => ForwardRefExoticComponent<TExtraProps & TProps>;
 
 /**
  * Style mixin functions returned by the
@@ -35,8 +35,8 @@ type StyleMixin<TProps extends {}> = {} extends TProps ? (props?: TProps) => str
  * - {@link Styled.global styled.global} for creating global styles
  * - {@link Styled.mixin styled.mixin} for creating style mixins.
  */
-interface Styled<TTheme extends {} | undefined> {
-  <TComponent extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>>(
+type Styled<TTheme extends {} | undefined> = {
+  <TComponent extends JSXElementConstructor<any> | keyof JSX.IntrinsicElements>(
     component: TComponent,
     displayName?: string,
   ): StyleTaggedTemplateFunction<ComponentProps<TComponent>, TTheme>;
@@ -49,9 +49,9 @@ interface Styled<TTheme extends {} | undefined> {
    * const GlobalStyle = styled.global<Props>``;
    * ```
    */
-  global: <TExtraProps extends {} = {}>(
+  readonly global: <TExtraProps extends {} = {}>(
     template: TemplateStringsArray,
-    ...values: StyleTemplateValues<TExtraProps, [TTheme]>
+    ...values: StyleTemplateValues<TExtraProps, readonly [TTheme]>
   ) => VFC<TExtraProps>;
 
   /**
@@ -64,38 +64,40 @@ interface Styled<TTheme extends {} | undefined> {
    * const mixin = styled.mixin<Props>``;
    * ```
    */
-  mixin: <TProps extends {}>(
+  readonly mixin: <TProps extends {}>(
     template: TemplateStringsArray,
     ...values: StyleTemplateValues<TProps>
   ) => StyleMixin<TProps>;
-}
+};
 
 /**
  * Create a {@link Styled styled} API, with an optional theme.
  */
-function createStyled<TTheme extends {} | undefined>(
+const createStyled = <TTheme extends {} | undefined>(
   useTheme: () => TTheme = () => undefined as TTheme,
-): Styled<TTheme> {
+): Styled<TTheme> => {
   const styleCompiler = createStyleStringCompiler();
 
-  function styled<
-    TComponent extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>,
+  const styled = <
+    TComponent extends JSXElementConstructor<any> | keyof JSX.IntrinsicElements,
     TProps extends ComponentProps<TComponent>,
-  >(baseComponent: TComponent): StyleTaggedTemplateFunction<ComponentProps<TComponent>, TTheme> {
+  >(
+    baseComponent: TComponent,
+  ): StyleTaggedTemplateFunction<ComponentProps<TComponent>, TTheme> => {
     return <TExtraProps extends Partial<TProps>>(
       template: TemplateStringsArray,
-      ...values: StyleTemplateValues<TProps & TExtraProps, [TTheme]>
-    ): ForwardRefExoticComponent<TProps & TExtraProps> => {
+      ...values: StyleTemplateValues<TExtraProps & TProps, readonly [TTheme]>
+    ): ForwardRefExoticComponent<TExtraProps & TProps> => {
       const style = createStyle(template, values);
       const component = createStyledComponent(styleCompiler, style, useTheme, baseComponent);
 
       return component;
     };
-  }
+  };
 
   styled.global = <TProps extends {}>(
     template: TemplateStringsArray,
-    ...values: StyleTemplateValues<TProps, [TTheme]>
+    ...values: StyleTemplateValues<TProps, readonly [TTheme]>
   ): VFC<TProps> => {
     const style = createStyle(template, values);
     const component = createStyledGlobalComponent(styleCompiler, style, useTheme);
@@ -114,6 +116,6 @@ function createStyled<TTheme extends {} | undefined>(
   };
 
   return styled;
-}
+};
 
 export { type Styled, type StyleMixin, type StyleTaggedTemplateFunction, createStyled };

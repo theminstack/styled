@@ -1,7 +1,7 @@
 import { type ReactElement } from 'react';
 
-function Separator(): ReactElement {
+const Separator = (): ReactElement => {
   return <div className={'separator'} />;
-}
+};
 
 export { Separator };

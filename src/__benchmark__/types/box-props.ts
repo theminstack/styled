@@ -1,8 +1,8 @@
-interface BoxProps {
-  $color: string;
-  $outer?: boolean;
-  $fixed?: boolean;
-  $layout?: 'column' | 'row';
-}
+type BoxProps = {
+  readonly $color: string;
+  readonly $fixed?: boolean;
+  readonly $layout?: 'column' | 'row';
+  readonly $outer?: boolean;
+};
 
 export type { BoxProps };

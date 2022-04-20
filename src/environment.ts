@@ -1,9 +1,9 @@
-declare const process: { env: Record<string, string> } | undefined;
+declare const process: { readonly env: Record<string, string> } | undefined;
 
-interface Environment {
-  readonly isTest: boolean;
+type Environment = {
   readonly isBrowser: boolean;
-}
+  readonly isTest: boolean;
+};
 
 const environment: Environment = {
   isBrowser: typeof document !== 'undefined',

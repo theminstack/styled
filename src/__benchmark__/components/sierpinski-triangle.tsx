@@ -5,23 +5,23 @@ import { type DotProps } from '../types/dot-props';
 
 const targetSize = 10;
 
-interface SierpinskiTriangleProps {
-  Dot: ElementType<DotProps>;
-  depth?: number;
-  renderCount?: number;
-  s?: number;
-  x?: number;
-  y?: number;
-}
+type SierpinskiTriangleProps = {
+  readonly Dot: ElementType<DotProps>;
+  readonly depth?: number;
+  readonly renderCount?: number;
+  readonly s?: number;
+  readonly x?: number;
+  readonly y?: number;
+};
 
-function SierpinskiTriangle({
+const SierpinskiTriangle = ({
   Dot,
   depth = 0,
   renderCount = 0,
   s = 200,
   x = 0,
   y = 0,
-}: SierpinskiTriangleProps): ReactElement {
+}: SierpinskiTriangleProps): ReactElement => {
   if (s <= targetSize) {
     let fn;
     switch (depth) {
@@ -50,6 +50,6 @@ function SierpinskiTriangle({
       <SierpinskiTriangle Dot={Dot} depth={3} renderCount={renderCount} s={s} x={x + s} y={y + s / 2} />
     </>
   );
-}
+};
 
 export { SierpinskiTriangle };

@@ -40,7 +40,7 @@ test('default theme', () => {
 });
 
 test('theme overrides', () => {
-  const [useTheme, ThemeProvider] = createReactTheme({ color: 'blue', backgroundColor: 'red' });
+  const [useTheme, ThemeProvider] = createReactTheme({ backgroundColor: 'red', color: 'blue' });
   const styled = createStyled(useTheme);
   const A = styled('div')`
     color: ${(_props, theme) => theme.color};
@@ -53,7 +53,7 @@ test('theme overrides', () => {
     font: sans-serif;
   `;
   const { container } = render(
-    <ThemeProvider value={{ color: 'purple', backgroundColor: 'red' }}>
+    <ThemeProvider value={{ backgroundColor: 'red', color: 'purple' }}>
       <A />
       <B />
     </ThemeProvider>,
@@ -83,7 +83,7 @@ test('theme overrides', () => {
 });
 
 test('theme updates', () => {
-  const [useTheme, ThemeProvider] = createReactTheme({ color: 'blue', backgroundColor: 'red' });
+  const [useTheme, ThemeProvider] = createReactTheme({ backgroundColor: 'red', color: 'blue' });
   const styled = createStyled(useTheme);
   const A = styled('div')`
     color: ${(_props, theme) => theme.color};
@@ -94,7 +94,7 @@ test('theme updates', () => {
     background-color: ${(_props, theme) => theme.backgroundColor};
   `;
   const { container, rerender } = render(
-    <ThemeProvider value={{ color: 'purple', backgroundColor: 'red' }}>
+    <ThemeProvider value={{ backgroundColor: 'red', color: 'purple' }}>
       <A />
       <B />
     </ThemeProvider>,
@@ -116,7 +116,7 @@ test('theme updates', () => {
   `);
 
   rerender(
-    <ThemeProvider value={{ color: 'green', backgroundColor: 'red' }}>
+    <ThemeProvider value={{ backgroundColor: 'red', color: 'green' }}>
       <A />
       <B />
     </ThemeProvider>,

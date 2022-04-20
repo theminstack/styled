@@ -1,11 +1,11 @@
-type CssSelectors = readonly [string, ...string[]];
+type CssSelectors = readonly [string, ...(readonly string[])];
 
-interface CssSelectorBuilder {
-  addToken: (value: string) => void;
-  build: () => CssSelectors;
-}
+type CssSelectorBuilder = {
+  readonly addToken: (value: string) => void;
+  readonly build: () => CssSelectors;
+};
 
-function createCssSelectorBuilder(parentSelectors: CssSelectors): CssSelectorBuilder {
+const createCssSelectorBuilder = (parentSelectors: CssSelectors): CssSelectorBuilder => {
   const selectorTemplates: string[][] = [];
 
   let selectorTemplate: string[] = [];
@@ -45,18 +45,22 @@ function createCssSelectorBuilder(parentSelectors: CssSelectors): CssSelectorBui
       selectorTemplate.push(buffer);
       selectorTemplates.push(selectorTemplate);
 
-      for (let i = selectorTemplates.length - 1; i >= 0; --i) {
-        const value = selectorTemplates[i];
+      for (
+        let selectorTemplateIndex = selectorTemplates.length - 1;
+        selectorTemplateIndex >= 0;
+        --selectorTemplateIndex
+      ) {
+        const value = selectorTemplates[selectorTemplateIndex];
 
-        for (let j = parentSelectors.length - 1; j >= 0; --j) {
-          const parentValue = parentSelectors[j];
+        for (let parentSelectorIndex = parentSelectors.length - 1; parentSelectorIndex >= 0; --parentSelectorIndex) {
+          const parentValue = parentSelectors[parentSelectorIndex];
 
           selectors.unshift(
             value.length == 1
               ? parentValue === ':root'
                 ? value[0]
-                : `${parentSelectors[j]} ${value[0]}`
-              : value.join(parentSelectors[j]),
+                : `${parentSelectors[parentSelectorIndex]} ${value[0]}`
+              : value.join(parentSelectors[parentSelectorIndex]),
           );
         }
       }
@@ -64,6 +68,6 @@ function createCssSelectorBuilder(parentSelectors: CssSelectors): CssSelectorBui
       return selectors as [string, ...string[]];
     },
   };
-}
+};
 
 export { type CssSelectorBuilder, type CssSelectors, createCssSelectorBuilder };

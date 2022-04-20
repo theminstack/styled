@@ -1,18 +1,18 @@
 import { createServerStylesheet } from './server-stylesheet';
 import { type Stylesheet } from './stylesheet';
 
-interface ServerContext {
-  useLayoutEffect: (cb: () => (() => void) | void, deps?: unknown[]) => void;
-  createStylesheet: () => Stylesheet;
-}
+type ServerContext = {
+  readonly createStylesheet: () => Stylesheet;
+  readonly useLayoutEffect: (callback: () => (() => void) | void, deps?: readonly unknown[]) => void;
+};
 
-function createServerContext(): ServerContext {
+const createServerContext = (): ServerContext => {
   const context = {
-    useLayoutEffect: (cb: () => void) => cb(),
     createStylesheet: createServerStylesheet,
+    useLayoutEffect: (callback: () => void) => callback(),
   };
 
   return context;
-}
+};
 
 export { createServerContext };

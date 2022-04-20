@@ -7,20 +7,20 @@ export const Dot: FC<DotProps> = (props) => {
   return (
     <View
       style={{
-        position: 'absolute',
-        cursor: 'pointer',
-        width: 0,
-        height: 0,
+        borderBottomColor: props.$color,
+        borderBottomWidth: `${props.$size / 2}px`,
         borderColor: 'transparent',
+        borderLeftWidth: `${props.$size / 2}px`,
+        borderRightWidth: `${props.$size / 2}px`,
         borderStyle: 'solid',
         borderTopWidth: 0,
-        transform: 'translate(50%, 50%)',
+        cursor: 'pointer',
+        height: 0,
         marginLeft: `${props.$x}px`,
         marginTop: `${props.$y}px`,
-        borderRightWidth: `${props.$size / 2}px`,
-        borderBottomWidth: `${props.$size / 2}px`,
-        borderLeftWidth: `${props.$size / 2}px`,
-        borderBottomColor: props.$color,
+        position: 'absolute',
+        transform: 'translate(50%, 50%)',
+        width: 0,
       }}
     >
       {props.children}

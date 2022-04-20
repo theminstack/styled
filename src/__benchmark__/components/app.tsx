@@ -4,7 +4,7 @@ import { Trash } from 'react-feather';
 import { benchmarks } from '../benchmarks';
 import { libraries } from '../libraries';
 import { Actions } from './actions';
-import { type BenchmarkConfig, type BenchmarkResult, Benchmark } from './benchmark';
+import { type BenchmarkResult, Benchmark } from './benchmark';
 import { Button } from './button';
 import { Form } from './form';
 import { Input } from './input';
@@ -15,16 +15,21 @@ import { Result } from './result';
 import { type SelectItem, Select } from './select';
 import { Separator } from './separator';
 
-const benchmarkItems = Object.keys(benchmarks)
-  .reduce<SelectItem[]>((acc, key) => [...acc, { value: benchmarks[key].name }], [])
-  .sort((a, b) => (a.label ?? a.value).localeCompare(b.label ?? b.value));
+const benchmarkItems = [
+  ...Object.keys(benchmarks).reduce<readonly SelectItem[]>(
+    (result, key) => [...result, { value: benchmarks[key].name }],
+    [],
+  ),
+].sort((a, b) => (a.label ?? a.value).localeCompare(b.label ?? b.value));
 const libraryItems = libraries.map((library) => ({ value: library.name as typeof library['name'] }));
 
-function App(): ReactElement {
+const App = (): ReactElement => {
   const [library, setLibrary] = useState<typeof libraries[number]['name']>(libraryItems[0].value);
-  const [results, setResults] = useState<{ library: string; benchmark: string; value: BenchmarkResult }[]>([]);
+  const [results, setResults] = useState<
+    { readonly benchmark: string; readonly library: string; readonly value: BenchmarkResult }[]
+  >([]);
   const [benchmark, setBenchmark] = useState<string | undefined>(benchmarkItems[0]?.value);
-  const config = useMemo((): { library: string; benchmark: string; value: BenchmarkConfig } | null => {
+  const config = useMemo(() => {
     if (benchmark == null) {
       return null;
     }
@@ -40,11 +45,11 @@ function App(): ReactElement {
     const { render, ...benchmarkConfigRest } = benchmarkConfig;
 
     return {
-      library,
       benchmark,
+      library,
       value: {
         ...benchmarkConfigRest,
-        render: (i) => render({ Dot, Box }, i),
+        render: (index: number) => render({ Box, Dot }, index),
       },
     };
   }, [library, benchmark]);
@@ -68,8 +73,8 @@ function App(): ReactElement {
       setResults((current) => [
         ...current,
         {
-          library: config.library,
           benchmark: config.benchmark,
+          library: config.library,
           value: result,
         },
       ]);
@@ -85,10 +90,10 @@ function App(): ReactElement {
         {config && isRunning ? <Benchmark config={config.value} onResult={onResult} /> : config?.value.render(0)}
       </Output>
       <Input>
-        <Actions items={[{ content: <Trash />, tip: 'Clear benchmark results.', onClick: onClear }]} />
+        <Actions items={[{ content: <Trash />, onClick: onClear, tip: 'Clear benchmark results.' }]} />
         <List>
-          {results.map((result, i) => (
-            <Result key={i} $library={result.library} $benchmark={result.benchmark} $result={result.value} />
+          {results.map((result, index) => (
+            <Result key={index} $library={result.library} $benchmark={result.benchmark} $result={result.value} />
           ))}
         </List>
         <Separator />
@@ -114,6 +119,6 @@ function App(): ReactElement {
       </Input>
     </Page>
   );
-}
+};
 
 export { App };

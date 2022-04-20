@@ -3,19 +3,19 @@
  *
  * Original source: https://github.com/darkskyapp/string-hash.
  */
-function getHash(...values: readonly string[]): string {
+const getHash = (...values: readonly string[]): string => {
   // let hash = 5381;
-  let hash = 195220209; // tsstyled unique seed
+  let hash = 195_220_209; // tsstyled unique seed
 
-  for (let i = values.length - 1; i >= 0; --i) {
-    const value = values[i];
+  for (let valueIndex = values.length - 1; valueIndex >= 0; --valueIndex) {
+    const value = values[valueIndex];
 
-    for (let j = value.length - 1; j >= 0; --j) {
-      hash = (hash * 33) ^ value.charCodeAt(j);
+    for (let charIndex = value.length - 1; charIndex >= 0; --charIndex) {
+      hash = (hash * 33) ^ value.charCodeAt(charIndex);
     }
   }
 
   return (hash >>> 0).toString(36);
-}
+};
 
 export { getHash };

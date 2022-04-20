@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-function useViewHeight(): string {
+const useViewHeight = (): string => {
   const [value, setValue] = useState('100vh');
 
   useEffect(() => {
@@ -11,6 +11,6 @@ function useViewHeight(): string {
   }, []);
 
   return value;
-}
+};
 
 export { useViewHeight };

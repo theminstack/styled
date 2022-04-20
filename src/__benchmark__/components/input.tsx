@@ -1,11 +1,11 @@
 import { type ReactElement, type ReactNode } from 'react';
 
-interface InputProps {
-  children?: ReactNode;
-}
+type InputProps = {
+  readonly children?: ReactNode;
+};
 
-function Input({ children }: InputProps): ReactElement {
+const Input = ({ children }: InputProps): ReactElement => {
   return <div className={'input'}>{children}</div>;
-}
+};
 
 export { Input };

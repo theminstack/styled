@@ -2,13 +2,13 @@ import { type ReactElement } from 'react';
 
 import { type BenchmarkResult } from './benchmark';
 
-interface ResultProps {
-  $library: string;
-  $benchmark: string;
-  $result: BenchmarkResult;
-}
+type ResultProps = {
+  readonly $benchmark: string;
+  readonly $library: string;
+  readonly $result: BenchmarkResult;
+};
 
-function Result({ $library, $benchmark, $result }: ResultProps): ReactElement {
+const Result = ({ $library, $benchmark, $result }: ResultProps): ReactElement => {
   return (
     <div className={'result'}>
       <div className={'result__start'}>
@@ -27,6 +27,6 @@ function Result({ $library, $benchmark, $result }: ResultProps): ReactElement {
       </div>
     </div>
   );
-}
+};
 
 export { Result };
