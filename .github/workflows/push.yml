@@ -1,7 +1,7 @@
-name: Pull Request
+name: Push
 
 on:
-  pull_request:
+  push:
     branches: [main]
 
 jobs:
@@ -27,3 +27,14 @@ jobs:
 
       - name: Test
         run: npm test
+
+      - name: Publish
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@1.1.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ./out/coverage/lcov.info
