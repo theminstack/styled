@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "tsstyled",
   "description": "A small, fast, and simple CSS-in-JS styled components solution for React, written in Typescript.",
   "author": {
