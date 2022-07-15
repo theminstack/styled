@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "lib/commonjs",
+    "noEmit": false,
+    "removeComments": true,
+    "sourceMap": true,
+    "module": "CommonJS"
+  },
+  "include": ["src/**/*.d.ts"],
+  "files": ["src/index.ts"]
+}

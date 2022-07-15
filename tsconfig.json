@@ -1,7 +1,23 @@
+// Modern code (to be polyfilled) and explicit ambient types.
 {
-  "extends": "./tsconfig-base.json",
   "compilerOptions": {
-    "noEmit": true
+    "moduleResolution": "node",
+    "module": "ESNext",
+    "target": "ES2017",
+    "lib": ["ES2017", "DOM"],
+    "types": ["jest", "@testing-library/jest-dom"],
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
+    "downlevelIteration": true,
+    "useDefineForClassFields": true,
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "rootDir": "src",
+    "outDir": "lib",
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

@@ -1,22 +1,83 @@
 {
+  "private": true,
   "name": "tsstyled",
-  "version": "3.0.6",
-  "main": "./lib/cjs/index.js",
-  "module": "./lib/esm/index.js",
-  "types": "./lib/types/index.d.ts",
-  "exports": {
-    ".": {
-      "require": "./lib/cjs/index.js",
-      "import": "./lib/esm/index.js"
-    }
+  "description": "A small, fast, and simple CSS-in-JS styled components solution for React, written in Typescript.",
+  "author": {
+    "name": "Chris Ackerman",
+    "email": "chris@topher.land"
   },
+  "license": "ISC",
+  "version": "3.0.6",
+  "files": ["lib/**"],
+  "directories": {
+    "lib": "lib"
+  },
+  "types": "lib/types/index.d.ts",
+  "module": "lib/module/index.js",
+  "main": "lib/commonjs/index.js",
+  "exports": {
+    "types": "./lib/types/index.d.ts",
+    "import": "./lib/module/index.js",
+    "default": "./lib/commonjs/index.js"
+  },
+  "sideEffects": false,
   "scripts": {
+    "test": "del-cli out && tsc --noEmit && eslint --max-warnings=0 src && jest --no-cache --passWithNoTests",
+    "prepublishOnly": "npm build",
+    "build": "del-cli lib && tsc --project tsconfig.build-commonjs.json && check-es-compat lib/commonjs && tsc --project tsconfig.build-module.json && tsc --project tsconfig.build-types.json",
+    "modernize": "npm-check-updates -u",
     "start": "webpack serve",
-    "test": "tsc --noEmit && eslint src && del-cli coverage && jest",
-    "build": "del-cli lib && tsc -p tsconfig-types.json && tsc -p tsconfig-esm.json && tsc -p tsconfig-cjs.json && check-es-compat lib/cjs",
     "docs": "del-cli \"docs/*\" \"!docs/CNAME\" && typedoc src/index.ts --out docs --disableSources --cleanOutputDir false && webpack",
     "coveralls": "cat ./out/coverage/lcov.info | coveralls"
   },
+  "devDependencies": {
+    "@babel/core": "^7.18.6",
+    "@babel/preset-env": "^7.18.6",
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^12.1.5",
+    "@types/d3-scale-chromatic": "^3.0.0",
+    "@types/jest": "^28.1.5",
+    "@types/react": "^18.0.15",
+    "@types/react-dom": "^18.0.6",
+    "@types/react-is": "^17.0.3",
+    "@types/styled-components": "^5.1.25",
+    "check-es-compat": "^2.1.0",
+    "coveralls": "^3.1.1",
+    "css-loader": "^6.7.1",
+    "d3-scale-chromatic": "^3.0.0",
+    "del-cli": "^4.0.1",
+    "eslint": "^8.19.0",
+    "eslint-config-rational": "^0.1.16",
+    "html-webpack-plugin": "^5.5.0",
+    "jest": "^28.1.3",
+    "jest-environment-jsdom": "^28.1.3",
+    "npm-check-updates": "^15.3.3",
+    "normalize.css": "^8.0.1",
+    "prettier": "^2.7.1",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-feather": "^2.0.10",
+    "style-loader": "^3.3.1",
+    "styled-components": "^5.3.5",
+    "ts-jest": "^28.0.6",
+    "ts-loader": "^9.3.1",
+    "typedoc": "^0.23.7",
+    "typescript": "^4.7.4",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.9.3"
+  },
+  "peerDependencies": {
+    "react": ">=16.14.0"
+  },
+  "browserslist": [
+    "last 3 edge versions",
+    "last 3 chrome versions",
+    "last 3 safari versions",
+    "last 3 firefox versions"
+  ],
   "keywords": [
     "component",
     "css",
@@ -35,72 +96,5 @@
     "styled-jsx",
     "emotion",
     "emotionjs"
-  ],
-  "author": "Chris Ackerman",
-  "license": "ISC",
-  "files": [
-    "lib/**"
-  ],
-  "sideEffects": false,
-  "devDependencies": {
-    "@emotion/react": "^11.9.0",
-    "@emotion/styled": "^11.8.1",
-    "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^12.1.4",
-    "@types/d3-scale-chromatic": "^3.0.0",
-    "@types/jest": "^27.4.1",
-    "@types/react": "^16.14.8",
-    "@types/react-dom": "^16.9.13",
-    "@types/react-is": "^17.0.3",
-    "@types/styled-components": "^5.1.25",
-    "@typescript-eslint/eslint-plugin": "^5.18.0",
-    "@typescript-eslint/parser": "^5.18.0",
-    "check-es-compat": "^2.0.0",
-    "coveralls": "^3.1.1",
-    "css-loader": "^6.7.1",
-    "d3-scale-chromatic": "^3.0.0",
-    "del-cli": "^4.0.1",
-    "eslint": "^8.13.0",
-    "eslint-config-rational": "^0.1.6",
-    "html-webpack-plugin": "^5.5.0",
-    "jest": "^27.5.1",
-    "normalize.css": "^8.0.1",
-    "prettier": "^2.6.2",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
-    "react-feather": "^2.0.9",
-    "react-is": "^18.0.0",
-    "style-loader": "^3.3.1",
-    "styled-components": "^5.3.5",
-    "ts-jest": "^27.1.4",
-    "ts-loader": "^9.2.8",
-    "typedoc": "^0.22.14",
-    "typescript": "^4.6.3",
-    "webpack": "^5.72.0",
-    "webpack-cli": "^4.9.2",
-    "webpack-dev-server": "^4.8.1"
-  },
-  "peerDependencies": {
-    "react": ">=16.14.0"
-  },
-  "prettier": {
-    "printWidth": 120,
-    "singleQuote": true,
-    "jsxSingleQuote": false,
-    "trailingComma": "all"
-  },
-  "directories": {
-    "lib": "lib"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Shakeskeyboarde/tsstyled.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Shakeskeyboarde/tsstyled/issues"
-  },
-  "homepage": "https://tsstyled.com",
-  "browserslist": [
-    "IE >= 11"
   ]
 }

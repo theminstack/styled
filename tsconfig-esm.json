@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig-base.json",
-  "compilerOptions": {
-    "outDir": "lib/esm",
-    "module": "ESNext",
-    "removeComments": true
-  },
-  "files": ["src/index.ts"]
-}

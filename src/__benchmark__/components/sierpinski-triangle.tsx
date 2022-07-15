@@ -41,6 +41,7 @@ const SierpinskiTriangle = ({
     return <Dot $color={color} $size={targetSize} $x={x - targetSize / 2} $y={y - targetSize / 2} />;
   }
 
+  // eslint-disable-next-line no-param-reassign
   s /= 2;
 
   return (

@@ -1,18 +1,19 @@
 # tsstyled
 
-[![homepage](https://badgen.net/badge/https%3A%2F%2F/tsstyled.com?label=homepage)](https://tsstyled.com)
-[![bundle size](https://badgen.net/bundlephobia/minzip/tsstyled@latest?label=size)](https://bundlephobia.com/result?p=tsstyled@latest)
-[![github stars](https://badgen.net/github/stars/Shakeskeyboarde/tsstyled?icon=github)](https://github.com/Shakeskeyboarde/tsstyled)
-[![npm version](https://badgen.net/npm/v/tsstyled?icon=npm&label=version)](https://www.npmjs.com/package/tsstyled)
-[![build status](https://badgen.net/travis/Shakeskeyboarde/tsstyled?icon=travis&label=build)](https://www.travis-ci.com/github/Shakeskeyboarde/tsstyled)
-[![coverage status](https://badgen.net/coveralls/c/github/Shakeskeyboarde/tsstyled/main)](https://coveralls.io/github/Shakeskeyboarde/tsstyled)
-
 A small, fast, and simple CSS-in-JS styled components solution for React, written in Typescript.
 
 - **Small**: Less than 4kb (minified and gzipped) and zero dependencies.
 - **Fast**: Similar to other styled component solutions ([benchmarks](https://tsstyled.com/benchmark/) included).
 - **Simple**: Minimal/Opinionated API creates a great developer experience.
 - **Typed**: Written in Typescript. Designed for Typescript.
+
+[![homepage](https://badgen.net/badge/https%3A%2F%2F/tsstyled.com?label=homepage)](https://tsstyled.com)
+[![bundle size](https://badgen.net/bundlephobia/minzip/tsstyled?label=size)](https://bundlephobia.com/result?p=tsstyled)
+[![github stars](https://badgen.net/github/stars/Shakeskeyboarde/tsstyled?icon=github)](https://github.com/Shakeskeyboarde/tsstyled)
+[![npm version](https://badgen.net/npm/v/tsstyled?icon=npm&label=version)](https://www.npmjs.com/package/tsstyled)
+[![npm downloads](https://badgen.net/npm/dw/tsstyled?icon=npm&label=downloads)](https://www.npmjs.com/package/tsstyled)
+[![build status](https://badgen.net/travis/Shakeskeyboarde/tsstyled?icon=travis&label=build)](https://www.travis-ci.com/github/Shakeskeyboarde/tsstyled)
+[![coverage status](https://badgen.net/coveralls/c/github/Shakeskeyboarde/tsstyled/main)](https://coveralls.io/github/Shakeskeyboarde/tsstyled)
 
 ---
 
@@ -51,9 +52,9 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
 - Future-proof CSS support
 - Server side rendering
 - Compatibility
-  - Support React >= 16.14.0
-  - Support IE >= 11
-  - Support Webpack tree-shaking
+  - React >= 16.14.0
+  - ES2017/ES8 (eg. recent versions of Chrome, Edge, Safari, and Firefox)
+  - Webpack tree-shakable
 
 There are also some things that are non-goals. They were considered, and then the choice was made to explicitly not include support for them.
 

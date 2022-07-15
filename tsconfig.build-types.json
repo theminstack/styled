@@ -1,9 +1,11 @@
 {
-  "extends": "./tsconfig-base.json",
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "lib/types",
+    "noEmit": false,
     "declaration": true,
     "emitDeclarationOnly": true
   },
+  "include": ["src/**/*.d.ts"],
   "files": ["src/index.ts"]
 }

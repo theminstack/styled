@@ -2,60 +2,68 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 /** @type {(env: Record<string, unknown>) => import('webpack').Configuration} */
-module.exports = (env) => {
-  const isBuild = !!env.WEBPACK_BUILD;
+module.exports = (environment) => {
+  const isBuild = !!environment.WEBPACK_BUILD;
   const source = path.resolve(__dirname, 'src/__benchmark__');
   const target = path.resolve(__dirname, 'docs/benchmark');
 
   return {
-    mode: 'production',
-    target: 'web',
-    entry: source,
-    output: {
-      path: target,
-      filename: 'bundle/[name].[chunkhash:8].js',
-      assetModuleFilename: 'bundle/[name].[contenthash:8].[ext]',
-      publicPath: 'auto',
-    },
-    stats: isBuild ? 'errors-warnings' : 'minimal',
-    performance: {
-      hints: isBuild && 'warning',
-      maxEntrypointSize: 1024 * 1024,
-      maxAssetSize: 1024 * 1024,
-    },
-    optimization: {
-      sideEffects: false,
+    devServer: {
+      client: {
+        overlay: {
+          errors: true,
+          warnings: false,
+        },
+      },
+      compress: true,
+      hot: false,
+      open: true,
+      port: 3000,
+      watchFiles: path.resolve(__dirname, 'src'),
     },
     devtool: 'inline-source-map',
-    resolve: {
-      extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
-    },
+    entry: source,
+    mode: 'production',
     module: {
       rules: [
         {
-          test: /\.(tsx?|jsx?)$/i,
           exclude: /node_modules/,
-          use: [{ loader: 'ts-loader', options: { configFile: 'tsconfig-esm.json' } }],
+          test: /\.(tsx?|jsx?)$/i,
+          use: [{ loader: 'ts-loader', options: { configFile: 'tsconfig.build-module.json' } }],
         },
         {
           test: /\.(woff2?)$/i,
           type: 'asset/inline',
         },
         {
-          test: /\.(gif|jpe?g|png|apng|svg|webp)$/i,
-          type: 'asset',
           parser: {
             dataUrlCondition: {
               maxSize: 4 * 1024, // 4kb
             },
           },
+          test: /\.(gif|jpe?g|png|apng|svg|webp)$/i,
+          type: 'asset',
         },
         {
-          test: /\.css$/i,
           sideEffects: true,
+          test: /\.css$/i,
           use: ['style-loader', 'css-loader'],
         },
       ],
+    },
+    optimization: {
+      sideEffects: false,
+    },
+    output: {
+      assetModuleFilename: 'bundle/[name].[contenthash:8].[ext]',
+      filename: 'bundle/[name].[chunkhash:8].js',
+      path: target,
+      publicPath: 'auto',
+    },
+    performance: {
+      hints: isBuild && 'warning',
+      maxAssetSize: 1024 * 1024,
+      maxEntrypointSize: 1024 * 1024,
     },
     plugins: [
       new HtmlWebpackPlugin({
@@ -64,18 +72,10 @@ module.exports = (env) => {
         template: path.resolve(__dirname, 'src/__benchmark__/index.html'),
       }),
     ],
-    devServer: {
-      client: {
-        overlay: {
-          errors: true,
-          warnings: false,
-        },
-      },
-      hot: false,
-      watchFiles: path.resolve(__dirname, 'src'),
-      compress: true,
-      port: 3000,
-      open: true,
+    resolve: {
+      extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
     },
+    stats: isBuild ? 'errors-warnings' : 'minimal',
+    target: 'web',
   };
 };

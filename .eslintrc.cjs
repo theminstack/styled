@@ -14,9 +14,9 @@ module.exports = {
     },
     {
       env: { node: false },
-      extends: ['rational', 'rational/react', 'rational/typescript', 'rational/warn', 'rational/prettier'],
+      extends: ['rational/react', 'rational/typescript', 'rational/prettier'],
       files: ['*.ts', '*.tsx'],
-      parserOptions: { project: './tsconfig.json' },
+      parserOptions: { project: './tsconfig.json', tsconfigRootDir: __dirname },
     },
   ],
   root: true,

@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig-base.json",
-  "compilerOptions": {
-    "outDir": "lib/cjs",
-    "module": "CommonJS",
-    "removeComments": true
-  },
-  "files": ["src/index.ts"]
-}
