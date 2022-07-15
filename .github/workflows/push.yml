@@ -28,12 +28,16 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Docs
+        run: npm run docs
+
       - name: Publish (NPM)
         run: npm publish --access public
         env:
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}
       
       - name: Publish (GitHub Pages)
+        continue-on-error: true
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: docs # The folder the action should deploy.
