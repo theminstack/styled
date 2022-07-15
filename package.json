@@ -7,7 +7,7 @@
     "email": "chris@topher.land"
   },
   "license": "ISC",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "files": ["lib/**"],
   "directories": {
     "lib": "lib"
@@ -27,8 +27,7 @@
     "build": "del-cli lib && tsc --project tsconfig.build-commonjs.json && check-es-compat lib/commonjs && tsc --project tsconfig.build-module.json && tsc --project tsconfig.build-types.json",
     "modernize": "npm-check-updates -u",
     "start": "webpack serve",
-    "docs": "del-cli \"docs/*\" \"!docs/CNAME\" && typedoc src/index.ts --out docs --disableSources --cleanOutputDir false && webpack",
-    "coveralls": "cat ./out/coverage/lcov.info | coveralls"
+    "docs": "del-cli \"docs/*\" \"!docs/CNAME\" && typedoc src/index.ts --out docs --disableSources --cleanOutputDir false && webpack"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",
