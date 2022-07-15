@@ -28,13 +28,18 @@ jobs:
       - name: Test
         run: npm test
 
-      - name: Publish
+      - name: Publish (NPM)
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      
+      - name: Publish (GitHub Pages)
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: docs # The folder the action should deploy.
 
-      - name: Coveralls GitHub Action
-        uses: coverallsapp/github-action@1.1.3
+      - name: Publish (Coverage)
+        uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: ./out/coverage/lcov.info
