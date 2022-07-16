@@ -70,7 +70,7 @@ module.exports = (_environment, argv) => {
     output: {
       assetModuleFilename: 'bundle/[name].[contenthash:8].[ext]',
       filename: 'bundle/[name].[chunkhash:8].js',
-      path: `${outputRoot}/${mode}`,
+      path: outputRoot,
       publicPath: 'auto',
     },
     performance: { hints: false },
