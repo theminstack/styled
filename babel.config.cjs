@@ -1,4 +1,3 @@
-// NOT used for building, only for testing (ts-jest).
 /** @type {import('@babel/core').TransformOptions} */
 module.exports = {
   compact: false,
@@ -8,4 +7,14 @@ module.exports = {
       targets: { node: 'current' },
     },
   },
+  presets: [
+    [
+      '@babel/preset-env',
+      {
+        corejs: { proposals: true, version: require('core-js/package.json').version },
+        modules: false,
+        useBuiltIns: 'entry',
+      },
+    ],
+  ],
 };

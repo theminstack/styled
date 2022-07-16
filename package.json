@@ -26,8 +26,8 @@
     "test": "del-cli out && tsc --noEmit && eslint --max-warnings=0 src && jest --no-cache --passWithNoTests",
     "prepublishOnly": "npm run build",
     "build": "del-cli lib && tsc --project tsconfig.build-commonjs.json && check-es-compat lib/commonjs && tsc --project tsconfig.build-module.json && tsc --project tsconfig.build-types.json",
-    "modernize": "npm-check-updates -u",
     "start": "webpack serve",
+    "modernize": "npm-check-updates -u",
     "docs": "del-cli \"docs/*\" \"!docs/CNAME\" && typedoc src/index.ts --out docs --disableSources --cleanOutputDir false && webpack"
   },
   "devDependencies": {
@@ -43,7 +43,9 @@
     "@types/react-dom": "^18.0.6",
     "@types/react-is": "^17.0.3",
     "@types/styled-components": "^5.1.25",
+    "babel-loader": "^8.2.5",
     "check-es-compat": "^2.1.0",
+    "core-js": "^3.23.4",
     "css-loader": "^6.7.1",
     "d3-scale-chromatic": "^3.0.0",
     "del-cli": "^4.0.1",
@@ -58,6 +60,7 @@
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-feather": "^2.0.10",
+    "regenerator-runtime": "^0.13.9",
     "style-loader": "^3.3.1",
     "styled-components": "^5.3.5",
     "ts-jest": "^28.0.6",
@@ -71,12 +74,6 @@
   "peerDependencies": {
     "react": ">=16.14.0"
   },
-  "browserslist": [
-    "last 3 edge versions",
-    "last 3 chrome versions",
-    "last 3 safari versions",
-    "last 3 firefox versions"
-  ],
   "keywords": [
     "component",
     "css",
