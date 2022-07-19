@@ -6,7 +6,7 @@ import {
   type ReactNode,
   createElement,
   forwardRef,
-  useMemo,
+  useState,
 } from 'react';
 
 import { context } from './context';
@@ -39,27 +39,26 @@ const createStyledComponent = <
       const theme = useTheme();
       const styleString = currentStyle.getString(props, theme);
       const { className, children, ...innerProps } = getInnerProps(props);
-      const styleState = useMemo(() => {
-        const [isNew, hash] = context.styleStringCache.register(styleString + staticClassName);
-        const styleClassName = '_' + hash;
-        return { className: styleClassName, isNew };
-      }, [styleString]);
+      const [classNameSuffix, setClassNameSuffix] = useState('');
 
       context.useLayoutEffect(() => {
-        if (styleState.isNew) {
+        const [isNew, hash] = context.styleStringCache.register(styleString + staticClassName);
+        const styleClassName = '_' + hash;
+
+        setClassNameSuffix(' ' + styleClassName);
+
+        if (isNew) {
           context.stylesheetCollection.add(
-            context
-              .createStylesheet()
-              .update(styleCompiler.compile('.' + styleState.className, styleString), styleState.className),
+            context.createStylesheet().update(styleCompiler.compile('.' + styleClassName, styleString), styleClassName),
           );
         }
-      }, [styleState]);
+      }, [styleString]);
 
       return createElement(
         baseComponent,
         {
           ...innerProps,
-          className: (className ? className + ' ' : '') + staticClassName + ' ' + styleState.className,
+          className: (className ? className + ' ' : '') + staticClassName + classNameSuffix,
           ref,
         } as TProps,
         children,
