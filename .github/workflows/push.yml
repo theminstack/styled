@@ -36,14 +36,15 @@ jobs:
         run: npm publish --access public
         env:
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}
-      
+
       - name: Publish (GitHub Pages)
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: docs # The folder the action should deploy.
 
-      - name: Publish (Coverage)
-        uses: coverallsapp/github-action@master
+      - name: Publish (CodeCov)
+        uses: codecov/codecov-action@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: ./out/coverage/lcov.info
+          files: ./out/coverage/lcov.info
+          fail_ci_if_error: true
+          verbose: true
