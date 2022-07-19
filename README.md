@@ -12,7 +12,7 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
 [![github stars](https://badgen.net/github/stars/Shakeskeyboarde/tsstyled?icon=github)](https://github.com/Shakeskeyboarde/tsstyled)
 [![npm version](https://badgen.net/npm/v/tsstyled?icon=npm&label=version)](https://www.npmjs.com/package/tsstyled)
 [![npm downloads](https://badgen.net/npm/dw/tsstyled?icon=npm&label=downloads)](https://www.npmjs.com/package/tsstyled)
-[![Push](https://github.com/Shakeskeyboarde/tsstyled/actions/workflows/push.yml/badge.svg)](https://github.com/Shakeskeyboarde/tsstyled/actions/workflows/push.yml)
+[![build](https://github.com/Shakeskeyboarde/tsstyled/actions/workflows/build.yml/badge.svg)](https://github.com/Shakeskeyboarde/tsstyled/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/Shakeskeyboarde/tsstyled/branch/main/graph/badge.svg?token=Y9CEQA8D4O)](https://codecov.io/gh/Shakeskeyboarde/tsstyled)
 
 ---
