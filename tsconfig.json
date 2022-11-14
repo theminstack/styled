@@ -2,8 +2,8 @@
 {
   "compilerOptions": {
     "module": "NodeNext",
-    "target": "ES2017",
-    "lib": ["ES2017", "DOM"],
+    "target": "ES2021",
+    "lib": ["ES2021", "DOM"],
     "types": ["jest"],
     "jsx": "react-jsx",
     "noEmit": true,
@@ -12,7 +12,7 @@
     "isolatedModules": true,
     "downlevelIteration": true,
     "useDefineForClassFields": true,
-    "noUncheckedIndexedAccess": false,
+    "noUncheckedIndexedAccess": true,
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"]

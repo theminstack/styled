@@ -10,10 +10,8 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
 [![build](https://github.com/Shakeskeyboarde/react-micro-styled/actions/workflows/build.yml/badge.svg)](https://github.com/Shakeskeyboarde/react-micro-styled/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/Shakeskeyboarde/react-micro-styled/branch/main/graph/badge.svg?token=Y9CEQA8D4O)](https://codecov.io/gh/Shakeskeyboarde/react-micro-styled)
 
----
-
 - [Goals](#goals)
-- [Getting Started](#getting-started)
+- [Getting started](#getting-started)
 - [Style properties](#style-properties)
 - [Global styles](#global-styles)
   - [Defining keyframes and fonts](#defining-keyframes-and-fonts)
@@ -21,20 +19,15 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
 - [Style syntax](#style-syntax)
   - [Styling self](#styling-self)
   - [Styling children](#styling-children)
-  - [Styling other styled components](#styling-other-styled-components)
+  - [Selecting styled components](#selecting-styled-components)
   - [Nesting rules](#nesting-rules)
   - [Using parent selector references](#using-parent-selector-references)
   - [Using at-rules](#using-at-rules)
   - [Using empty values](#using-empty-values)
   - [Commenting](#commenting)
-- [Style mixins (helpers)](#style-mixins-helpers)
-  - [Creating simple mixins](#creating-simple-mixins)
-  - [Creating parametric mixins](#creating-parametric-mixins)
-- [Server Side Rendering (SSR)](#server-side-rendering-ssr)
-- [Testing](#testing)
+- [Style helpers](#style-helpers)
+- [Server-side rendering (SSR)](#server-side-rendering-ssr)
 - [Comparison](#comparison)
-
----
 
 ## Goals
 
@@ -45,10 +38,10 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
 - Server side rendering
 - Compatibility
   - React >= 16.14.0
-  - ES2017/ES8 (eg. recent versions of Chrome, Edge, Safari, and Firefox)
+  - ES2021 (eg. recent versions of Chrome, Edge, Safari, and Firefox)
   - Webpack tree-shakable
 
-There are also some things that are non-goals. They were considered, and then the choice was made to explicitly not include support for them.
+There are also some things that are non-goals.
 
 - No auto vendor prefixing
 - No object styles
@@ -56,7 +49,7 @@ There are also some things that are non-goals. They were considered, and then th
 - No "non-style" features (eg. `.attrs()` method)
 - No React Native support
 
-## Getting Started
+## Getting started
 
 ```tsx
 import { styled } from 'react-micro-styled';
@@ -199,7 +192,7 @@ const StyledComponent = styled('div')`
 Top-level CSS properties will be wrapped in a dynamic styled class selector
 
 ```css
-._s7y13d {
+._rms_abcdef {
   color: red;
 }
 ```
@@ -219,12 +212,12 @@ const StyledComponent = styled('div')`
 The styled dynamic class will be automatically prepended to all selectors to make them "scoped".
 
 ```css
-._s7y13d .child {
+._rms_abcdef .child {
   color: blue;
 }
 ```
 
-### Styling other styled components
+### Selecting styled components
 
 Every styled component (except global styles) can be used as a selector for that specific styled component.
 
@@ -240,10 +233,10 @@ const StyledComponentB = styled('div')`
 `;
 ```
 
-The styled component's `toString()` method returns a unique selector string (eg. `".tss_s7y13d"`) which matches that specific styled component.
+The styled component's `toString()` method returns a unique selector string (eg. `"._rmsid_abcdef"`) which matches that specific styled component.
 
 ```css
-._s7y13d .tss_s7y13d {
+._rms_abcdef ._rmsid_abcdef {
   color: red;
 }
 ```
@@ -267,10 +260,10 @@ const StyledComponent = styled('div')`
 Just like the styled dynamic class is prepended to top-level selectors, so too are parent selectors prepended to child selectors.
 
 ```css
-._s7y13d .child {
+._rms_abcdef .child {
   color: blue;
 }
-._s7y13d .child .grandchild {
+._rms_abcdef .child .grandchild {
   color: green;
 }
 ```
@@ -319,15 +312,15 @@ At-rules will be hoisted as necessary, and parent selectors will be handled the 
 
 ```css
 @media screen and (min-width: 900px) {
-  ._s7y13d {
+  ._rms_abcdef {
     color: red;
   }
 }
 @media screen and (min-width: 600px) {
-  ._s7y13d .child .grandchild {
+  ._rms_abcdef .child .grandchild {
     color: blue;
   }
-  .adopted ._s7y13d .child .grandchild {
+  .adopted ._rms_abcdef .child .grandchild {
     color: green;
   }
 }
@@ -347,7 +340,7 @@ const StyledComponent = styled('div')`
 The color property is not included because it has no value.
 
 ```css
-._s7y13d {
+._rms_abcdef {
   background-color: red;
 }
 ```
@@ -364,75 +357,65 @@ const StyledComponent = styled('div')`
 `;
 ```
 
-## Style mixins (helpers)
+## Style helpers
 
-The `styled.mixin` tagged template utility returns a mixin (AKA: helper) function. When the returned function is called, it returns a style string with all values interpolated.
-
-### Creating simple mixins
-
-Mixins do not accept any parameters by default.
+The `styled.string` tagged template function returns a simple style string with all values interpolated. Only static values are allowed (no functions). Empty property values (`null`, `undefined`, and `false`) work the same way they do in styled components, and cause the property to be omitted.
 
 ```tsx
-const fontMixin = styled.mixin`
+const fontHelper = styled.string`
   font-family: Arial, sans-serif;
   font-weight: 400;
-  font-size: 1rem;
+  font-size: ${size};
 `;
 
+// Then use in a styled component or another helper.
 const StyledComponent = styled('div')`
-  color: red;
-  ${fontMixin}
-`;
-```
-
-### Creating parametric mixins
-
-Helpers which accept parameters can be created by setting the generic parameter of the `styled.mixin` template string.
-
-```tsx
-interface FontMixinProps {
-  scale?: number;
-}
-
-const fontMixin = styled.mixin<FontMixinProps>`
-  font-family: Arial, sans-serif;
-  font-weight: 400;
-  font-size: ${(props) => props.scale || 1}rem;
-`;
-
-const StyledComponent = styled('div')`
-  ${fontMixin({ scale: 2 })}
+  ${fontHelper}
   color: red;
 `;
 ```
 
-## Server Side Rendering (SSR)
-
-SSR rendering is detected when there is no `document` global, and styles that would have been added to the DOM are recorded instead. After rendering the document body, use the `renderStylesToString` utility to get all of the `<style>` elements as an HTML string.
+The `styled.string` helper has no side effects and does very little work, so it's also safe to use in functions.
 
 ```tsx
-const appHtml = renderToString(<App />);
-const stylesHtml = renderStylesToString();
+const shadow = (depth: number) => {
+  return styled.string`
+    -moz-box-shadow: 0 ${depth}px ${depth}px black;
+    -webkit-box-shadow: 0 ${depth}px ${depth}px black;
+    box-shadow: 0 ${depth}px ${depth}px black;
+  `;
+};
+
+// Then use in a styled component or another helper.
+const StyledComponent = styled('div')<{ $shadowDepth: number }>`
+  ${(props) => shadow(props.$shadowDepth)}
+  color: red;
+`;
+```
+
+## Server-side rendering (SSR)
+
+Use the `ssr` utility to render both the html and styles.
+
+```tsx
+const [rendered, styles] = ssr(() => renderToString(<App />));
+
 const html = `
 <!doctype HTML>
 <html>
-<head>
-  ${stylesHtml}
-</head>
-<body>
-  <div id="root">${appHtml}</div>
-</body>
+  <head>
+    ${styles}
+  </head>
+  <body>
+    <div id="root">
+      ${rendered}
+    </div>
+  </body>
 </html>
 `;
 ```
 
-## Testing
-
-During testing, there may be a DOM (eg. jsdom) and a `document` global. However, the `NODE_ENV` environment variable should also be set to `test` (Jest sets this automatically). If it is, the SSR implementation is used. So, you can use the same `renderStylesToString` utility to test (eg. Jest snapshots) your styles.
-
-```tsx
-expect(renderStylesToString()).toMatchSnapshot();
-```
+**Note:** SSR will not work in a browser (if `document` is defined).
 
 ## Comparison
 
@@ -466,11 +449,9 @@ React Micro-Styled compared to other styled component solutions.
 |             | Vendor prefixing [2]       | 🔴                 | 🟡     | 🟢                | 🟢      |
 |             | Rule nesting               | 🟢                 | 🟢     | 🟢                | 🟢      |
 |             | Parent selectors (`&`)     | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | Style mixins [3]           | 🟢                 | 🟡     | 🟢                | 🟢      |
 |             | Styled component selectors | 🟢                 | 🟢     | 🟢                | 🟢      |
 
 &nbsp;
 
 - [1] Goober, Styled Components, and Emotion, all support only a single theme, which must be typed using declaration merging.
 - [2] Goober provides vendor prefixing as an additional package.
-- [3] Goober doesn't provide a `css` utility for creating mixins, but it does support function values in tagged templates.

@@ -17,13 +17,32 @@ const GlobalStyle = styled.global`
   }
 `;
 
-const Component = styled('div')`
-  color: cyan;
+const GlobalStyle2 = styled.global`
+  padding: 2rem;
+`;
+
+const A = styled('div')`
+  color: blue;
+`;
+
+const B = styled(A)<{ $foo: string }>`
+  color: red;
+  margin: ${null};
+`;
+
+const C = styled('div')`
+  ${B} {
+    /* test */
+    color: green;
+  }
 `;
 
 createRoot(document.body.appendChild(document.createElement('div'))).render(
   <StrictMode>
+    <GlobalStyle2 />
+    <C>
+      <B $foo="test">Hello, World!</B>
+    </C>
     <GlobalStyle />
-    <Component>Hello, World!</Component>
   </StrictMode>,
 );

@@ -3,7 +3,7 @@
   "description": "A small, fast, and simple CSS-in-JS styled components solution for React, written in Typescript.",
   "author": "Chris Ackerman <chris@topher.land>",
   "license": "ISC",
-  "version": "1.0.2",
+  "version": "2.0.0-next.0",
   "files": [
     "lib/**"
   ],
@@ -29,7 +29,6 @@
     "modernize": "npx npm-check-updates -i --format group"
   },
   "devDependencies": {
-    "@jest/globals": "^29.3.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@types/jest": "^29.2.2",
