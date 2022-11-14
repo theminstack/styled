@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { type Styled } from './styled';
+import { type Styled } from './styled.js';
 
 type StyleTemplateDynamicValue<TProps extends {}, TArgs extends readonly unknown[] = readonly []> = (
   props: TProps,

@@ -1,5 +1,7 @@
-import { createServerStylesheet } from './server-stylesheet';
-import { type Stylesheet } from './stylesheet';
+import { useMemo } from 'react';
+
+import { createServerStylesheet } from './server-stylesheet.js';
+import { type Stylesheet } from './stylesheet.js';
 
 type ServerContext = {
   readonly createStylesheet: () => Stylesheet;
@@ -9,7 +11,7 @@ type ServerContext = {
 const createServerContext = (): ServerContext => {
   const context = {
     createStylesheet: createServerStylesheet,
-    useLayoutEffect: (callback: () => void) => callback(),
+    useLayoutEffect: (callback: () => void, deps?: readonly unknown[]) => useMemo(callback, deps),
   };
 
   return context;

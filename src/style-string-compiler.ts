@@ -1,7 +1,7 @@
-import { type CssBuilder, createCssBuilder } from './css-builder';
-import { createCssSelectorBuilder } from './css-selector-builder';
-import { createCssStatementBuilder } from './css-statement-builder';
-import { type StyleTokenizer, createStyleTokenizer } from './style-tokenizer';
+import { type CssBuilder, createCssBuilder } from './css-builder.js';
+import { createCssSelectorBuilder } from './css-selector-builder.js';
+import { createCssStatementBuilder } from './css-statement-builder.js';
+import { type StyleTokenizer, createStyleTokenizer } from './style-tokenizer.js';
 
 const isConditionalGroup = (atRuleKey: string): atRuleKey is '@document' | '@media' | '@supports' => {
   return atRuleKey === '@media' || atRuleKey === '@supports' || atRuleKey === '@document';
@@ -58,9 +58,9 @@ const compileBlock = (
 
           cssBuilder.addAtDeclaration(identifier, value);
         } else {
-          const [property, value] = statementBuilder.build();
+          const [prop, value] = statementBuilder.build();
 
-          cssBuilder.addDeclaration(property, value);
+          cssBuilder.addDeclaration(prop, value);
         }
 
         if (terminator === '}') {

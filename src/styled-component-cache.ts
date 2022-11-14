@@ -1,6 +1,6 @@
 import { type JSXElementConstructor } from 'react';
 
-import { type Style } from './style';
+import { type Style } from './style.js';
 
 type StyledComponentCacheItem = {
   readonly component: JSXElementConstructor<any> | keyof JSX.IntrinsicElements;

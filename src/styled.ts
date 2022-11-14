@@ -1,9 +1,9 @@
 import { type ComponentProps, type ForwardRefExoticComponent, type JSXElementConstructor, type VFC } from 'react';
 
-import { type StyleTemplateValues, createStyle } from './style';
-import { createStyleStringCompiler } from './style-string-compiler';
-import { createStyledComponent } from './styled-component';
-import { createStyledGlobalComponent } from './styled-global-component';
+import { type StyleTemplateValues, createStyle } from './style.js';
+import { createStyleStringCompiler } from './style-string-compiler.js';
+import { createStyledComponent } from './styled-component.js';
+import { createStyledGlobalComponent } from './styled-global-component.js';
 
 /**
  * Intermediate tagged template function returned by the {@link Styled styled}
@@ -118,4 +118,6 @@ const createStyled = <TTheme extends {} | undefined>(
   return styled;
 };
 
-export { type Styled, type StyleMixin, type StyleTaggedTemplateFunction, createStyled };
+const styled = createStyled();
+
+export { type Styled, type StyleMixin, type StyleTaggedTemplateFunction, createStyled, styled };

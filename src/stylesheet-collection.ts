@@ -1,4 +1,4 @@
-import { type Stylesheet } from './stylesheet';
+import { type Stylesheet } from './stylesheet.js';
 
 type StylesheetCollection = {
   readonly add: (stylesheet: Stylesheet) => Stylesheet;

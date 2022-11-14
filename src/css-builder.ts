@@ -1,6 +1,6 @@
 type CssBuilder = {
   readonly addAtDeclaration: (identifier: string, value?: string) => void;
-  readonly addDeclaration: (property: string, value?: string) => void;
+  readonly addDeclaration: (prop: string, value?: string) => void;
   readonly build: () => string;
   readonly closeBlock: () => void;
   readonly openAtBlock: (identifier: string, rule?: string) => void;

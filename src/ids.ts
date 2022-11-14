@@ -1,5 +1,5 @@
-import { environment } from './environment';
-import { getHash } from './hash';
+import { environment } from './environment.js';
+import { getHash } from './hash.js';
 
 type Ids = {
   readonly next: (namespace: string) => string;

@@ -1,11 +1,11 @@
-import { createBrowserContext } from './browser-context';
-import { environment } from './environment';
-import { type Ids, createIds } from './ids';
-import { createServerContext } from './server-context';
-import { type StyleStringCache, createStyleStringCache } from './style-string-cache';
-import { type StyledComponentCache, createStyledComponentCache } from './styled-component-cache';
-import { type Stylesheet } from './stylesheet';
-import { type StylesheetCollection, createStylesheetCollection } from './stylesheet-collection';
+import { createBrowserContext } from './browser-context.js';
+import { environment } from './environment.js';
+import { type Ids, createIds } from './ids.js';
+import { createServerContext } from './server-context.js';
+import { type StyleStringCache, createStyleStringCache } from './style-string-cache.js';
+import { type StyledComponentCache, createStyledComponentCache } from './styled-component-cache.js';
+import { type Stylesheet } from './stylesheet.js';
+import { type StylesheetCollection, createStylesheetCollection } from './stylesheet-collection.js';
 
 const $$tssContext = Symbol.for('$$tssContext');
 

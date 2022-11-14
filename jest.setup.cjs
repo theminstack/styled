@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 require('@testing-library/jest-dom/extend-expect');
 
 jest.mock('./src/server-context', () => {
@@ -6,6 +7,6 @@ jest.mock('./src/server-context', () => {
 });
 
 beforeEach(() => {
-  require('./src/context').context.reset();
+  require('./src/context.js').context.reset();
   document.head.innerHTML = '';
 });

@@ -1,7 +1,7 @@
 import { useLayoutEffect } from 'react';
 
-import { createBrowserStylesheet } from './browser-stylesheet';
-import { type Stylesheet } from './stylesheet';
+import { createBrowserStylesheet } from './browser-stylesheet.js';
+import { type Stylesheet } from './stylesheet.js';
 
 type BrowserContext = {
   readonly createStylesheet: () => Stylesheet;

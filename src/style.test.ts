@@ -1,4 +1,4 @@
-import { type StyleTemplateValues, createStyle } from './style';
+import { type StyleTemplateValues, createStyle } from './style.js';
 
 const css = (template: TemplateStringsArray, ...values: StyleTemplateValues<{}, readonly []>) =>
   [template, values] as const;

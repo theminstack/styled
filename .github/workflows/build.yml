@@ -28,19 +28,8 @@ jobs:
       - name: Test
         run: npm test
 
-      - name: Docs
-        run: npm run docs
-
-      - name: Publish (NPM)
-        continue-on-error: true
-        run: npm publish --access public
-        env:
-          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
-
-      - name: Publish (GitHub Pages)
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: docs # The folder the action should deploy.
+      - name: Pack
+        run: npm pack
 
       - name: Publish (CodeCov)
         uses: codecov/codecov-action@v3
@@ -48,3 +37,25 @@ jobs:
           files: ./out/coverage/lcov.info
           fail_ci_if_error: true
           verbose: true
+
+      - name: Publish (NPM)
+        continue-on-error: true
+        run: |
+          npm config --location project set //registry.npmjs.org/:_authToken '${NPM_TOKEN}'
+          npm publish --access public --ignore-scripts *.tgz
+        env:
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+
+      - name: Create Workspace Artifact
+        if: ${{ always() }}
+        continue-on-error: true
+        run: tar --exclude=workspace.tar -cf workspace.tar .
+
+      - name: Upload Workspace Artifact
+        uses: actions/upload-artifact@v3
+        if: ${{ always() }}
+        continue-on-error: true
+        with:
+          name: workspace
+          path: workspace.tar
+          retention-days: 7

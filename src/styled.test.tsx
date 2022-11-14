@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 
-import { createStyled } from '.';
+import { createStyled } from './index.js';
 
 const styled = createStyled();
 

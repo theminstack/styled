@@ -9,10 +9,10 @@ import {
   useState,
 } from 'react';
 
-import { context } from './context';
-import { getHtmlAttributes } from './html-attributes';
-import { type Style } from './style';
-import { type StyleStringCompiler } from './style-string-compiler';
+import { context } from './context.js';
+import { getHtmlAttributes } from './html-attributes.js';
+import { type Style } from './style.js';
+import { type StyleStringCompiler } from './style-string-compiler.js';
 
 const createStyledComponent = <
   TComponent extends JSXElementConstructor<{}> | keyof JSX.IntrinsicElements,

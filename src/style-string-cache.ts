@@ -1,4 +1,4 @@
-import { getHash } from './hash';
+import { getHash } from './hash.js';
 
 type StyleStringCache = {
   readonly register: (styleString: string) => readonly [isNew: boolean, hash: string];

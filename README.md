@@ -71,7 +71,7 @@ const StyledComponent = styled('div')`
 `;
 ```
 
-Style any React component which accepts a `className` property. This comes with more tech debt than styling HTML elements, because you can't be sure how the style class is being applied inside the component. This should be done rarely and with careful consideration.
+Style any React component which accepts a `className` property.
 
 ```tsx
 const StyledComponent = styled(Component)`
@@ -79,7 +79,7 @@ const StyledComponent = styled(Component)`
 `;
 ```
 
-Extend the styling of an already styled component. Just like you want to keep your CSS specificity as low as possible, you also want to avoid trying to "patch" an already styled component. Styles can be dynamic, which means applying overrides can quickly get complicated. This should be an absolute last resort.
+Extend the styling of an already styled component.
 
 ```tsx
 const ReStyledComponent = styled(StyledComponent)`

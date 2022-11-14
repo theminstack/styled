@@ -1,5 +1,5 @@
-import { createStyleStringCompiler } from './style-string-compiler';
-import { createStyled } from './styled';
+import { createStyleStringCompiler } from './style-string-compiler.js';
+import { createStyled } from './styled.js';
 
 const styled = createStyled();
 const compiler = createStyleStringCompiler();
