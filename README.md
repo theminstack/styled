@@ -33,7 +33,6 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
 - [Server Side Rendering (SSR)](#server-side-rendering-ssr)
 - [Testing](#testing)
 - [Comparison](#comparison)
-  - [Benchmarks](#benchmarks)
 
 ---
 
