@@ -3,7 +3,7 @@
 A small, fast, and simple CSS-in-JS styled components solution for React, written in Typescript.
 
 - **Small**: Less than 4kb (minified and gzipped) and zero dependencies.
-- **Fast**: Similar to other styled component solutions.
+- **Fast**: Similar in speed to other styled component solutions.
 - **Simple**: Minimal/Opinionated API creates a great developer experience.
 - **Typed**: Written in Typescript. Designed for Typescript.
 
@@ -475,7 +475,3 @@ React Micro-Styled compared to other styled component solutions.
 - [1] Goober, Styled Components, and Emotion, all support only a single theme, which must be typed using declaration merging.
 - [2] Goober provides vendor prefixing as an additional package.
 - [3] Goober doesn't provide a `css` utility for creating mixins, but it does support function values in tagged templates.
-
-### Benchmarks
-
-The benchmark app is available by cloning the [repository](https://github.com/Shakeskeyboarde/react-micro-styled) and running the `npm start` command.
