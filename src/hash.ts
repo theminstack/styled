@@ -5,7 +5,7 @@
  */
 const getHash = (...values: readonly string[]): string => {
   // let hash = 5381;
-  let hash = 195_220_209; // tsstyled unique seed
+  let hash = 195_220_209; // unique seed
 
   for (let valueIndex = values.length - 1; valueIndex >= 0; --valueIndex) {
     const value = values[valueIndex];
