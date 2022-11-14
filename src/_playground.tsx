@@ -1,27 +1,17 @@
 /* eslint-disable unicorn/no-abusive-eslint-disable */
 /* eslint-disable */
 import { type LegacyRef, createRef } from 'react';
-import { createReactTheme, createStyled } from '.';
+import { createStyled } from '.';
 
 // This file is not part of the library. It's a sandbox for
 // experimentation during development.
 
-// Theme
-
-const [useTheme, ThemeProvider] = createReactTheme({
-  foreground: 'black',
-  background: 'white',
-});
-<ThemeProvider
-  value={{
-    foreground: 'blue',
-    background: 'lightyellow',
-  }}
-/>;
-
 // Setup
 
-const styled = createStyled(useTheme);
+const styled = createStyled(() => ({
+  foreground: 'black',
+  background: 'white',
+}));
 
 // Styled Component
 
