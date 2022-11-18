@@ -37,7 +37,7 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
 - Future-proof CSS support
 - Server side rendering
 - Compatibility
-  - React >= 16.14.0
+  - React (Strict Mode) >= 16.14.0
   - ES2021 (eg. recent versions of Chrome, Edge, Safari, and Firefox)
   - Webpack tree-shakable
 
@@ -429,7 +429,7 @@ React Micro-Styled compared to other styled component solutions.
 |             | Feature                    | React Micro-Styled | Goober | Styled Components | Emotion |
 | ----------- | -------------------------- | ------------------ | ------ | ----------------- | ------- |
 | **Library** |                            |                    |        |                   |         |
-|             | Bundle size (approx. kB)   | 4                  | 2      | 13                | 8       |
+|             | Bundle size (approx. kB)   | 2.7                | 1.3    | 12.7              | 11.2    |
 |             | Zero dependencies          | 🟢                 | 🟢     | 🔴                | 🔴      |
 |             | Typescript native          | 🟢                 | 🟢     | 🔴                | 🟢      |
 | **API**     |                            |                    |        |                   |         |
@@ -455,3 +455,9 @@ React Micro-Styled compared to other styled component solutions.
 
 - [1] Goober, Styled Components, and Emotion, all support only a single theme, which must be typed using declaration merging.
 - [2] Goober provides vendor prefixing as an additional package.
+
+Goober's style compiler is not very robust. It does not do bracket matching for instance. Instead, it relies on simple regular expressions to compile style strings to CSS.
+
+Conversely, styled-components and Emotion use compilers that are over-engineered for CSS-in-JS, which is necessary to support Stylis for vendor prefixing.
+
+React Micro-Styled uses a fast 0(n) compiler that does not compromise on correctness. Any valid style _will_ be correctly compiled to CSS.

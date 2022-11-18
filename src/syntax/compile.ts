@@ -1,3 +1,5 @@
+import { environment } from '../util/environment.js';
+
 type AstNode = {
   children: (AstNode | string)[];
   condition?: { at: string } | { selectors: [string, ...string[]] };
@@ -25,7 +27,7 @@ const compile = (styleString: string): AstNode => {
       if (char === terminator) return styleString.slice(start, i + 1);
     }
 
-    throw new Error(`Style parsing error (expected: ${terminator} )`);
+    throw new Error(`Styled parsing error (expected: ${terminator} )`);
   };
 
   const statement = <TTerminator extends string>(
@@ -96,7 +98,7 @@ const compile = (styleString: string): AstNode => {
       space = '';
     }
 
-    throw new Error(`Style parsing error (expected: ${terminators.join(' ')} )`);
+    throw new Error(`Styled parsing error (expected: ${terminators.join(' ')} )`);
   };
 
   const node = (): AstNode => {
@@ -144,12 +146,18 @@ const compile = (styleString: string): AstNode => {
       }
     }
 
-    if (i < styleString.length - 1) throw new Error(`Style parsing error (unexpected: } )`);
+    if (i < styleString.length - 1) throw new Error(`Styled parsing error (unexpected: } )`);
 
     return current;
   };
 
-  return node();
+  try {
+    return node();
+  } catch (error) {
+    if (environment !== 'production') throw error;
+    console.error(error);
+    return { children: [] };
+  }
 };
 
 export { type AstNode, compile };
