@@ -22,7 +22,7 @@ describe('StyledTest', () => {
     expect(container).toMatchInlineSnapshot(`
       <div>
         <div
-          class="undefined _rmsd_test_0 _rmss_test_0"
+          class="_rmsd_test_0 _rmss_test_0"
         />
         <style>
           

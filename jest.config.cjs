@@ -29,4 +29,5 @@ module.exports = {
     '^.+\\.tsx?$': ['ts-jest', { diagnostics: { ignoreCodes: [151001] }, useESM: true }],
   },
   verbose: true,
+  testPathIgnorePatterns: ['\\/test\\.[tj]sx?$']
 };
