@@ -1,62 +1,80 @@
 import { type AstNode, compile } from '../syntax/compile.js';
 import { format } from '../syntax/format.js';
-import { hash } from '../util/hash.js';
-import { getStyleClass } from './class.js';
+import { DYNAMIC_CLASS_PREFIX } from '../util/constants.js';
+import { getHashString, hash } from '../util/hash.js';
 
-type Entry = { ast: AstNode; cssText: string; styledClass: string };
+type Entry = { readonly ast: AstNode; readonly className: string; readonly cssText: string };
 
-const entries = new Map<string, Entry>();
+type Source = { readonly classNames?: string; readonly styleString: string };
+
+type Key = Source | { readonly className: string; readonly styleString?: never };
+
+type EntryCollection = {
+  readonly get: (key: Key) => Entry | undefined;
+  readonly set: (source: Source, entry: Entry) => Entry;
+};
+
+type StyleCache = {
+  readonly resolve: (styleString: string, classNames?: string) => [cssText: string, className: string];
+};
 
 // Style strings have all NUL (\0) characters removed, so they are safe
 // to use as separators.
-const getKey = (id: { styledClass: string } | { styleString: string; styledClasses?: string }): string => {
-  return 'styledClass' in id ? id.styledClass : (id.styledClasses ?? '') + '\0' + id.styleString;
+const getKeyString = (key: Key): string => {
+  return 'className' in key ? key.className : (key.classNames ?? '') + '\0' + key.styleString;
 };
 
 const createEntry = (style: AstNode | string): Entry => {
   const ast = typeof style === 'string' ? compile(style) : style;
-  const styledClass = getStyleClass(hash(JSON.stringify(ast)) >>> 0);
-  const cssText = format(ast, '.' + styledClass);
+  const className = DYNAMIC_CLASS_PREFIX + getHashString(hash(JSON.stringify(ast)));
+  const cssText = format(ast, '.' + className);
 
-  return { ast, cssText, styledClass };
+  return { ast, className, cssText };
 };
 
-const getOrCreateEntry = (styleString: string): Entry => {
-  let entry = entries.get(styleString);
+const createEntryCollection = (): EntryCollection => {
+  const entries = new Map<string, Entry>();
 
-  if (!entry) {
-    entry = createEntry(styleString);
-    entries.set(getKey({ styleString }), entry);
-    entries.set(getKey({ styledClass: entry.styledClass }), entry);
-  }
+  const self: EntryCollection = {
+    get: (key: Key): Entry | undefined => entries.get(getKeyString(key)),
+    set: (source: { classNames?: string; styleString: string }, entry: Entry): Entry => {
+      entries.set(getKeyString({ classNames: source.classNames, styleString: source.styleString }), entry);
+      entries.set(getKeyString({ className: entry.className }), entry);
+      return entry;
+    },
+  };
 
-  return entry;
+  return self;
 };
 
-const cache = {
-  resolve: (styleString: string, styledClasses?: string): Entry => {
-    const key = getKey({ styleString, styledClasses });
-    const cached = entries.get(key);
+const createStyleCache = (): StyleCache => {
+  const entries = createEntryCollection();
 
-    if (cached) return cached;
+  return {
+    resolve: (styleString, classNames) => {
+      const cached = entries.get({ classNames, styleString });
 
-    const base = getOrCreateEntry(styleString);
-    const styledClassArray = styledClasses?.split(/\s+/g).filter((value) => value);
+      if (cached) return [cached.cssText, cached.className];
 
-    if (!styledClassArray?.length) return base;
+      const base = entries.get({ styleString }) || entries.set({ styleString }, createEntry(styleString));
+      const classNameArray = classNames?.split(/\s+/g).filter((value) => value);
 
-    const concatenated = createEntry({
-      children: styledClassArray.reduce((result, styledClass) => {
-        const entry = entries.get(styledClass);
-        return entry ? [...result, ...entry.ast.children] : result;
-      }, base.ast.children),
-    });
+      if (!classNameArray?.length) return [base.cssText, base.className];
 
-    entries.set(key, concatenated);
-    entries.set(getKey({ styledClass: concatenated.styledClass }), concatenated);
+      const merged = createEntry({
+        children: classNameArray.reduce((result, className) => {
+          const entry = entries.get({ className });
+          return entry ? [...result, ...entry.ast.children] : result;
+        }, base.ast.children),
+      });
 
-    return concatenated;
-  },
-} as const;
+      entries.set({ classNames, styleString }, merged);
 
-export { cache };
+      return [merged.cssText, merged.className];
+    },
+  };
+};
+
+const defaultStyleCache = createStyleCache();
+
+export { type StyleCache, createStyleCache, defaultStyleCache };

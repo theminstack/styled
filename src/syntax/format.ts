@@ -1,8 +1,13 @@
-import { environment, isBrowser } from '../util/environment.js';
 import { type AstNode } from './compile.js';
-import { type Printer, createMinifiedPrinter, createPrettyPrinter } from './printer.js';
 
-const mergeSelectors = (parentSelectors: string[], selectors: [string, ...string[]]): string[] => {
+type Builder = {
+  readonly close: () => void;
+  readonly open: (selectorsOrAtRule: string) => void;
+  readonly prop: (keyAndValue: string) => void;
+  readonly toString: () => string;
+};
+
+const mergeSelectors = (parentSelectors: readonly string[], selectors: readonly [string, ...string[]]): string[] => {
   return parentSelectors.length
     ? parentSelectors.flatMap((parentSelector) =>
         selectors.map((selector) =>
@@ -12,7 +17,7 @@ const mergeSelectors = (parentSelectors: string[], selectors: [string, ...string
     : selectors.map((selector) => selector.replaceAll('\0&\0', ':root'));
 };
 
-const formatNode = (node: AstNode, parentSelectors: string[], printer: Printer): void => {
+const formatNode = (node: AstNode, parentSelectors: string[], builder: Builder): void => {
   const [isConditionalGroup, selectors, at] = node.condition
     ? 'selectors' in node.condition
       ? [true, mergeSelectors(parentSelectors, node.condition.selectors), undefined]
@@ -23,33 +28,54 @@ const formatNode = (node: AstNode, parentSelectors: string[], printer: Printer):
 
   let isOpen = false;
 
-  if (at) printer.open(at);
+  if (at) builder.open(at);
 
   for (const child of node.children) {
     if (typeof child === 'string') {
       if (!isOpen && isConditionalGroup) {
         isOpen = true;
-        printer.open(selectors.join(', ') || ':root');
+        builder.open(selectors.join(', ') || ':root');
       }
-      printer.prop(child);
+      builder.prop(child);
     } else {
       if (isOpen) {
         isOpen = false;
-        printer.close();
+        builder.close();
       }
-      formatNode(child, selectors, printer);
+      formatNode(child, selectors, builder);
     }
   }
 
-  if (isOpen) printer.close();
-  if (at) printer.close();
+  if (isOpen) builder.close();
+  if (at) builder.close();
 };
 
-const format = (ast: AstNode | undefined, scope?: string): string => {
-  if (!ast) return '';
-  const printer: Printer = !isBrowser || environment === 'production' ? createMinifiedPrinter() : createPrettyPrinter();
-  formatNode(ast, scope ? [scope] : [], printer);
-  return printer.toString().trim();
+const createBuilder = () => {
+  const indentString = '  ';
+
+  let css = '';
+  let indent = '';
+
+  return {
+    close: (): void => {
+      indent = indent.slice(indentString.length);
+      css += indent + '}\n';
+    },
+    open: (selectorsOrAtRule: string): void => {
+      css += indent + selectorsOrAtRule + ' {\n';
+      indent += indentString;
+    },
+    prop: (keyAndValue: string): void => {
+      css += indent + keyAndValue + ';\n';
+    },
+    toString: (): string => css.trim(),
+  };
+};
+
+const format = (ast: AstNode, scope?: string): string => {
+  const builder = createBuilder();
+  formatNode(ast, scope ? [scope] : [], builder);
+  return builder.toString();
 };
 
 export { format };

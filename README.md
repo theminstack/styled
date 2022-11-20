@@ -26,7 +26,9 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
   - [Using empty values](#using-empty-values)
   - [Commenting](#commenting)
 - [Style helpers](#style-helpers)
-- [Server-side rendering (SSR)](#server-side-rendering-ssr)
+- [Snapshot testing](#snapshot-testing)
+- [Styled provider](#styled-provider)
+  - [Server-side rendering (SSR)](#server-side-rendering-ssr)
 - [Comparison](#comparison)
 
 ## Goals
@@ -55,7 +57,7 @@ There are also some things that are non-goals.
 import { styled } from 'react-micro-styled';
 ```
 
-Style any HTML element type by using the tag name. The styled component supports all of the same props (included refs, which are forwarded) that the HTML element supports. Styling basic HTML elements is what you should be doing most of the time.
+Style any HTML element type by using the tag name. The styled component supports all of the same props (included refs, which are forwarded) that the HTML element supports.
 
 ```tsx
 const StyledComponent = styled('div')`
@@ -81,7 +83,7 @@ const ReStyledComponent = styled(StyledComponent)`
 
 ## Style properties
 
-You can add extra properties to the styled component by setting the generic parameter of the template string. Generally, you should prefix style properties with `$` to indicate that they are only used for styling. Any property name which starts with the `$` character will not be passed through to the underlying HTML element as an attribute.
+Extra properties can be added to the styled component by setting the generic parameter of the template string. Generally, style properties should be prefixed with `$` to indicate that they are only used for styling. Any property name which starts with the `$` character will not be passed through to the underlying HTML element as an attribute.
 
 ```tsx
 interface ComponentStyleProps {
@@ -107,7 +109,7 @@ const GlobalStyle = styled.global`
 `;
 ```
 
-You can add style properties to global styles too.
+Style properties can be added to global styles too.
 
 ```tsx
 interface GlobalStyleProps {
@@ -393,29 +395,66 @@ const StyledComponent = styled('div')<{ $shadowDepth: number }>`
 `;
 ```
 
-## Server-side rendering (SSR)
+## Snapshot testing
 
-Use the `ssr` utility to render both the html and styles.
+Use the `StyledTest` wrapper to produce snapshots with stable class names and style information.
 
 ```tsx
-const [rendered, styles] = ssr(() => renderToString(<App />));
+const container = render(<MyStyledComponent />, { wrapper: StyledTest });
+
+expect(container).toMatchSnapshot();
+```
+
+## Styled provider
+
+A `StyleProvider` can override the default style `cache`, style `manager`, and styled component `renderer`. _No provider is required for default operation._
+
+- **Style Cache:** Compiles style strings to CSS text and dynamic class names.
+- **Style Manager:** Renders style sheets.
+- **Styled Component Renderer:** Renders a components after style classes have been added to their properties.
+
+```tsx
+const cache = createStyleCache();
+const manager = createStyleManager();
+const renderer = createStyledRenderer();
+
+render(
+  <StyledProvider cache={cache} manager={manager} renderer={renderer}>
+    <App />
+  </StyledProvider>,
+);
+```
+
+The `StyledTest` component is actually a `StyledProvider` which injects test versions of all three resources to replace class names and capture styles.
+
+### Server-side rendering (SSR)
+
+Use `createSsrStyleManager` and the `StyledProvider` to capture styles when rendering the application on the server.
+
+```tsx
+const manager = createSsrStyleManager();
+const html = renderToString(
+  <StyledProvider manager={manager}>
+    <App />
+  </StyledProvider>,
+);
 
 const html = `
 <!doctype HTML>
 <html>
   <head>
-    ${styles}
+    ${manager.getStyleTags()}
   </head>
   <body>
     <div id="root">
-      ${rendered}
+      ${html}
     </div>
   </body>
 </html>
 `;
 ```
 
-**Note:** SSR will not work in a browser (if `document` is defined).
+The SSR manager's `getStyleTags()` method returns a single html string containing only `<style>` tags. There are also `getStyleElement()` (React elements array) and `getCss()` (css strings array) methods.
 
 ## Comparison
 
@@ -434,12 +473,14 @@ React Micro-Styled compared to other styled component solutions.
 |             | Typescript native          | 🟢                 | 🟢     | 🔴                | 🟢      |
 | **API**     |                            |                    |        |                   |         |
 |             | Tagged template styles     | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Dynamic styles             | 🟢                 | 🟢     | 🟢                | 🟢      |
 |             | Object styles              | 🔴                 | 🟢     | 🟢                | 🟢      |
 |             | Global styles              | 🟢                 | 🟢     | 🟢                | 🟢      |
 |             | Polymorphism (`as`)        | 🔴                 | 🟢     | 🟢                | 🟢      |
 |             | Property mapping (`attrs`) | 🔴                 | 🔴     | 🟢                | 🔴      |
 |             | Theming [1]                | 🟢                 | 🟡     | 🟡                | 🟡      |
 |             | SSR                        | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Snapshot testing           | 🟢                 | 🔴     | 🟢                | 🟢      |
 | **Style**   |                            |                    |        |                   |         |
 |             | CSS `@media`               | 🟢                 | 🟢     | 🟢                | 🟢      |
 |             | CSS `@keyframes`           | 🟢                 | 🟢     | 🟢                | 🟢      |
@@ -456,7 +497,7 @@ React Micro-Styled compared to other styled component solutions.
 - [1] Goober, Styled Components, and Emotion, all support only a single theme, which must be typed using declaration merging.
 - [2] Goober provides vendor prefixing as an additional package.
 
-Goober's style compiler is not very robust. It does not do bracket matching for instance. Instead, it relies on simple regular expressions to compile style strings to CSS.
+Goober's style compiler is not very robust. It does not do bracket matching for instance. Instead, it relies on simple regular expressions to compile style strings to CSS. Goober has made shrinking the library size their highest priority, at the expense of the design.
 
 Conversely, styled-components and Emotion use compilers that are over-engineered for CSS-in-JS, which is necessary to support Stylis for vendor prefixing.
 

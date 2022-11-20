@@ -10,7 +10,7 @@ if (!('$$rmsId' in globalThis)) {
   Object.defineProperty(globalThis, '$$rmsId', {
     configurable: false,
     enumerable: false,
-    value: '$$rmsId',
+    value: getHashString(hash('$$rmsId')),
     writable: true,
   });
 }

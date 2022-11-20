@@ -3,28 +3,27 @@ import { type FC, type ReactNode, useRef } from 'react';
 import { compile } from '../syntax/compile.js';
 import { format } from '../syntax/format.js';
 import { useStyleEffect } from '../util/effect.js';
-import { type StyleElement, dom } from './dom.js';
+import { useStyledContext } from './context.js';
+import { type StyleElement } from './manager.js';
 import { type StyledStringValue, getStyleStringHook } from './string.js';
 
 type StyledGlobalComponent<TProps extends {}> = FC<TProps>;
 
-type StyledGlobal<TTheme extends {}> = <TProps extends {}>(
+type StyledGlobal<TTheme> = <TProps extends {}>(
   template: TemplateStringsArray,
-  ...values: StyledStringValue<TProps, TTheme>[]
+  ...values: readonly StyledStringValue<TProps, TTheme>[]
 ) => StyledGlobalComponent<TProps>;
 
-const createStyledGlobal = <TTheme extends {}>(useTheme: () => TTheme): StyledGlobal<TTheme> => {
-  const global = <TProps extends {}>(
-    template: TemplateStringsArray,
-    ...values: StyledStringValue<TProps, TTheme>[]
-  ) => {
+const createStyledGlobal = <TTheme,>(useTheme: () => TTheme): StyledGlobal<TTheme> => {
+  const global = <TProps,>(template: TemplateStringsArray, ...values: StyledStringValue<TProps, TTheme>[]) => {
     const useStyleString = getStyleStringHook(template.raw, values, useTheme);
     const StyledGlobal = (props: TProps & { children?: ReactNode }): JSX.Element => {
       const styleElement = useRef<StyleElement | undefined>();
+      const { manager } = useStyledContext();
       const styleString = useStyleString(props);
 
       useStyleEffect(() => {
-        const style = (styleElement.current = dom.addGlobalStyle());
+        const style = (styleElement.current = manager.addGlobalStyle());
         return () => style.remove();
       }, []);
 

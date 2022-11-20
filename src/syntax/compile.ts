@@ -2,7 +2,7 @@ import { environment } from '../util/environment.js';
 
 type AstNode = {
   children: (AstNode | string)[];
-  condition?: { at: string } | { selectors: [string, ...string[]] };
+  condition?: { readonly at: string } | { readonly selectors: [string, ...string[]] };
 };
 
 const compile = (styleString: string): AstNode => {
