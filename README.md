@@ -30,6 +30,7 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
 - [Styled provider](#styled-provider)
   - [Server-side rendering (SSR)](#server-side-rendering-ssr)
 - [Comparison](#comparison)
+- [Release Notes](#release-notes)
 
 ## Goals
 
@@ -49,7 +50,7 @@ There are also some things that are non-goals.
   - Rarely necessary.
 - No object styles
   - Text styles are more portable and lint-able.
-- No component polymorphism (eg. `as` property, `withComponent` method)
+- No component polymorphism (eg. `as` property, `.withComponent()` method)
   - Breaks type-safety.
 - No "non-style" features (eg. `.attrs()` method)
   - Use `defaultProps`.
@@ -134,8 +135,8 @@ const GlobalStyle = styled.global<GlobalStyleProps>`
 Defining keyframes or font-faces is the same as defining any other style. Since they are not scoped to any particular component, they should probably only be used in global styles. To prevent name collisions, use the included `getId` utility to generate CSS-safe unique names.
 
 ```tsx
-const openSansFont = getId('Open Sans');
-const slideInAnimation = getId('slideIn');
+const openSansFont = getId();
+const slideInAnimation = getId();
 
 const GlobalStyle = styled.global`
   @font-face {
@@ -525,3 +526,20 @@ Goober's style compiler is not very robust. It does not do bracket matching for 
 Conversely, styled-components and Emotion use compilers that are over-engineered for CSS-in-JS, which is necessary to support Stylis for vendor prefixing.
 
 React Micro-Styled uses a fast 0(n) compiler that does not compromise on correctness. Any valid style _will_ be correctly compiled to CSS.
+
+## Release Notes
+
+- v2.0.0
+  - New Features
+    - Faster and more reliable style compiler
+    - Tag name method support (eg. `styled.div` alternative to `styled('div')`)
+    - Using React's `useLayoutEffect` when available
+    - Added `styled.string` helper for building static style strings
+    - Added `StyledProvider`
+      - Improved SSR support (`createSsrStyledManager`)
+      - Improved snapshot testing support (`StyledTest`)
+  - Breaking Changes
+    - `getId` no longer accepts an argument
+    - Supported ECMA version changed to ES2021
+    - Removed `styled.mixin`
+    - Removed `renderStylesToString`
