@@ -1,11 +1,12 @@
-export { type StyleCache, createStyleCache } from './api/cache.js';
+export { type StyledCache, createStyledCache } from './api/cache.js';
 export { StyledProvider } from './api/context.js';
 export {
-  type SsrStyleManager,
+  type SsrStyledManager,
+  type StyledManager,
   type StyleElement,
-  type StyleManager,
-  createSsrStyleManager,
-  createStyleManager,
+  createSsrStyledManager,
+  createStyledManager,
 } from './api/manager.js';
+export { type StyledRenderer, createStyledRenderer } from './api/renderer.js';
 export { type Styled, createStyled, styled } from './api/styled.js';
 export { getId } from './util/id.js';

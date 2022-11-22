@@ -1,19 +1,19 @@
 import { type PropsWithChildren, createContext, useContext } from 'react';
 
-import { type StyleCache, defaultStyleCache } from './cache.js';
-import { type StyleManager, defaultStyleManager } from './manager.js';
-import { type Renderer, defaultRenderer } from './renderer.js';
+import { type StyledCache, defaultStyledCache } from './cache.js';
+import { type StyledManager, defaultStyledManager } from './manager.js';
+import { type StyledRenderer, defaultStyledRenderer } from './renderer.js';
 
 type StyleContextValue = {
-  readonly cache: StyleCache;
-  readonly manager: StyleManager;
-  readonly renderer: Renderer;
+  readonly cache: StyledCache;
+  readonly manager: StyledManager;
+  readonly renderer: StyledRenderer;
 };
 
 const StyledContext = createContext<StyleContextValue>({
-  cache: defaultStyleCache,
-  manager: defaultStyleManager,
-  renderer: defaultRenderer,
+  cache: defaultStyledCache,
+  manager: defaultStyledManager,
+  renderer: defaultStyledRenderer,
 });
 
 const StyledProvider = ({ children, ...value }: PropsWithChildren<Partial<StyleContextValue>>): JSX.Element => {

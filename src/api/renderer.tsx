@@ -1,6 +1,6 @@
 import { type ComponentType, createElement } from 'react';
 
-type Renderer = {
+type StyledRenderer = {
   readonly render: (
     component: ComponentType<any> | string,
     props: any,
@@ -8,7 +8,7 @@ type Renderer = {
   ) => JSX.Element | null;
 };
 
-const createRenderer = (): Renderer => {
+const createStyledRenderer = (): StyledRenderer => {
   return {
     render: (component, props, ...children): JSX.Element | null => {
       return createElement(component as ComponentType<any> | keyof JSX.IntrinsicElements, props, children);
@@ -16,6 +16,6 @@ const createRenderer = (): Renderer => {
   };
 };
 
-const defaultRenderer = createRenderer();
+const defaultStyledRenderer = createStyledRenderer();
 
-export { type Renderer, createRenderer, defaultRenderer };
+export { type StyledRenderer, createStyledRenderer, defaultStyledRenderer };

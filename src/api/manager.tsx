@@ -3,19 +3,19 @@ type StyleElement = {
   textContent: string | null;
 };
 
-type StyleManager = {
+type StyledManager = {
   readonly addComponentStyle: (dynamicClass: string, cssText: string) => void;
   readonly addGlobalStyle: () => StyleElement;
   readonly unref: (dynamicClass: string) => void;
 };
 
-type SsrStyleManager = StyleManager & {
+type SsrStyledManager = StyledManager & {
   readonly getCss: () => string[];
   readonly getStyleElement: () => JSX.Element[];
   readonly getStyleTags: () => string;
 };
 
-const createStyleManager = (): StyleManager => {
+const createStyledManager = (): StyledManager => {
   const cache = new Set<string>();
 
   let initialized = false;
@@ -61,11 +61,11 @@ const createSsrStyleElement = (): StyleElement => {
   };
 };
 
-const createSsrStyleManager = (): SsrStyleManager => {
+const createSsrStyledManager = (): SsrStyledManager => {
   const globals: StyleElement[] = [];
   const components = new Map<string, StyleElement>();
 
-  const manager: SsrStyleManager = {
+  const manager: SsrStyledManager = {
     addComponentStyle: (dynamicClass, cssText) => {
       if (!components.has(dynamicClass)) {
         const style = createSsrStyleElement();
@@ -103,13 +103,13 @@ const createSsrStyleManager = (): SsrStyleManager => {
   return manager;
 };
 
-const defaultStyleManager = createStyleManager();
+const defaultStyledManager = createStyledManager();
 
 export {
-  type SsrStyleManager,
+  type SsrStyledManager,
+  type StyledManager,
   type StyleElement,
-  type StyleManager,
-  createSsrStyleManager,
-  createStyleManager,
-  defaultStyleManager,
+  createSsrStyledManager,
+  createStyledManager,
+  defaultStyledManager,
 };

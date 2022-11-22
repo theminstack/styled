@@ -3,7 +3,7 @@ import { format } from '../syntax/format.js';
 import { DYNAMIC_CLASS_PREFIX } from '../util/constants.js';
 import { getHashString, hash } from '../util/hash.js';
 
-type StyleCache = {
+type StyledCache = {
   readonly resolve: (styleString: string, classNames?: string) => [cssText: string, className: string];
   readonly resolveGlobal: (styleString: string) => string;
 };
@@ -48,7 +48,7 @@ const createAstCache = () => {
   };
 };
 
-const createStyleCache = (): StyleCache => {
+const createStyledCache = (): StyledCache => {
   const astCache = createAstCache();
   const cssCacheGlobal = new Map<string, string>();
   const cssCacheScoped = new Map<`${string}\0${string}`, [cssText: string, className: string]>();
@@ -81,6 +81,6 @@ const createStyleCache = (): StyleCache => {
   };
 };
 
-const defaultStyleCache = createStyleCache();
+const defaultStyledCache = createStyledCache();
 
-export { type StyleCache, createStyleCache, defaultStyleCache };
+export { type StyledCache, createStyledCache, defaultStyledCache };

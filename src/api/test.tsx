@@ -1,10 +1,10 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
 
 import { DYNAMIC_CLASS_PREFIX, STATIC_CLASS_PREFIX } from '../util/constants.js';
-import { type StyleCache, createStyleCache } from './cache.js';
+import { type StyledCache, createStyledCache } from './cache.js';
 import { StyledProvider } from './context.js';
-import { type StyleElement, type StyleManager } from './manager.js';
-import { type Renderer, createRenderer } from './renderer.js';
+import { type StyledManager, type StyleElement } from './manager.js';
+import { type StyledRenderer, createStyledRenderer } from './renderer.js';
 
 type StyledTestProps = {
   readonly children?: ReactNode;
@@ -15,7 +15,7 @@ type TestReplacer = {
   readonly restore: (value: string) => string;
 };
 
-type TestStyleManager = StyleManager & {
+type TestStyledManager = StyledManager & {
   readonly getCss: () => readonly string[];
   onChange?: () => void;
 };
@@ -50,8 +50,8 @@ const createTestClassReplacer = (): TestReplacer => {
   };
 };
 
-const createTestRenderer = (replacer: TestReplacer): Renderer => {
-  const base = createRenderer();
+const createTestRenderer = (replacer: TestReplacer): StyledRenderer => {
+  const base = createStyledRenderer();
 
   return {
     render: (component, props, ...children) => {
@@ -61,8 +61,8 @@ const createTestRenderer = (replacer: TestReplacer): Renderer => {
   };
 };
 
-const createTestCache = (replacer: TestReplacer): StyleCache => {
-  const base = createStyleCache();
+const createTestCache = (replacer: TestReplacer): StyledCache => {
+  const base = createStyledCache();
 
   return {
     resolve: (styleString, classNames) => {
@@ -95,10 +95,10 @@ const createTestStyleElement = (onChange?: () => void, onRemove?: () => void): S
   return self;
 };
 
-const createTestManager = (): TestStyleManager => {
+const createTestManager = (): TestStyledManager => {
   const globals = new Set<StyleElement>();
   const components = new Map<string, { refCount: number; style: StyleElement }>();
-  const self: TestStyleManager = {
+  const self: TestStyledManager = {
     addComponentStyle: (dynamicClass, cssText) => {
       let value = components.get(dynamicClass);
       if (!value)
@@ -130,7 +130,7 @@ const createTestManager = (): TestStyleManager => {
   return self;
 };
 
-const StyleView = (props: { manager: TestStyleManager }) => {
+const StyleView = (props: { manager: TestStyledManager }) => {
   const [, setCount] = useState(0);
 
   useEffect(() => {

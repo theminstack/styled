@@ -2,7 +2,7 @@
 
 A small, fast, and simple CSS-in-JS styled components solution for React, written in Typescript.
 
-- **Small**: Less than 4kb (minified and gzipped) and zero dependencies.
+- **Small**: Less than 3kb (minified and gzipped) with zero dependencies.
 - **Fast**: Similar in speed to other styled component solutions.
 - **Simple**: Minimal/Opinionated API creates a great developer experience.
 - **Typed**: Written in Typescript. Designed for Typescript.
@@ -46,10 +46,15 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
 There are also some things that are non-goals.
 
 - No auto vendor prefixing
+  - Rarely necessary.
 - No object styles
+  - Text styles are more portable and lint-able.
 - No component polymorphism (eg. `as` property, `withComponent` method)
+  - Breaks type-safety.
 - No "non-style" features (eg. `.attrs()` method)
+  - Use `defaultProps`.
 - No React Native support
+  - Costs outweigh benefits.
 
 ## Getting started
 
@@ -194,7 +199,7 @@ const StyledComponent = styled('div')`
 Top-level CSS properties will be wrapped in a dynamic styled class selector
 
 ```css
-._rms_abcdef {
+._rmsd_abcdef {
   color: red;
 }
 ```
@@ -214,7 +219,7 @@ const StyledComponent = styled('div')`
 The styled dynamic class will be automatically prepended to all selectors to make them "scoped".
 
 ```css
-._rms_abcdef .child {
+._rmsd_abcdef .child {
   color: blue;
 }
 ```
@@ -235,10 +240,10 @@ const StyledComponentB = styled('div')`
 `;
 ```
 
-The styled component's `toString()` method returns a unique selector string (eg. `"._rmsid_abcdef"`) which matches that specific styled component.
+The styled component's `toString()` method returns a unique selector string (eg. `"._rmss_abcdef"`) which matches that specific styled component.
 
 ```css
-._rms_abcdef ._rmsid_abcdef {
+._rmsd_abcdef ._rmss_abcdef {
   color: red;
 }
 ```
@@ -262,10 +267,10 @@ const StyledComponent = styled('div')`
 Just like the styled dynamic class is prepended to top-level selectors, so too are parent selectors prepended to child selectors.
 
 ```css
-._rms_abcdef .child {
+._rmsd_abcdef .child {
   color: blue;
 }
-._rms_abcdef .child .grandchild {
+._rmsd_abcdef .child .grandchild {
   color: green;
 }
 ```
@@ -314,15 +319,15 @@ At-rules will be hoisted as necessary, and parent selectors will be handled the 
 
 ```css
 @media screen and (min-width: 900px) {
-  ._rms_abcdef {
+  ._rmsd_abcdef {
     color: red;
   }
 }
 @media screen and (min-width: 600px) {
-  ._rms_abcdef .child .grandchild {
+  ._rmsd_abcdef .child .grandchild {
     color: blue;
   }
-  .adopted ._rms_abcdef .child .grandchild {
+  .adopted ._rmsd_abcdef .child .grandchild {
     color: green;
   }
 }
@@ -342,7 +347,7 @@ const StyledComponent = styled('div')`
 The color property is not included because it has no value.
 
 ```css
-._rms_abcdef {
+._rmsd_abcdef {
   background-color: red;
 }
 ```
@@ -407,15 +412,15 @@ expect(container).toMatchSnapshot();
 
 ## Styled provider
 
-A `StyleProvider` can override the default style `cache`, style `manager`, and styled component `renderer`. _No provider is required for default operation._
+A `StyledProvider` can override the default `cache`, `manager`, and `renderer`. _No provider is required for default operation._
 
-- **Style Cache:** Compiles style strings to CSS text and dynamic class names.
-- **Style Manager:** Renders style sheets.
-- **Styled Component Renderer:** Renders a components after style classes have been added to their properties.
+- **Styled Cache:** Compiles style strings to CSS text and dynamic class names.
+- **Styled Manager:** Renders style sheets.
+- **Styled Renderer:** Renders a components after style classes have been added to their properties.
 
 ```tsx
-const cache = createStyleCache();
-const manager = createStyleManager();
+const cache = createStyledCache();
+const manager = createStyledManager();
 const renderer = createStyledRenderer();
 
 render(
@@ -429,10 +434,10 @@ The `StyledTest` component is actually a `StyledProvider` which injects test ver
 
 ### Server-side rendering (SSR)
 
-Use `createSsrStyleManager` and the `StyledProvider` to capture styles when rendering the application on the server.
+Use `createSsrStyledManager` and the `StyledProvider` to capture styles when rendering the application on the server.
 
 ```tsx
-const manager = createSsrStyleManager();
+const manager = createSsrStyledManager();
 const html = renderToString(
   <StyledProvider manager={manager}>
     <App />
@@ -468,7 +473,7 @@ React Micro-Styled compared to other styled component solutions.
 |             | Feature                    | React Micro-Styled | Goober | Styled Components | Emotion |
 | ----------- | -------------------------- | ------------------ | ------ | ----------------- | ------- |
 | **Library** |                            |                    |        |                   |         |
-|             | Bundle size (approx. kB)   | 2.7                | 1.3    | 12.7              | 11.2    |
+|             | Bundle size (approx. kB)   | 3                  | 1.3    | 12.7              | 11.2    |
 |             | Zero dependencies          | 🟢                 | 🟢     | 🔴                | 🔴      |
 |             | Typescript native          | 🟢                 | 🟢     | 🔴                | 🟢      |
 | **API**     |                            |                    |        |                   |         |
