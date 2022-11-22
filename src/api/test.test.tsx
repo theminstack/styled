@@ -5,16 +5,26 @@ import { StyledTest } from './test.js';
 
 describe('StyledTest', () => {
   test('simple render', () => {
+    const A = styled('div')`
+      padding: 1rem;
+    `;
+    const B = styled('div')`
+      color: blue;
+      ${A} {
+        padding: 0;
+      }
+    `;
     const GlobalStyle = styled.global`
       padding: 2rem;
-    `;
-    const StyledDiv = styled('div')`
-      color: blue;
+      ${B} {
+        background: grey;
+      }
     `;
     const { container } = render(
       <>
         <GlobalStyle />
-        <StyledDiv />
+        <A />
+        <B />
       </>,
       { wrapper: StyledTest },
     );
@@ -24,13 +34,25 @@ describe('StyledTest', () => {
         <div
           class="_rmsd_test_0 _rmss_test_0"
         />
+        <div
+          class="_rmsd_test_1 _rmss_test_1"
+        />
         <style>
           
           :root {
             padding: 2rem;
           }
+          ._rmss_test_1 {
+            background: grey;
+          }
           ._rmsd_test_0 {
+            padding: 1rem;
+          }
+          ._rmsd_test_1 {
             color: blue;
+          }
+          ._rmsd_test_1 ._rmss_test_0 {
+            padding: 0;
           }
           
         </style>

@@ -3,7 +3,7 @@
   "description": "A small, fast, and simple CSS-in-JS styled components solution for React, written in Typescript.",
   "author": "Chris Ackerman <chris@topher.land>",
   "license": "ISC",
-  "version": "2.0.0-next.2",
+  "version": "2.0.0-next.3",
   "files": [
     "lib/**"
   ],
@@ -26,7 +26,8 @@
     "start": "vite --host",
     "test": "del-cli out && rc test -o",
     "prepack": "del-cli lib *.tgz && rc build",
-    "modernize": "npx npm-check-updates -i --format group"
+    "modernize": "npx npm-check-updates -i --format group",
+    "analyze": "npm run prepack && webpack --analyze"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
@@ -35,6 +36,7 @@
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.8",
     "@vitejs/plugin-react": "^2.2.0",
+    "compression-webpack-plugin": "^10.0.0",
     "del-cli": "^5.0.0",
     "eslint": "^8.27.0",
     "eslint-config-rational": "^2.0.6",
@@ -48,7 +50,10 @@
     "ts-jest": "^29.0.3",
     "typescript": "^4.8.4",
     "vite": "^3.2.3",
-    "vite-plugin-full-reload": "^1.0.4"
+    "vite-plugin-full-reload": "^1.0.4",
+    "webpack": "^5.75.0",
+    "webpack-bundle-analyzer": "^4.7.0",
+    "webpack-cli": "^5.0.0"
   },
   "peerDependencies": {
     "react": ">=16.14.0"

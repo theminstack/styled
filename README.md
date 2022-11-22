@@ -65,19 +65,19 @@ const StyledComponent = styled('div')`
 `;
 ```
 
-Style any React component which accepts a `className` property.
+The tag name method style is also supported.
 
 ```tsx
-const StyledComponent = styled(Component)`
+const StyledComponent = styled.div`
   color: black;
 `;
 ```
 
-Extend the styling of an already styled component.
+Style any React component which accepts a `className` property, or extend the styles of an already styled component.
 
 ```tsx
-const ReStyledComponent = styled(StyledComponent)`
-  color: gray;
+const StyledComponent = styled(Component)`
+  color: black;
 `;
 ```
 

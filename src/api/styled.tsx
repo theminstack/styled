@@ -43,6 +43,8 @@ type StyledTaggedTemplateFunction<TProps extends {}, TTheme extends {}> = {
 };
 
 type Styled<TTheme extends {}> = {
+  [P in keyof JSX.IntrinsicElements]: StyledTaggedTemplateFunction<StylableTypeProps<P>, TTheme>;
+} & {
   <TType extends StylableType<any>>(type: TType): StyledTaggedTemplateFunction<StylableTypeProps<TType>, TTheme>;
   global: StyledGlobal<TTheme>;
   string: StyledString;
@@ -77,7 +79,11 @@ const createStyled = <TTheme extends {}>(useTheme: () => TTheme = () => EMPTY_TH
   styled.global = createStyledGlobal(useTheme);
   styled.string = string;
 
-  return styled;
+  return new Proxy(styled, {
+    get: (target, prop) => {
+      return prop in target ? target[prop as keyof typeof target] : typeof prop === 'string' ? target(prop) : undefined;
+    },
+  }) as Styled<TTheme>;
 };
 
 const styled = createStyled();

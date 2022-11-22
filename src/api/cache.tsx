@@ -3,74 +3,80 @@ import { format } from '../syntax/format.js';
 import { DYNAMIC_CLASS_PREFIX } from '../util/constants.js';
 import { getHashString, hash } from '../util/hash.js';
 
-type Entry = { readonly ast: AstNode; readonly className: string; readonly cssText: string };
-
-type Source = { readonly classNames?: string; readonly styleString: string };
-
-type Key = Source | { readonly className: string; readonly styleString?: never };
-
-type EntryCollection = {
-  readonly get: (key: Key) => Entry | undefined;
-  readonly set: (source: Source, entry: Entry) => Entry;
-};
-
 type StyleCache = {
   readonly resolve: (styleString: string, classNames?: string) => [cssText: string, className: string];
+  readonly resolveGlobal: (styleString: string) => string;
 };
 
-// Style strings have all NUL (\0) characters removed, so they are safe
-// to use as separators.
-const getKeyString = (key: Key): string => {
-  return 'className' in key ? key.className : (key.classNames ?? '') + '\0' + key.styleString;
+const getClassName = (ast: AstNode): string => {
+  return DYNAMIC_CLASS_PREFIX + getHashString(hash(JSON.stringify(ast)));
 };
 
-const createEntry = (style: AstNode | string): Entry => {
-  const ast = typeof style === 'string' ? compile(style) : style;
-  const className = DYNAMIC_CLASS_PREFIX + getHashString(hash(JSON.stringify(ast)));
-  const cssText = format(ast, '.' + className);
+const createAstCache = () => {
+  const astByStyle = new Map<string, [ast: AstNode, className: string]>();
+  const astByClass = new Map<string, AstNode>();
 
-  return { ast, className, cssText };
-};
+  return {
+    resolve: (styleString: string, classNames?: string): [ast: AstNode, className: string] => {
+      let base = astByStyle.get(styleString);
 
-const createEntryCollection = (): EntryCollection => {
-  const entries = new Map<string, Entry>();
+      if (!base) {
+        const ast = compile(styleString);
+        const className = getClassName(ast);
 
-  const self: EntryCollection = {
-    get: (key: Key): Entry | undefined => entries.get(getKeyString(key)),
-    set: (source: { classNames?: string; styleString: string }, entry: Entry): Entry => {
-      entries.set(getKeyString({ classNames: source.classNames, styleString: source.styleString }), entry);
-      entries.set(getKeyString({ className: entry.className }), entry);
-      return entry;
+        base = [ast, className];
+        astByStyle.set(styleString, base);
+      }
+
+      let [ast, className] = base;
+
+      const classNamesArray = classNames?.split(/\s+/g).filter((value) => value);
+
+      if (classNamesArray?.length) {
+        ast = {
+          children: classNamesArray.reduce((result, overrideClass) => {
+            return [...result, ...(astByClass.get(overrideClass)?.children ?? [])];
+          }, ast.children),
+        };
+        className = getClassName(ast);
+      }
+
+      astByClass.set(className, ast);
+
+      return [ast, className];
     },
   };
-
-  return self;
 };
 
 const createStyleCache = (): StyleCache => {
-  const entries = createEntryCollection();
+  const astCache = createAstCache();
+  const cssCacheGlobal = new Map<string, string>();
+  const cssCacheScoped = new Map<`${string}\0${string}`, [cssText: string, className: string]>();
 
   return {
-    resolve: (styleString, classNames) => {
-      const cached = entries.get({ classNames, styleString });
+    resolve: (styleString, classNames = '') => {
+      let resolved = cssCacheScoped.get(`${styleString}\0${classNames}`);
 
-      if (cached) return [cached.cssText, cached.className];
+      if (!resolved) {
+        const [ast, className] = astCache.resolve(styleString, classNames);
+        const cssText = format(ast, '.' + className);
 
-      const base = entries.get({ styleString }) || entries.set({ styleString }, createEntry(styleString));
-      const classNameArray = classNames?.split(/\s+/g).filter((value) => value);
+        resolved = [cssText, className];
+        cssCacheScoped.set(`${styleString}\0${className}`, resolved);
+      }
 
-      if (!classNameArray?.length) return [base.cssText, base.className];
+      return [...resolved];
+    },
+    resolveGlobal: (styleString) => {
+      let resolved = cssCacheGlobal.get(styleString);
 
-      const merged = createEntry({
-        children: classNameArray.reduce((result, className) => {
-          const entry = entries.get({ className });
-          return entry ? [...result, ...entry.ast.children] : result;
-        }, base.ast.children),
-      });
+      if (!resolved) {
+        const [ast] = astCache.resolve(styleString);
+        resolved = format(ast);
+        cssCacheGlobal.set(styleString, resolved);
+      }
 
-      entries.set({ classNames, styleString }, merged);
-
-      return [merged.cssText, merged.className];
+      return resolved;
     },
   };
 };

@@ -1,7 +1,5 @@
 import { type FC, type ReactNode, useRef } from 'react';
 
-import { compile } from '../syntax/compile.js';
-import { format } from '../syntax/format.js';
 import { useStyleEffect } from '../util/effect.js';
 import { useStyledContext } from './context.js';
 import { type StyleElement } from './manager.js';
@@ -19,7 +17,7 @@ const createStyledGlobal = <TTheme,>(useTheme: () => TTheme): StyledGlobal<TThem
     const useStyleString = getStyleStringHook(template.raw, values, useTheme);
     const StyledGlobal = (props: TProps & { children?: ReactNode }): JSX.Element => {
       const styleElement = useRef<StyleElement | undefined>();
-      const { manager } = useStyledContext();
+      const { cache, manager } = useStyledContext();
       const styleString = useStyleString(props);
 
       useStyleEffect(() => {
@@ -33,7 +31,7 @@ const createStyledGlobal = <TTheme,>(useTheme: () => TTheme): StyledGlobal<TThem
           // - Large numbers of global styles are not expected.
           // - Frequent global styles changes are not expected.
           // - Parallel instances of one global style are not expected.
-          styleElement.current.textContent = format(compile(styleString));
+          styleElement.current.textContent = cache.resolveGlobal(styleString);
         }
       }, [styleString]);
 

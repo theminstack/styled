@@ -72,6 +72,9 @@ const createTestCache = (replacer: TestReplacer): StyleCache => {
       const testClassName = replacer.replace(className);
       return [testCssText, testClassName];
     },
+    resolveGlobal: (styleString) => {
+      return replacer.replace(base.resolveGlobal(styleString));
+    },
   };
 };
 
