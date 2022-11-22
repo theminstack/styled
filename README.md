@@ -410,6 +410,24 @@ const container = render(<MyStyledComponent />, { wrapper: StyledTest });
 expect(container).toMatchSnapshot();
 ```
 
+```
+// Snapshot
+<div>
+  <div
+    class="_rmsd_test_0 _rmss_test_0"
+  >
+    Hello, world!
+  </div>
+  <style>
+    
+    ._rmsd_test_0 {
+      padding: 1rem;
+    }
+    
+  </style>
+</div>
+```
+
 ## Styled provider
 
 A `StyledProvider` can override the default `cache`, `manager`, and `renderer`. _No provider is required for default operation._
