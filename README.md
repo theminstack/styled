@@ -2,7 +2,7 @@
 
 A small, fast, and simple CSS-in-JS styled components solution for React, written in Typescript.
 
-- **Small**: Less than 3kb (minified and gzipped) with zero dependencies.
+- **Small**: ~3.1kB (minified and gzipped) with zero dependencies.
 - **Fast**: Similar in speed to other styled component solutions.
 - **Simple**: Minimal/Opinionated API creates a great developer experience.
 - **Typed**: Written in Typescript. Designed for Typescript.
@@ -496,7 +496,7 @@ React Micro-Styled compared to other styled component solutions.
 |             | Feature                    | React Micro-Styled | Goober | Styled Components | Emotion |
 | ----------- | -------------------------- | ------------------ | ------ | ----------------- | ------- |
 | **Library** |                            |                    |        |                   |         |
-|             | Bundle size (approx. kB)   | 3                  | 1.3    | 12.7              | 11.2    |
+|             | Bundle size (approx. kB)   | 3.1                | 1.3    | 12.7              | 11.2    |
 |             | Zero dependencies          | 🟢                 | 🟢     | 🔴                | 🔴      |
 |             | Typescript native          | 🟢                 | 🟢     | 🔴                | 🟢      |
 | **API**     |                            |                    |        |                   |         |
