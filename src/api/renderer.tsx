@@ -11,7 +11,7 @@ type StyledRenderer = {
 const createStyledRenderer = (): StyledRenderer => {
   return {
     render: (component, props, ...children): JSX.Element | null => {
-      return createElement(component as ComponentType<any> | keyof JSX.IntrinsicElements, props, children);
+      return createElement(component as ComponentType<any> | keyof JSX.IntrinsicElements, props, ...children);
     },
   };
 };

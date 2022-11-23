@@ -47,7 +47,6 @@ const compile = (styleString: string): AstNode => {
         }
       } else {
         if (terminators.includes(char as TTerminator)) {
-          ++i;
           return [slice, char as TTerminator];
         }
 
@@ -111,7 +110,7 @@ const compile = (styleString: string): AstNode => {
       if (child.children.length) {
         child.condition =
           csv[0]?.[0] === '@'
-            ? { at: csv.join(',').replaceAll('\0', '') }
+            ? { at: csv.join(', ').replaceAll('\0', '') }
             : csv.length
             ? { selectors: [...csv] as [string, ...string[]] }
             : undefined;
@@ -121,8 +120,8 @@ const compile = (styleString: string): AstNode => {
       csv.length = 0;
     };
 
-    const prop = () => {
-      const value = csv.join(',').replaceAll('\0', '');
+    const declaration = () => {
+      const value = csv.join(', ').replaceAll('\0', '');
       value && !value.endsWith(':') && current.children.push(value);
       csv.length = 0;
     };
@@ -130,6 +129,7 @@ const compile = (styleString: string): AstNode => {
     while (i <= styleString.length) {
       const [slice, terminator] = statement(',', ';', '{', '}', '');
 
+      ++i;
       slice && csv.push(slice);
 
       switch (terminator) {
@@ -138,10 +138,10 @@ const compile = (styleString: string): AstNode => {
           break;
         case ';':
         case '':
-          prop();
+          declaration();
           break;
         case '}':
-          prop();
+          declaration();
           return current;
       }
     }

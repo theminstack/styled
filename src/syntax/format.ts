@@ -1,10 +1,10 @@
 import { type AstNode } from './compile.js';
 
 type Builder = {
-  readonly close: () => void;
-  readonly open: (selectorsOrAtRule: string) => void;
-  readonly prop: (keyAndValue: string) => void;
-  readonly toString: () => string;
+  readonly build: () => string;
+  readonly declaration: (declaration: string) => void;
+  readonly ruleClose: () => void;
+  readonly ruleOpen: (selector: string) => void;
 };
 
 const mergeSelectors = (parentSelectors: readonly string[], selectors: readonly [string, ...string[]]): string[] => {
@@ -28,26 +28,26 @@ const formatNode = (node: AstNode, parentSelectors: string[], builder: Builder):
 
   let isOpen = false;
 
-  if (at) builder.open(at);
+  if (at) builder.ruleOpen(at);
 
   for (const child of node.children) {
     if (typeof child === 'string') {
       if (!isOpen && isConditionalGroup) {
         isOpen = true;
-        builder.open(selectors.join(', ') || ':root');
+        builder.ruleOpen(selectors.join(', ') || ':root');
       }
-      builder.prop(child);
+      builder.declaration(child);
     } else {
       if (isOpen) {
         isOpen = false;
-        builder.close();
+        builder.ruleClose();
       }
       formatNode(child, selectors, builder);
     }
   }
 
-  if (isOpen) builder.close();
-  if (at) builder.close();
+  if (isOpen) builder.ruleClose();
+  if (at) builder.ruleClose();
 };
 
 const createBuilder = () => {
@@ -57,25 +57,25 @@ const createBuilder = () => {
   let indent = '';
 
   return {
-    close: (): void => {
+    build: (): string => css.trim(),
+    declaration: (declaration: string): void => {
+      css += indent + declaration + ';\n';
+    },
+    ruleClose: (): void => {
       indent = indent.slice(indentString.length);
       css += indent + '}\n';
     },
-    open: (selectorsOrAtRule: string): void => {
-      css += indent + selectorsOrAtRule + ' {\n';
+    ruleOpen: (selector: string): void => {
+      css += indent + selector + ' {\n';
       indent += indentString;
     },
-    prop: (keyAndValue: string): void => {
-      css += indent + keyAndValue + ';\n';
-    },
-    toString: (): string => css.trim(),
   };
 };
 
 const format = (ast: AstNode, scope?: string): string => {
   const builder = createBuilder();
   formatNode(ast, scope ? [scope] : [], builder);
-  return builder.toString();
+  return builder.build();
 };
 
 export { format };

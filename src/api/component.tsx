@@ -78,7 +78,7 @@ const createStyledComponent = <TProps,>({
       return () => manager.unref(dynamicClass);
     }, [manager, dynamicClass, cssText]);
 
-    return renderer.render(component, styledProps, children);
+    return renderer.render(component, styledProps, ...(children ? [children] : []));
   });
 
   Styled.displayName = getDisplayName(component);

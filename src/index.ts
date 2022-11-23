@@ -9,4 +9,5 @@ export {
 } from './api/manager.js';
 export { type StyledRenderer, createStyledRenderer } from './api/renderer.js';
 export { type Styled, createStyled, styled } from './api/styled.js';
+export { StyledTest } from './api/test.js';
 export { getId } from './util/id.js';

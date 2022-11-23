@@ -1,8 +1,6 @@
 import { render } from '@testing-library/react';
 
-import { getId } from '../util/id.js';
-import { styled } from './styled.js';
-import { StyledTest } from './test.js';
+import { getId, styled, StyledTest } from '../index.js';
 
 describe('StyledTest', () => {
   test('simple render', () => {

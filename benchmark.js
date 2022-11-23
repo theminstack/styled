@@ -18,6 +18,7 @@ Object.assign(globalThis, {
 
   const tests = [
     // ['no-op', async () => () => () => () => null],
+    ['React Micro-Styled', () => import('./lib/cjs/index.js').then((exports) => exports.styled)],
     ['Styled Components', () => import('styled-components').then((exports) => exports.default.default)],
     [
       'Goober',
@@ -29,13 +30,13 @@ Object.assign(globalThis, {
         }),
     ],
     ['Emotion', () => import('@emotion/styled').then((exports) => exports.default.default)],
-    ['React Micro-Styled', () => import('./lib/cjs/index.js').then((exports) => exports.styled)],
   ];
 
   for (const [framework, load] of tests) {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 250));
 
-    window.document.head.textContent = '';
+    window.document.head.innerHTML = '';
+
     const { renderToString } = await import('react-dom/server');
     const styled = await load();
 

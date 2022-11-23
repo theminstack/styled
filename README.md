@@ -537,10 +537,10 @@ See the [perf.js](perf.js) script for the benchmark implementation.
 
 | Library            | Op/s    |
 | ------------------ | ------- |
-| Goober             | 146,706 |
-| React Micro-Styled | 139,204 |
-| Emotion            | 123,425 |
-| Styled Components  | 118,932 |
+| React Micro-Styled | 144,970 |
+| Goober             | 142,028 |
+| Emotion            | 124,681 |
+| Styled Components  | 118,072 |
 
 ## Release Notes
 
