@@ -535,12 +535,12 @@ React Micro-Styled uses a fast 0(n) compiler that does not compromise on correct
 
 See the [perf.js](perf.js) script for the benchmark implementation.
 
-| Library            | Op/s   |
-| ------------------ | ------ |
-| goober             | 146706 |
-| react-micro-styled | 139204 |
-| @emotion/styled    | 123425 |
-| styled-components  | 118932 |
+| Library            | Op/s    |
+| ------------------ | ------- |
+| Goober             | 146,706 |
+| React Micro-Styled | 139,204 |
+| Emotion            | 123,425 |
+| Styled Components  | 118,932 |
 
 ## Release Notes
 

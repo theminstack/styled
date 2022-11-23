@@ -18,9 +18,9 @@ Object.assign(globalThis, {
 
   const tests = [
     // ['no-op', async () => () => () => () => null],
-    ['styled-components', () => import('styled-components').then((exports) => exports.default.default)],
+    ['Styled Components', () => import('styled-components').then((exports) => exports.default.default)],
     [
-      'goober',
+      'Goober',
       () =>
         import('goober').then(async (exports) => {
           const { createElement } = await import('react');
@@ -28,8 +28,8 @@ Object.assign(globalThis, {
           return exports.styled;
         }),
     ],
-    ['@emotion/styled', () => import('@emotion/styled').then((exports) => exports.default.default)],
-    ['react-micro-styled', () => import('./lib/cjs/index.js').then((exports) => exports.styled)],
+    ['Emotion', () => import('@emotion/styled').then((exports) => exports.default.default)],
+    ['React Micro-Styled', () => import('./lib/cjs/index.js').then((exports) => exports.styled)],
   ];
 
   for (const [framework, load] of tests) {
