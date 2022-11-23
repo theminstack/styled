@@ -2,13 +2,7 @@ import { type ComponentProps, type DetailedHTMLProps, type HTMLAttributes, type 
 
 import { type StyledExoticComponent, createStyledComponent } from './component.js';
 import { type StyledGlobal, createStyledGlobal } from './global.js';
-import {
-  type StyledString,
-  type StyledStringSelectable,
-  type StyledStringValue,
-  getStyleStringHook,
-  string,
-} from './string.js';
+import { type StyledString, type StyledStringValue, getStyleStringHook, string } from './string.js';
 
 type StyledBase = {
   readonly component: StylableType<any>;
@@ -16,15 +10,7 @@ type StyledBase = {
   readonly values: readonly StyledStringValue<any, any>[];
 };
 
-type StylableType<TProps> =
-  | string
-  | keyof JSX.IntrinsicElements
-  | (JSXElementConstructor<TProps> &
-      StyledStringSelectable & {
-        readonly $$rms?: StyledBase;
-        readonly displayName?: string;
-        readonly name?: string;
-      });
+type StylableType<TProps> = JSXElementConstructor<TProps> | string | keyof JSX.IntrinsicElements;
 
 type StylableTypeProps<TType extends StylableType<any>> = TType extends
   | JSXElementConstructor<any>
@@ -60,7 +46,7 @@ const createStyled = <TTheme extends {}>(useTheme: () => TTheme = () => EMPTY_TH
       template: TemplateStringsArray,
       ...values: StyledStringValue<StylableTypeProps<TType> & TExtraProps, TTheme>[]
     ): StyledComponent<StylableTypeProps<TType> & TExtraProps> => {
-      const base = typeof type !== 'string' ? type.$$rms : undefined;
+      const base = typeof type !== 'string' && '$$rms' in type ? (type as any).$$rms : undefined;
       const component = base?.component ?? type;
       const useStyleString = base
         ? getStyleStringHook([...template.raw, ...base.template], [...values, '', ...base.values], useTheme)
@@ -80,8 +66,15 @@ const createStyled = <TTheme extends {}>(useTheme: () => TTheme = () => EMPTY_TH
   styled.string = string;
 
   return new Proxy(styled, {
+    apply: (target, _this, args: Parameters<typeof styled>) => {
+      return target(...args);
+    },
     get: (target, prop) => {
-      return prop in target ? target[prop as keyof typeof target] : typeof prop === 'string' ? target(prop) : undefined;
+      return prop in target
+        ? target[prop as keyof typeof target]
+        : typeof prop === 'string' && prop !== 'then'
+        ? target(prop)
+        : undefined;
     },
   }) as Styled<TTheme>;
 };

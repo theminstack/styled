@@ -1,4 +1,4 @@
-type StyledStringSelectable = { readonly $$rms: unknown };
+type StyledStringSelectable = { readonly $$rms: any };
 
 type StyledStringPrimitive = StyledStringSelectable | number | string | false | null | undefined;
 

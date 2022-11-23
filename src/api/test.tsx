@@ -1,6 +1,5 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
 
-import { DYNAMIC_CLASS_PREFIX, STATIC_CLASS_PREFIX } from '../util/constants.js';
 import { type StyledCache, createStyledCache } from './cache.js';
 import { StyledProvider } from './context.js';
 import { type StyledManager, type StyleElement } from './manager.js';
@@ -22,19 +21,15 @@ type TestStyledManager = StyledManager & {
 
 const createTestClassReplacer = (): TestReplacer => {
   const cache = new Map<string, string>();
-  const dynamicCount = { current: 0 };
-  const staticCount = { current: 0 };
+  const count = { current: 0 };
 
   return {
     replace: (value) => {
-      const matcher = new RegExp(`\\b(${DYNAMIC_CLASS_PREFIX}|${STATIC_CLASS_PREFIX})[0-9a-z]+\\b`, 'gu');
-
-      return value.replace(matcher, (match, prefix) => {
+      return value.replace(/_rms[sd][0-9a-z]{6}_/gu, (match) => {
         let className = cache.get(match);
 
         if (!className) {
-          const count = prefix === DYNAMIC_CLASS_PREFIX ? dynamicCount : staticCount;
-          className = prefix + 'test_' + (count.current++).toString(36);
+          className = '_test' + (count.current++).toString(10) + '_';
           cache.set(match, className);
           cache.set(className, match);
         }
@@ -43,9 +38,7 @@ const createTestClassReplacer = (): TestReplacer => {
       });
     },
     restore: (value) => {
-      const matcher = new RegExp(`\\b(?:${DYNAMIC_CLASS_PREFIX}|${STATIC_CLASS_PREFIX})test_[0-9a-z]+\\b`, 'gu');
-
-      return value.replace(matcher, (match) => cache.get(match) ?? match);
+      return value.replace(/_test[0-9]+_/gu, (match) => cache.get(match) ?? match);
     },
   };
 };

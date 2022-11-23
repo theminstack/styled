@@ -13,6 +13,6 @@ const hash = (data: string): number => {
   return value;
 };
 
-const getHashString = (value: number): string => (value >>> 0).toString(36);
+const getHashString = (value: number): string => ('000000' + (value >>> 0).toString(36)).slice(-6);
 
 export { getHashString, hash };

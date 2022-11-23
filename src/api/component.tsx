@@ -7,7 +7,6 @@ import {
   forwardRef,
 } from 'react';
 
-import { DYNAMIC_CLASS_PREFIX, STATIC_CLASS_PREFIX } from '../util/constants.js';
 import { useStyleEffect } from '../util/effect.js';
 import { getId } from '../util/id.js';
 import { getAttributes } from './attributes.js';
@@ -37,7 +36,7 @@ const getClasses = (className?: string): [simpleClasses: string, dynamicClasses:
 
   if (typeof className === 'string') {
     className.split(/\s+/g).forEach((value) => {
-      if (value.startsWith(DYNAMIC_CLASS_PREFIX)) {
+      if (/_rmsd[0-9a-z]{6}_/gu.test(value)) {
         dynamicClasses.push(value);
       } else if (value) {
         simpleClasses.push(value);
@@ -52,7 +51,7 @@ const createStyledComponent = <TProps,>({
   component,
   useStyleString,
 }: StyledComponentOptions<TProps>): StyledExoticComponent<TProps> => {
-  const staticClass = STATIC_CLASS_PREFIX + getId();
+  const staticClass = getId();
   const selector = '.' + staticClass;
   const filterProps = typeof component === 'string' ? getAttributes : (value: Record<string, unknown>) => value;
   const Styled = forwardRef((props: any, ref) => {
@@ -70,7 +69,7 @@ const createStyledComponent = <TProps,>({
     const [cssText, dynamicClass] = cache.resolve(styleString, dynamicClasses);
     const styledProps = {
       ...filterProps(rest),
-      className: (simpleClasses + ' ' + dynamicClass + ' ' + staticClass).trim(),
+      className: (dynamicClass + ' ' + staticClass + ' ' + simpleClasses).trim(),
       ref,
     };
 

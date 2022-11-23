@@ -16,7 +16,7 @@ if (!('$$rmsId' in globalThis)) {
 }
 
 const getId = () => {
-  return (globalThis.$$rmsId = getHashString(hash(globalThis.$$rmsId)));
+  return '_rmss' + (globalThis.$$rmsId = getHashString(hash(globalThis.$$rmsId))) + '_';
 };
 
 export { getId };

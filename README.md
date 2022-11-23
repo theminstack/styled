@@ -30,6 +30,8 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
 - [Styled provider](#styled-provider)
   - [Server-side rendering (SSR)](#server-side-rendering-ssr)
 - [Comparison](#comparison)
+  - [Features](#features)
+  - [Benchmarks](#benchmarks)
 - [Release Notes](#release-notes)
 
 ## Goals
@@ -200,7 +202,7 @@ const StyledComponent = styled('div')`
 Top-level CSS properties will be wrapped in a dynamic styled class selector
 
 ```css
-._rmsd_abcdef {
+._rmsds7y13d {
   color: red;
 }
 ```
@@ -220,7 +222,7 @@ const StyledComponent = styled('div')`
 The styled dynamic class will be automatically prepended to all selectors to make them "scoped".
 
 ```css
-._rmsd_abcdef .child {
+._rmsds7y13d .child {
   color: blue;
 }
 ```
@@ -241,10 +243,10 @@ const StyledComponentB = styled('div')`
 `;
 ```
 
-The styled component's `toString()` method returns a unique selector string (eg. `"._rmss_abcdef"`) which matches that specific styled component.
+The styled component's `toString()` method returns a unique selector string (eg. `"._rmsss7y13d_"`) which matches that specific styled component.
 
 ```css
-._rmsd_abcdef ._rmss_abcdef {
+._rmsds7y13d ._rmsss7y13d_ {
   color: red;
 }
 ```
@@ -268,10 +270,10 @@ const StyledComponent = styled('div')`
 Just like the styled dynamic class is prepended to top-level selectors, so too are parent selectors prepended to child selectors.
 
 ```css
-._rmsd_abcdef .child {
+._rmsds7y13d .child {
   color: blue;
 }
-._rmsd_abcdef .child .grandchild {
+._rmsds7y13d .child .grandchild {
   color: green;
 }
 ```
@@ -320,15 +322,15 @@ At-rules will be hoisted as necessary, and parent selectors will be handled the 
 
 ```css
 @media screen and (min-width: 900px) {
-  ._rmsd_abcdef {
+  ._rmsds7y13d {
     color: red;
   }
 }
 @media screen and (min-width: 600px) {
-  ._rmsd_abcdef .child .grandchild {
+  ._rmsds7y13d .child .grandchild {
     color: blue;
   }
-  .adopted ._rmsd_abcdef .child .grandchild {
+  .adopted ._rmsds7y13d .child .grandchild {
     color: green;
   }
 }
@@ -348,7 +350,7 @@ const StyledComponent = styled('div')`
 The color property is not included because it has no value.
 
 ```css
-._rmsd_abcdef {
+._rmsds7y13d {
   background-color: red;
 }
 ```
@@ -415,16 +417,16 @@ expect(container).toMatchSnapshot();
 // Snapshot
 <div>
   <div
-    class="_rmsd_test_0 _rmss_test_0"
+    class="_test0_ _test1_"
   >
     Hello, world!
   </div>
   <style>
-    
-    ._rmsd_test_0 {
+
+    ._test0_ {
       padding: 1rem;
     }
-    
+
   </style>
 </div>
 ```
@@ -484,6 +486,8 @@ The SSR manager's `getStyleTags()` method returns a single html string containin
 
 React Micro-Styled compared to other styled component solutions.
 
+### Features
+
 - 🟢 Supported
 - 🟡 Partially supported
 - 🔴 Not supported
@@ -526,6 +530,17 @@ Goober's style compiler is not very robust. It does not do bracket matching for 
 Conversely, styled-components and Emotion use compilers that are over-engineered for CSS-in-JS, which is necessary to support Stylis for vendor prefixing.
 
 React Micro-Styled uses a fast 0(n) compiler that does not compromise on correctness. Any valid style _will_ be correctly compiled to CSS.
+
+### Benchmarks
+
+See the [perf.js](perf.js) script for the benchmark implementation.
+
+| Library            | Op/s   |
+| ------------------ | ------ |
+| goober             | 146706 |
+| react-micro-styled | 139204 |
+| @emotion/styled    | 123425 |
+| styled-components  | 118932 |
 
 ## Release Notes
 

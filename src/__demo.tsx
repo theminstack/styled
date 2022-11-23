@@ -38,12 +38,21 @@ const C = styled.div`
   }
 `;
 
+const D = (props: { className?: string }) => {
+  return <A className={props.className}>Is this thing on?</A>;
+};
+
+const E = styled(D)`
+  color: purple;
+`;
+
 createRoot(document.body.appendChild(document.createElement('div'))).render(
   <StrictMode>
     <GlobalStyle2 />
     <C>
       <B $foo="test">Hello, World!</B>
     </C>
+    <E />
     <GlobalStyle />
   </StrictMode>,
 );

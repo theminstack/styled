@@ -1,6 +1,5 @@
 import { type AstNode, compile } from '../syntax/compile.js';
 import { format } from '../syntax/format.js';
-import { DYNAMIC_CLASS_PREFIX } from '../util/constants.js';
 import { getHashString, hash } from '../util/hash.js';
 
 type StyledCache = {
@@ -9,7 +8,7 @@ type StyledCache = {
 };
 
 const getClassName = (ast: AstNode): string => {
-  return DYNAMIC_CLASS_PREFIX + getHashString(hash(JSON.stringify(ast)));
+  return '_rmsd' + getHashString(hash(JSON.stringify(ast))) + '_';
 };
 
 const createAstCache = () => {
@@ -62,7 +61,7 @@ const createStyledCache = (): StyledCache => {
         const cssText = format(ast, '.' + className);
 
         resolved = [cssText, className];
-        cssCacheScoped.set(`${styleString}\0${className}`, resolved);
+        cssCacheScoped.set(`${styleString}\0${classNames}`, resolved);
       }
 
       return [...resolved];

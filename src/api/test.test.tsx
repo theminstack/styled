@@ -1,10 +1,12 @@
 import { render } from '@testing-library/react';
 
+import { getId } from '../util/id.js';
 import { styled } from './styled.js';
 import { StyledTest } from './test.js';
 
 describe('StyledTest', () => {
   test('simple render', () => {
+    const keyframes = getId();
     const A = styled('div')`
       padding: 1rem;
     `;
@@ -15,6 +17,14 @@ describe('StyledTest', () => {
       }
     `;
     const GlobalStyle = styled.global`
+      @keyframes ${keyframes} {
+        from {
+          color: red;
+        }
+        to {
+          color: blue;
+        }
+      }
       padding: 2rem;
       ${B} {
         background: grey;
@@ -32,26 +42,34 @@ describe('StyledTest', () => {
     expect(container).toMatchInlineSnapshot(`
       <div>
         <div
-          class="_rmsd_test_0 _rmss_test_0"
+          class="_test0_ _test1_"
         />
         <div
-          class="_rmsd_test_1 _rmss_test_1"
+          class="_test2_ _test3_"
         />
         <style>
           
+          @keyframes _test4_ {
+            from {
+              color: red;
+            }
+            to {
+              color: blue;
+            }
+          }
           :root {
             padding: 2rem;
           }
-          ._rmss_test_1 {
+          ._test3_ {
             background: grey;
           }
-          ._rmsd_test_0 {
+          ._test0_ {
             padding: 1rem;
           }
-          ._rmsd_test_1 {
+          ._test2_ {
             color: blue;
           }
-          ._rmsd_test_1 ._rmss_test_0 {
+          ._test2_ ._test1_ {
             padding: 0;
           }
           
