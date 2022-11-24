@@ -1,6 +1,6 @@
 import 'normalize.css';
 
-import { StrictMode } from 'react';
+import { type ReactNode, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { styled } from './index.js';
@@ -38,8 +38,8 @@ const C = styled.div`
   }
 `;
 
-const D = (props: { className?: string }) => {
-  return <A className={props.className}>Is this thing on?</A>;
+const D = (props: { children?: ReactNode; className?: string }) => {
+  return <A className={props.className}>{props.children}</A>;
 };
 
 const E = styled(D)`
@@ -49,10 +49,11 @@ const E = styled(D)`
 createRoot(document.body.appendChild(document.createElement('div'))).render(
   <StrictMode>
     <GlobalStyle2 />
+    <B $foo="test">Red</B>
     <C>
-      <B $foo="test">Hello, World!</B>
+      <B $foo="test">Green</B>
     </C>
-    <E />
+    <E>Purple</E>
     <GlobalStyle />
   </StrictMode>,
 );

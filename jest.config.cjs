@@ -28,7 +28,7 @@ module.exports = {
   transform: {
     '^.+\\.[tj]sx?$': ['ts-jest', { diagnostics: { ignoreCodes: [151001] }, useESM: true }],
   },
-  transformIgnorePatterns: [],
+  transformIgnorePatterns: ['/node_modules/(?!html-tag-names)'],
   verbose: true,
   testPathIgnorePatterns: ['\\/test\\.[tj]sx?$']
 };

@@ -417,13 +417,13 @@ expect(container).toMatchSnapshot();
 // Snapshot
 <div>
   <div
-    class="_test0_ _test1_"
+    class="_test-dynamic-0_ _test-static-1_"
   >
     Hello, world!
   </div>
   <style>
 
-    ._test0_ {
+    ._test-dynamic-0_ {
       padding: 1rem;
     }
 

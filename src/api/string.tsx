@@ -23,7 +23,7 @@ const isStaticTemplateData = (data: readonly (StyledStringCallback<any, any> | s
 
 const getSimplifiedTemplateData = <TProps, TTheme>(
   raw: readonly string[],
-  values: StyledStringValue<TProps, TTheme>[],
+  values: readonly StyledStringValue<TProps, TTheme>[],
 ) => {
   const data: (StyledStringCallback<TProps, TTheme> | string)[] = [];
 
@@ -36,6 +36,7 @@ const getSimplifiedTemplateData = <TProps, TTheme>(
       if (value != null && value !== false) buffer += value;
     } else {
       data.push(buffer, value);
+      buffer = '';
     }
   });
 
@@ -46,7 +47,7 @@ const getSimplifiedTemplateData = <TProps, TTheme>(
 
 const getStyleStringHook = <TProps, TTheme>(
   raw: readonly string[],
-  values: StyledStringValue<TProps, TTheme>[],
+  values: readonly StyledStringValue<TProps, TTheme>[],
   useTheme: () => TTheme,
 ): StyledStringHook<TProps> => {
   const data = getSimplifiedTemplateData(raw, values);

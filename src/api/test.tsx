@@ -25,11 +25,11 @@ const createTestClassReplacer = (): TestReplacer => {
 
   return {
     replace: (value) => {
-      return value.replace(/_rms[sd][0-9a-z]{6}_/gu, (match) => {
+      return value.replace(/_rms([sd])[0-9a-z]{6}_/gu, (match, type) => {
         let className = cache.get(match);
 
         if (!className) {
-          className = '_test' + (count.current++).toString(10) + '_';
+          className = '_test' + (type === 's' ? '-static-' : '-dynamic-') + (count.current++).toString(10) + '_';
           cache.set(match, className);
           cache.set(className, match);
         }
@@ -38,7 +38,7 @@ const createTestClassReplacer = (): TestReplacer => {
       });
     },
     restore: (value) => {
-      return value.replace(/_test[0-9]+_/gu, (match) => cache.get(match) ?? match);
+      return value.replace(/_test-(?:static|dynamic)-[0-9]+_/gu, (match) => cache.get(match) ?? match);
     },
   };
 };
@@ -58,6 +58,7 @@ const createTestCache = (replacer: TestReplacer): StyledCache => {
   const base = createStyledCache();
 
   return {
+    has: (className) => base.has(replacer.restore(className)),
     resolve: (styleString, classNames) => {
       classNames = classNames && replacer.restore(classNames);
       const [cssText, className] = base.resolve(styleString, classNames);
@@ -132,9 +133,11 @@ const StyleView = (props: { manager: TestStyledManager }) => {
     setCount((current) => current + 1);
   }, [props.manager]);
 
-  const cssText = '\n    ' + props.manager.getCss().join('\n').replaceAll('\n', '\n    ') + '\n    ';
+  const styles = props.manager.getCss();
 
-  return <style>{cssText}</style>;
+  if (styles.length === 0) return null;
+
+  return <style>{'\n    ' + props.manager.getCss().join('\n').replaceAll('\n', '\n    ') + '\n    '}</style>;
 };
 
 const StyledTest = ({ children }: StyledTestProps): JSX.Element => {

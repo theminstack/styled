@@ -3,6 +3,7 @@ import { format } from '../syntax/format.js';
 import { getHashString, hash } from '../util/hash.js';
 
 type StyledCache = {
+  readonly has: (className: string) => boolean;
   readonly resolve: (styleString: string, classNames?: string) => [cssText: string, className: string];
   readonly resolveGlobal: (styleString: string) => string;
 };
@@ -16,6 +17,7 @@ const createAstCache = () => {
   const astByClass = new Map<string, AstNode>();
 
   return {
+    has: (className: string): boolean => astByClass.has(className),
     resolve: (styleString: string, classNames?: string): [ast: AstNode, className: string] => {
       let base = astByStyle.get(styleString);
 
@@ -53,6 +55,7 @@ const createStyledCache = (): StyledCache => {
   const cssCacheScoped = new Map<`${string}\0${string}`, [cssText: string, className: string]>();
 
   return {
+    has: (className: string) => astCache.has(className),
     resolve: (styleString, classNames = '') => {
       let resolved = cssCacheScoped.get(`${styleString}\0${classNames}`);
 

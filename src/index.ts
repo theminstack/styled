@@ -1,5 +1,7 @@
 export { type StyledCache, createStyledCache } from './api/cache.js';
+export { type StyledComponent } from './api/component.js';
 export { StyledProvider } from './api/context.js';
+export { type StyledGlobalComponent } from './api/global.js';
 export {
   type SsrStyledManager,
   type StyledManager,

@@ -3,6 +3,14 @@ import { render } from '@testing-library/react';
 import { getId, styled, StyledTest } from '../index.js';
 
 describe('StyledTest', () => {
+  test('non styled', () => {
+    expect(render(<div />, { wrapper: StyledTest }).container).toMatchInlineSnapshot(`
+      <div>
+        <div />
+      </div>
+    `);
+  });
+
   test('simple render', () => {
     const keyframes = getId();
     const A = styled('div')`
@@ -40,14 +48,14 @@ describe('StyledTest', () => {
     expect(container).toMatchInlineSnapshot(`
       <div>
         <div
-          class="_test0_ _test1_"
+          class="_test-dynamic-0_ _test-static-1_"
         />
         <div
-          class="_test2_ _test3_"
+          class="_test-dynamic-2_ _test-static-3_"
         />
         <style>
           
-          @keyframes _test4_ {
+          @keyframes _test-static-4_ {
             from {
               color: red;
             }
@@ -58,16 +66,16 @@ describe('StyledTest', () => {
           :root {
             padding: 2rem;
           }
-          ._test3_ {
+          ._test-static-3_ {
             background: grey;
           }
-          ._test0_ {
+          ._test-dynamic-0_ {
             padding: 1rem;
           }
-          ._test2_ {
+          ._test-dynamic-2_ {
             color: blue;
           }
-          ._test2_ ._test1_ {
+          ._test-dynamic-2_ ._test-static-1_ {
             padding: 0;
           }
           

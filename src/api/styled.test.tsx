@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/consistent-function-scoping */
 import { type RenderOptions, getByTestId, render as renderBase } from '@testing-library/react';
 import { htmlTagNames } from 'html-tag-names';
 import { type ReactElement } from 'react';
@@ -10,23 +11,154 @@ const render = (ui: ReactElement, options?: RenderOptions) => {
 
 describe('styled', () => {
   test('styled div', () => {
-    //
+    const A = styled.div`
+      display: flex;
+    `;
+    expect(
+      render(
+        <A>
+          <div>foo</div>
+        </A>,
+      ).container,
+    ).toMatchInlineSnapshot(`
+      <div>
+        <div
+          class="_test-dynamic-0_ _test-static-1_"
+        >
+          <div>
+            foo
+          </div>
+        </div>
+        <style>
+          
+          ._test-dynamic-0_ {
+            display: flex;
+          }
+          
+        </style>
+      </div>
+    `);
   });
 
   test('style custom component', () => {
-    //
+    const A = ({ className, children }: any) => <div className={className}>{children}</div>;
+    const B = styled(A)`
+      color: red;
+    `;
+    expect(
+      render(
+        <B>
+          <span>foo</span>
+        </B>,
+      ).container,
+    ).toMatchInlineSnapshot(`
+      <div>
+        <div
+          class="_test-dynamic-0_ _test-static-1_"
+        >
+          <span>
+            foo
+          </span>
+        </div>
+        <style>
+          
+          ._test-dynamic-0_ {
+            color: red;
+          }
+          
+        </style>
+      </div>
+    `);
   });
 
   test('restyle styled component', () => {
-    //
+    const A = styled.div`
+      color: red;
+    `;
+    const B = styled(A)`
+      color: blue;
+    `;
+    expect(render(<B />).container).toMatchInlineSnapshot(`
+      <div>
+        <div
+          class="_test-dynamic-0_ _test-static-1_"
+        />
+        <style>
+          
+          ._test-dynamic-0_ {
+            color: red;
+            color: blue;
+          }
+          
+        </style>
+      </div>
+    `);
   });
 
   test('omit non-attributes', () => {
-    //
+    const A = styled.div<any>`
+      color: ${(props) => props.$color};
+    `;
+    const B = (props: any) => {
+      return <>{JSON.stringify(props)}</>;
+    };
+    const C = styled(B)<any>`
+      color: ${(props) => props.$color};
+    `;
+    expect(render(<A $color="red" />).container).toMatchInlineSnapshot(`
+      <div>
+        <div
+          class="_test-dynamic-0_ _test-static-1_"
+        />
+        <style>
+          
+          ._test-dynamic-0_ {
+            color: red;
+          }
+          
+        </style>
+      </div>
+    `);
+    expect(render(<C $color="blue" />).container).toMatchInlineSnapshot(`
+      <div>
+        {"$color":"blue","className":"_test-dynamic-0_ _test-static-1_"}
+        <style>
+          
+          ._test-dynamic-0_ {
+            color: blue;
+          }
+          
+        </style>
+      </div>
+    `);
   });
 
-  test('restyling with an unstyled component intervening', () => {
-    //
+  test('restyle with an unstyled component intervening', () => {
+    const A = styled.div`
+      color: red;
+    `;
+    const B = (props: any) => <A {...props} />;
+    const C = styled(B)`
+      color: blue;
+    `;
+    expect(render(<C />).container).toMatchInlineSnapshot(`
+      <div>
+        <div
+          class="_test-dynamic-2_ _test-static-3_ _test-static-1_"
+        />
+        <style>
+          
+          ._test-dynamic-2_ {
+            color: red;
+            color: blue;
+          }
+          ._test-dynamic-0_ {
+            color: blue;
+          }
+          
+        </style>
+      </div>
+    `);
   });
 
   test('select styled component', () => {

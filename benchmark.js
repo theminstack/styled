@@ -33,7 +33,7 @@ Object.assign(globalThis, {
   ];
 
   for (const [framework, load] of tests) {
-    await new Promise((resolve) => setTimeout(resolve, 250));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     window.document.head.innerHTML = '';
 

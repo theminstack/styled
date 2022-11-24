@@ -46,4 +46,4 @@ const createStyledGlobal = <TTheme,>(useTheme: () => TTheme): StyledGlobal<TThem
   return global;
 };
 
-export { type StyledGlobal, createStyledGlobal };
+export { type StyledGlobal, type StyledGlobalComponent, createStyledGlobal };
