@@ -81,7 +81,7 @@ describe('styled', () => {
     expect(render(<B />).container).toMatchInlineSnapshot(`
       <div>
         <div
-          class="_test-dynamic-0_ _test-static-0_"
+          class="_test-dynamic-0_ _test-static-0_ _test-static-1_"
         />
         <style>
           
@@ -195,7 +195,54 @@ describe('styled', () => {
   });
 
   test('dynamic values', () => {
-    //
+    const A = styled.div<any>`
+      color: ${(props) => props.$color};
+    `;
+    const { container, rerender } = render(<A $color={'red'} />);
+    expect(container).toMatchInlineSnapshot(`
+      <div>
+        <div
+          class="_test-dynamic-0_ _test-static-0_"
+        />
+        <style>
+          
+          ._test-dynamic-0_ {
+            color: red;
+          }
+          
+        </style>
+      </div>
+    `);
+    rerender(<A $color="blue" />);
+    expect(container).toMatchInlineSnapshot(`
+      <div>
+        <div
+          class="_test-dynamic-1_ _test-static-0_"
+        />
+        <style>
+          
+          ._test-dynamic-1_ {
+            color: blue;
+          }
+          
+        </style>
+      </div>
+    `);
+    rerender(<A $color="red" />);
+    expect(container).toMatchInlineSnapshot(`
+      <div>
+        <div
+          class="_test-dynamic-0_ _test-static-0_"
+        />
+        <style>
+          
+          ._test-dynamic-0_ {
+            color: red;
+          }
+          
+        </style>
+      </div>
+    `);
   });
 
   describe('HTML element types', () => {

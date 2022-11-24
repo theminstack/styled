@@ -7,6 +7,9 @@ describe('StyledTest', () => {
     expect(render(<div />, { wrapper: StyledTest }).container).toMatchInlineSnapshot(`
       <div>
         <div />
+        <style>
+          /* no styles */
+        </style>
       </div>
     `);
   });

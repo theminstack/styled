@@ -29,8 +29,8 @@ type StyledBase = {
 };
 
 const isStyledComponent = (
-  type: string | (JSXElementConstructor<any> & { readonly displayName?: string; readonly name?: string }),
-): type is StyledComponent<any> & { readonly $$rms: StyledBase } => {
+  type: JSXElementConstructor<any> | string,
+): type is JSXElementConstructor<any> & { readonly $$rms: StyledBase } => {
   return typeof type !== 'string' && '$$rms' in type;
 };
 
@@ -64,17 +64,19 @@ const createStyledComponent = <TProps, TTheme>(
   templateValues: readonly StyledStringValue<TProps, TTheme>[],
   useTheme: () => TTheme,
 ): StyledComponent<TProps> & { readonly $$rms: StyledBase } => {
-  [type, templateRaw, templateValues] = isStyledComponent(type)
+  let staticClass: string;
+
+  [type, templateRaw, templateValues, staticClass] = isStyledComponent(type)
     ? [
         type.$$rms.type,
         [...type.$$rms.templateRaw, ...templateRaw],
         [...type.$$rms.templateValues, '', ...templateValues],
+        getId() + ' ' + type.$$rms.staticClass,
       ]
-    : [type, templateRaw, templateValues];
+    : [type, templateRaw, templateValues, getId()];
 
-  const useStyleString = getStyleStringHook(templateRaw, templateValues, useTheme);
   const filterProps = typeof type === 'string' ? getAttributes : (value: Record<string, unknown>) => value;
-  const staticClass = getId();
+  const useStyleString = getStyleStringHook(templateRaw, templateValues, useTheme);
   const selector = '.' + staticClass;
 
   const Styled = forwardRef((props: TProps & { children?: unknown; className?: string }, ref) => {

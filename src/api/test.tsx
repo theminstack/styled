@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useLayoutEffect, useMemo, useRef } from 'react';
 
 import { type StyledCache, createStyledCache } from './cache.js';
 import { StyledProvider } from './context.js';
@@ -101,8 +101,11 @@ const createTestManager = (): TestStyledManager => {
   const self: TestStyledManager = {
     addComponentStyle: (dynamicClass, cssText) => {
       let value = components.get(dynamicClass);
-      if (!value)
+      if (!value) {
         components.set(dynamicClass, (value = { refCount: 1, style: createTestStyleElement(() => self.onChange?.()) }));
+      } else {
+        ++value.refCount;
+      }
       value.style.textContent = cssText;
     },
     addGlobalStyle: () => {
@@ -122,8 +125,8 @@ const createTestManager = (): TestStyledManager => {
       ];
     },
     unref: (dynamicClass) => {
-      const style = components.get(dynamicClass);
-      if (style) --style.refCount;
+      const value = components.get(dynamicClass);
+      if (value) --value.refCount;
     },
   };
 
@@ -131,19 +134,25 @@ const createTestManager = (): TestStyledManager => {
 };
 
 const StyleView = (props: { manager: TestStyledManager }) => {
-  const [, setCount] = useState(0);
+  const style = useRef<HTMLStyleElement | null>(null);
 
-  useEffect(() => {
-    props.manager.onChange = () => setCount((current) => current + 1);
+  useLayoutEffect(() => {
+    const update = () => {
+      if (style.current) {
+        const cssTexts = props.manager.getCss();
+        style.current.textContent = cssTexts.length
+          ? '\n    ' + cssTexts.join('\n').replaceAll('\n', '\n    ') + '\n    '
+          : '/* no styles */';
+      }
+    };
+
+    props.manager.onChange = update;
+    update();
+
     () => void (props.manager.onChange = undefined);
-    setCount((current) => current + 1);
   }, [props.manager]);
 
-  const styles = props.manager.getCss();
-
-  if (styles.length === 0) return null;
-
-  return <style>{'\n    ' + props.manager.getCss().join('\n').replaceAll('\n', '\n    ') + '\n    '}</style>;
+  return <style ref={style}>{'/* no styles */'}</style>;
 };
 
 const StyledTest = ({ children }: StyledTestProps): JSX.Element => {
