@@ -23,7 +23,7 @@ describe('styled', () => {
     ).toMatchInlineSnapshot(`
       <div>
         <div
-          class="_test-dynamic-0_ _test-static-1_"
+          class="_test-dynamic-0_ _test-static-0_"
         >
           <div>
             foo
@@ -54,7 +54,7 @@ describe('styled', () => {
     ).toMatchInlineSnapshot(`
       <div>
         <div
-          class="_test-dynamic-0_ _test-static-1_"
+          class="_test-dynamic-0_ _test-static-0_"
         >
           <span>
             foo
@@ -81,7 +81,7 @@ describe('styled', () => {
     expect(render(<B />).container).toMatchInlineSnapshot(`
       <div>
         <div
-          class="_test-dynamic-0_ _test-static-1_"
+          class="_test-dynamic-0_ _test-static-0_"
         />
         <style>
           
@@ -108,7 +108,7 @@ describe('styled', () => {
     expect(render(<A $color="red" />).container).toMatchInlineSnapshot(`
       <div>
         <div
-          class="_test-dynamic-0_ _test-static-1_"
+          class="_test-dynamic-0_ _test-static-0_"
         />
         <style>
           
@@ -121,7 +121,7 @@ describe('styled', () => {
     `);
     expect(render(<C $color="blue" />).container).toMatchInlineSnapshot(`
       <div>
-        {"$color":"blue","className":"_test-dynamic-0_ _test-static-1_"}
+        {"$color":"blue","className":"_test-dynamic-0_ _test-static-0_"}
         <style>
           
           ._test-dynamic-0_ {
@@ -144,11 +144,11 @@ describe('styled', () => {
     expect(render(<C />).container).toMatchInlineSnapshot(`
       <div>
         <div
-          class="_test-dynamic-2_ _test-static-3_ _test-static-1_"
+          class="_test-dynamic-1_ _test-static-1_ _test-static-0_"
         />
         <style>
           
-          ._test-dynamic-2_ {
+          ._test-dynamic-1_ {
             color: red;
             color: blue;
           }
@@ -162,7 +162,36 @@ describe('styled', () => {
   });
 
   test('select styled component', () => {
-    //
+    const A = styled.div``;
+    const B = styled.div`
+      ${A} {
+        color: red;
+      }
+    `;
+    expect(
+      render(
+        <B>
+          <A />
+        </B>,
+      ).container,
+    ).toMatchInlineSnapshot(`
+      <div>
+        <div
+          class="_test-dynamic-0_ _test-static-1_"
+        >
+          <div
+            class="_test-dynamic-1_ _test-static-0_"
+          />
+        </div>
+        <style>
+          
+          ._test-dynamic-0_ ._test-static-0_ {
+            color: red;
+          }
+          
+        </style>
+      </div>
+    `);
   });
 
   test('dynamic values', () => {

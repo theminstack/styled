@@ -48,14 +48,14 @@ describe('StyledTest', () => {
     expect(container).toMatchInlineSnapshot(`
       <div>
         <div
-          class="_test-dynamic-0_ _test-static-1_"
+          class="_test-dynamic-0_ _test-static-0_"
         />
         <div
-          class="_test-dynamic-2_ _test-static-3_"
+          class="_test-dynamic-1_ _test-static-1_"
         />
         <style>
           
-          @keyframes _test-static-4_ {
+          @keyframes _test-static-2_ {
             from {
               color: red;
             }
@@ -66,16 +66,16 @@ describe('StyledTest', () => {
           :root {
             padding: 2rem;
           }
-          ._test-static-3_ {
+          ._test-static-1_ {
             background: grey;
           }
           ._test-dynamic-0_ {
             padding: 1rem;
           }
-          ._test-dynamic-2_ {
+          ._test-dynamic-1_ {
             color: blue;
           }
-          ._test-dynamic-2_ ._test-static-1_ {
+          ._test-dynamic-1_ ._test-static-0_ {
             padding: 0;
           }
           

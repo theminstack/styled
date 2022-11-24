@@ -21,7 +21,8 @@ type TestStyledManager = StyledManager & {
 
 const createTestClassReplacer = (): TestReplacer => {
   const cache = new Map<string, string>();
-  const count = { current: 0 };
+  const dynamicCount = { current: 0 };
+  const staticCount = { current: 0 };
 
   return {
     replace: (value) => {
@@ -29,7 +30,12 @@ const createTestClassReplacer = (): TestReplacer => {
         let className = cache.get(match);
 
         if (!className) {
-          className = '_test' + (type === 's' ? '-static-' : '-dynamic-') + (count.current++).toString(10) + '_';
+          className =
+            '_test' +
+            (type === 's'
+              ? '-static-' + (staticCount.current++).toString(36)
+              : '-dynamic-' + (dynamicCount.current++).toString(36)) +
+            '_';
           cache.set(match, className);
           cache.set(className, match);
         }
@@ -38,7 +44,7 @@ const createTestClassReplacer = (): TestReplacer => {
       });
     },
     restore: (value) => {
-      return value.replace(/_test-(?:static|dynamic)-[0-9]+_/gu, (match) => cache.get(match) ?? match);
+      return value.replace(/_test-(?:static|dynamic)-[0-9a-z]+_/gu, (match) => cache.get(match) ?? match);
     },
   };
 };

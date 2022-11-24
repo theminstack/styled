@@ -417,7 +417,7 @@ expect(container).toMatchSnapshot();
 // Snapshot
 <div>
   <div
-    class="_test-dynamic-0_ _test-static-1_"
+    class="_test-dynamic-0_ _test-static-0_"
   >
     Hello, world!
   </div>
