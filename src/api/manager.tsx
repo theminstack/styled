@@ -24,7 +24,7 @@ const createStyledManager = (): StyledManager => {
     if (initialized) return;
     initialized = true;
     setTimeout(() => {
-      document.querySelectorAll('style[data-styled="rmss"]').forEach((element) => element.remove());
+      document.querySelectorAll('style[data-styled-ssr="rms"]').forEach((element) => element.remove());
     });
   };
 
@@ -34,7 +34,7 @@ const createStyledManager = (): StyledManager => {
         init();
         cache.add(dynamicClass);
         const style = document.createElement('style');
-        style.setAttribute('data-styled', 'rmsd');
+        style.setAttribute('data-styled', 'rms');
         style.textContent = cssText;
         document.head.appendChild(style);
       }
@@ -42,11 +42,11 @@ const createStyledManager = (): StyledManager => {
     addGlobalStyle: () => {
       init();
       const style = document.createElement('style');
-      style.setAttribute('data-styled', 'rmsg');
-      document.head.insertBefore(style, document.querySelector('style[data-styled="rmsd"'));
+      style.setAttribute('data-styled-global', 'rms');
+      document.head.insertBefore(style, document.querySelector('style[data-styled="rms"]'));
       return style;
     },
-    // XXX: Unref is really only used for testing purposes. It may be used for
+    // XXX: Only used (currently) for testing purposes. It may be used for
     //      other optimizations in the future, like garbage collecting unused
     //      style sheets.
     unref: () => undefined,
@@ -86,7 +86,7 @@ const createSsrStyledManager = (): SsrStyledManager => {
     },
     getStyleElement: () => {
       return manager.getCss().map((cssText, i) => (
-        <style key={i} data-styled="rmss">
+        <style key={i} data-styled-ssr="rms">
           {cssText}
         </style>
       ));
@@ -94,7 +94,7 @@ const createSsrStyledManager = (): SsrStyledManager => {
     getStyleTags: () => {
       return manager
         .getCss()
-        .map((cssText) => '<style data-styled="rmss">' + cssText + '</style>')
+        .map((cssText) => '<style data-styled-ssr="rms">' + cssText + '</style>')
         .join('\n');
     },
     unref: () => undefined,

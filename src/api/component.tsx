@@ -41,7 +41,7 @@ const getDisplayName = (
   return original ? 'Styled(' + original + ')' : 'Styled';
 };
 
-const getClasses = (cache: StyledCache, className?: string): [staticClasses: string, dynamicClasses: string] => {
+const getClasses = (cache: StyledCache, className?: string): [dynamicClasses: string, staticClasses: string] => {
   const staticClasses: string[] = [];
   const dynamicClasses: string[] = [];
 
@@ -55,7 +55,7 @@ const getClasses = (cache: StyledCache, className?: string): [staticClasses: str
     });
   }
 
-  return [staticClasses.join(' '), dynamicClasses.join(' ')];
+  return [dynamicClasses.join(' '), staticClasses.join(' ')];
 };
 
 const createStyledComponent = <TProps, TTheme>(
@@ -81,7 +81,7 @@ const createStyledComponent = <TProps, TTheme>(
     const { className, children, ...rest } = props;
     const { cache, manager, renderer } = useStyledContext();
     const styleString = useStyleString(props);
-    const [staticClasses, dynamicClasses] = getClasses(cache, className);
+    const [dynamicClasses, staticClasses] = getClasses(cache, className);
     // XXX: The cache has to be pre-populated so that we can render the
     //      generated class name immediately, and so that styled children
     //      can extend the cached styles. This a side effect, but it's an
