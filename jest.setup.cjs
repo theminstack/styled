@@ -1,12 +1,13 @@
 /* eslint-disable no-undef */
 require('@testing-library/jest-dom/extend-expect');
+const { defaultStyledManager } = require('./src/api/manager.tsx');
+const { defaultStyledCache } = require('./src/api/cache.tsx');
+const { TextEncoder } = require('node:util');
 
-jest.mock('./src/server-context', () => {
-  const { createBrowserContext } = jest.requireActual('./src/browser-context');
-  return { createServerContext: createBrowserContext };
-});
+window.TextEncoder = TextEncoder;
 
 beforeEach(() => {
-  require('./src/context.js').context.reset();
   document.head.innerHTML = '';
+  defaultStyledManager.reset();
+  defaultStyledCache.reset();
 });

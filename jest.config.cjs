@@ -14,7 +14,7 @@ module.exports = {
   coveragePathIgnorePatterns: ignorePatterns,
   coverageProvider: 'v8',
   coverageReporters: ['text-summary', 'html-spa', 'lcov'],
-  coverageThreshold: { global: { branches: 50, functions: 50, lines: 50, statements: 50 } },
+  coverageThreshold: { global: { branches: 30, functions: 30, lines: 30, statements: 30 } },
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
   moduleNameMapper: {
     // Remove the .js extension (required for ES Module support) from TS file imports.
@@ -26,7 +26,9 @@ module.exports = {
   testEnvironment: 'jsdom',
   testPathIgnorePatterns: ignorePatterns,
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', { diagnostics: { ignoreCodes: [151001] }, useESM: true }],
+    '^.+\\.[tj]sx?$': ['ts-jest', { diagnostics: { ignoreCodes: [151001] }, useESM: true }],
   },
+  transformIgnorePatterns: ['/node_modules/(?!html-tag-names)'],
   verbose: true,
+  testPathIgnorePatterns: ['\\/test\\.[tj]sx?$']
 };

@@ -2,7 +2,7 @@
 
 A small, fast, and simple CSS-in-JS styled components solution for React, written in Typescript.
 
-- **Small**: Less than 4kb (minified and gzipped) and zero dependencies.
+- **Small**: ~2.8kB with zero dependencies.
 - **Fast**: Similar in speed to other styled component solutions.
 - **Simple**: Minimal/Opinionated API creates a great developer experience.
 - **Typed**: Written in Typescript. Designed for Typescript.
@@ -10,10 +10,8 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
 [![build](https://github.com/Shakeskeyboarde/react-micro-styled/actions/workflows/build.yml/badge.svg)](https://github.com/Shakeskeyboarde/react-micro-styled/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/Shakeskeyboarde/react-micro-styled/branch/main/graph/badge.svg?token=Y9CEQA8D4O)](https://codecov.io/gh/Shakeskeyboarde/react-micro-styled)
 
----
-
 - [Goals](#goals)
-- [Getting Started](#getting-started)
+- [Getting started](#getting-started)
 - [Style properties](#style-properties)
 - [Global styles](#global-styles)
   - [Defining keyframes and fonts](#defining-keyframes-and-fonts)
@@ -21,48 +19,54 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
 - [Style syntax](#style-syntax)
   - [Styling self](#styling-self)
   - [Styling children](#styling-children)
-  - [Styling other styled components](#styling-other-styled-components)
+  - [Targeting other styled components](#targeting-other-styled-components)
   - [Nesting rules](#nesting-rules)
   - [Using parent selector references](#using-parent-selector-references)
   - [Using at-rules](#using-at-rules)
   - [Using empty values](#using-empty-values)
   - [Commenting](#commenting)
-- [Style mixins (helpers)](#style-mixins-helpers)
-  - [Creating simple mixins](#creating-simple-mixins)
-  - [Creating parametric mixins](#creating-parametric-mixins)
-- [Server Side Rendering (SSR)](#server-side-rendering-ssr)
-- [Testing](#testing)
+- [Style helpers](#style-helpers)
+- [Snapshot testing](#snapshot-testing)
+- [Styled provider](#styled-provider)
+  - [Server-side rendering (SSR)](#server-side-rendering-ssr)
 - [Comparison](#comparison)
-
----
+  - [Features](#features)
+  - [Benchmarks](#benchmarks)
+- [Release Notes](#release-notes)
 
 ## Goals
 
-- Small bundle size and zero dependencies
-- Simple and opinionated API, with high quality types.
-- Type-safe themes without declaration merging
-- Future-proof CSS support
+- Reasonably small bundle size
+- Zero dependencies
+- Simple and opinionated API
+- Strong type safety
+- No declaration merging for theme typing
+- Full and future-proof CSS support
 - Server side rendering
-- Compatibility
-  - React >= 16.14.0
-  - ES2017/ES8 (eg. recent versions of Chrome, Edge, Safari, and Firefox)
-  - Webpack tree-shakable
+- Compatible
+  - React (Strict Mode) >= 16.14.0
+  - ES2021 (eg. recent versions of Chrome, Edge, Safari, and Firefox)
 
-There are also some things that are non-goals. They were considered, and then the choice was made to explicitly not include support for them.
+There are also some things that are non-goals.
 
 - No auto vendor prefixing
+  - Rarely necessary.
 - No object styles
-- No component polymorphism (eg. `as` property, `withComponent` method)
+  - Text styles are more portable and lint-able.
+- No component polymorphism (eg. `as` property, `.withComponent()` method)
+  - Breaks type-safety.
 - No "non-style" features (eg. `.attrs()` method)
+  - Use `defaultProps`.
 - No React Native support
+  - Costs outweigh benefits.
 
-## Getting Started
+## Getting started
 
 ```tsx
 import { styled } from 'react-micro-styled';
 ```
 
-Style any HTML element type by using the tag name. The styled component supports all of the same props (included refs, which are forwarded) that the HTML element supports. Styling basic HTML elements is what you should be doing most of the time.
+Style any HTML element type by using the tag name. The styled component supports all of the same props (included refs, which are forwarded) that the HTML element supports.
 
 ```tsx
 const StyledComponent = styled('div')`
@@ -70,7 +74,15 @@ const StyledComponent = styled('div')`
 `;
 ```
 
-Style any React component which accepts a `className` property.
+The tag name method style is also supported.
+
+```tsx
+const StyledComponent = styled.div`
+  color: black;
+`;
+```
+
+Style any React component which accepts a `className` property, or extend the styles of an already styled component.
 
 ```tsx
 const StyledComponent = styled(Component)`
@@ -78,17 +90,9 @@ const StyledComponent = styled(Component)`
 `;
 ```
 
-Extend the styling of an already styled component.
-
-```tsx
-const ReStyledComponent = styled(StyledComponent)`
-  color: gray;
-`;
-```
-
 ## Style properties
 
-You can add extra properties to the styled component by setting the generic parameter of the template string. Generally, you should prefix style properties with `$` to indicate that they are only used for styling. Any property name which starts with the `$` character will not be passed through to the underlying HTML element as an attribute.
+Extra properties can be added to the styled component by setting the generic parameter of the template string. Generally, style properties should be prefixed with `$` to indicate that they are only used for styling. Any property name which starts with the `$` character will not be passed through to the underlying HTML element as an attribute.
 
 ```tsx
 interface ComponentStyleProps {
@@ -114,7 +118,7 @@ const GlobalStyle = styled.global`
 `;
 ```
 
-You can add style properties to global styles too.
+Style properties can be added to global styles too.
 
 ```tsx
 interface GlobalStyleProps {
@@ -134,8 +138,8 @@ const GlobalStyle = styled.global<GlobalStyleProps>`
 Defining keyframes or font-faces is the same as defining any other style. Since they are not scoped to any particular component, they should probably only be used in global styles. To prevent name collisions, use the included `getId` utility to generate CSS-safe unique names.
 
 ```tsx
-const openSansFont = getId('Open Sans');
-const slideInAnimation = getId('slideIn');
+const openSansFont = getId();
+const slideInAnimation = getId();
 
 const GlobalStyle = styled.global`
   @font-face {
@@ -184,7 +188,7 @@ const ThemedComponent = styled('div')`
 
 ## Style syntax
 
-Style syntax is CSS-like, and all CSS properties, selectors, and at-rules are supported. In addition, SCSS-like nesting is supported with parent selector references (`&`).
+All of CSS plus nesting is supported.
 
 ### Styling self
 
@@ -199,7 +203,7 @@ const StyledComponent = styled('div')`
 Top-level CSS properties will be wrapped in a dynamic styled class selector
 
 ```css
-._s7y13d {
+._rmsds7y13d {
   color: red;
 }
 ```
@@ -219,12 +223,12 @@ const StyledComponent = styled('div')`
 The styled dynamic class will be automatically prepended to all selectors to make them "scoped".
 
 ```css
-._s7y13d .child {
+._rmsds7y13d .child {
   color: blue;
 }
 ```
 
-### Styling other styled components
+### Targeting other styled components
 
 Every styled component (except global styles) can be used as a selector for that specific styled component.
 
@@ -240,10 +244,10 @@ const StyledComponentB = styled('div')`
 `;
 ```
 
-The styled component's `toString()` method returns a unique selector string (eg. `".tss_s7y13d"`) which matches that specific styled component.
+The styled component's `toString()` method returns a unique selector string (eg. `"._rmsss7y13d_"`) which matches that specific styled component.
 
 ```css
-._s7y13d .tss_s7y13d {
+._rmsds7y13d ._rmsss7y13d_ {
   color: red;
 }
 ```
@@ -267,10 +271,10 @@ const StyledComponent = styled('div')`
 Just like the styled dynamic class is prepended to top-level selectors, so too are parent selectors prepended to child selectors.
 
 ```css
-._s7y13d .child {
+._rmsds7y13d .child {
   color: blue;
 }
-._s7y13d .child .grandchild {
+._rmsds7y13d .child .grandchild {
   color: green;
 }
 ```
@@ -319,15 +323,15 @@ At-rules will be hoisted as necessary, and parent selectors will be handled the 
 
 ```css
 @media screen and (min-width: 900px) {
-  ._s7y13d {
+  ._rmsds7y13d {
     color: red;
   }
 }
 @media screen and (min-width: 600px) {
-  ._s7y13d .child .grandchild {
+  ._rmsds7y13d .child .grandchild {
     color: blue;
   }
-  .adopted ._s7y13d .child .grandchild {
+  .adopted ._rmsds7y13d .child .grandchild {
     color: green;
   }
 }
@@ -347,7 +351,7 @@ const StyledComponent = styled('div')`
 The color property is not included because it has no value.
 
 ```css
-._s7y13d {
+._rmsds7y13d {
   background-color: red;
 }
 ```
@@ -364,113 +368,197 @@ const StyledComponent = styled('div')`
 `;
 ```
 
-## Style mixins (helpers)
+## Style helpers
 
-The `styled.mixin` tagged template utility returns a mixin (AKA: helper) function. When the returned function is called, it returns a style string with all values interpolated.
-
-### Creating simple mixins
-
-Mixins do not accept any parameters by default.
+The `styled.string` tagged template function returns a simple style string with all values interpolated. Only static values are allowed (no functions). Empty property values (`null`, `undefined`, and `false`) work the same way they do in styled components, and cause the property to be omitted.
 
 ```tsx
-const fontMixin = styled.mixin`
+const fontHelper = styled.string`
   font-family: Arial, sans-serif;
   font-weight: 400;
-  font-size: 1rem;
+  font-size: ${size};
 `;
 
+// Then use in a styled component or another helper.
 const StyledComponent = styled('div')`
-  color: red;
-  ${fontMixin}
-`;
-```
-
-### Creating parametric mixins
-
-Helpers which accept parameters can be created by setting the generic parameter of the `styled.mixin` template string.
-
-```tsx
-interface FontMixinProps {
-  scale?: number;
-}
-
-const fontMixin = styled.mixin<FontMixinProps>`
-  font-family: Arial, sans-serif;
-  font-weight: 400;
-  font-size: ${(props) => props.scale || 1}rem;
-`;
-
-const StyledComponent = styled('div')`
-  ${fontMixin({ scale: 2 })}
+  ${fontHelper}
   color: red;
 `;
 ```
 
-## Server Side Rendering (SSR)
-
-SSR rendering is detected when there is no `document` global, and styles that would have been added to the DOM are recorded instead. After rendering the document body, use the `renderStylesToString` utility to get all of the `<style>` elements as an HTML string.
+The `styled.string` helper has no side effects and does very little work, so it's also safe to use in functions.
 
 ```tsx
-const appHtml = renderToString(<App />);
-const stylesHtml = renderStylesToString();
+const shadow = (depth: number) => {
+  return styled.string`
+    -moz-box-shadow: 0 ${depth}px ${depth}px black;
+    -webkit-box-shadow: 0 ${depth}px ${depth}px black;
+    box-shadow: 0 ${depth}px ${depth}px black;
+  `;
+};
+
+// Then use in a styled component or another helper.
+const StyledComponent = styled('div')<{ $shadowDepth: number }>`
+  ${(props) => shadow(props.$shadowDepth)}
+  color: red;
+`;
+```
+
+## Snapshot testing
+
+Use the `StyledTest` wrapper to produce snapshots with stable class names and style information.
+
+```tsx
+const container = render(<MyStyledComponent />, { wrapper: StyledTest });
+
+expect(container).toMatchSnapshot();
+```
+
+```
+// Snapshot
+<div>
+  <div
+    class="_test-dynamic-0_ _test-static-0_"
+  >
+    Hello, world!
+  </div>
+  <style>
+
+    ._test-dynamic-0_ {
+      padding: 1rem;
+    }
+
+  </style>
+</div>
+```
+
+## Styled provider
+
+A `StyledProvider` can override the default `cache`, `manager`, and `renderer`. _No provider is required for default operation._
+
+- **Styled Cache:** Compiles style strings to CSS text and dynamic class names.
+- **Styled Manager:** Renders style sheets.
+- **Styled Renderer:** Renders a components after style classes have been added to their properties.
+
+```tsx
+const cache = createStyledCache();
+const manager = createStyledManager();
+const renderer = createStyledRenderer();
+
+render(
+  <StyledProvider cache={cache} manager={manager} renderer={renderer}>
+    <App />
+  </StyledProvider>,
+);
+```
+
+The `StyledTest` component is actually a `StyledProvider` which injects test versions of all three resources to replace class names and capture styles.
+
+**Note:** The provided cache, manager, and renderer must not change over the lifetime of a styled component. An error will be thrown (or logged in production) if they mutate.
+
+### Server-side rendering (SSR)
+
+Use `createSsrStyledManager` and the `StyledProvider` to capture styles when rendering the application on the server.
+
+```tsx
+const manager = createSsrStyledManager();
+const html = renderToString(
+  <StyledProvider manager={manager}>
+    <App />
+  </StyledProvider>,
+);
+
 const html = `
 <!doctype HTML>
 <html>
-<head>
-  ${stylesHtml}
-</head>
-<body>
-  <div id="root">${appHtml}</div>
-</body>
+  <head>
+    ${manager.getStyleTags()}
+  </head>
+  <body>
+    <div id="root">
+      ${html}
+    </div>
+  </body>
 </html>
 `;
 ```
 
-## Testing
-
-During testing, there may be a DOM (eg. jsdom) and a `document` global. However, the `NODE_ENV` environment variable should also be set to `test` (Jest sets this automatically). If it is, the SSR implementation is used. So, you can use the same `renderStylesToString` utility to test (eg. Jest snapshots) your styles.
-
-```tsx
-expect(renderStylesToString()).toMatchSnapshot();
-```
+The SSR manager's `getStyleTags()` method returns a single html string containing only `<style>` tags. There are also `getStyleElement()` (React elements array) and `getCss()` (css strings array) methods.
 
 ## Comparison
 
 React Micro-Styled compared to other styled component solutions.
+
+### Features
 
 - 🟢 Supported
 - 🟡 Partially supported
 - 🔴 Not supported
 - ⭕ Not documented
 
-|             | Feature                    | React Micro-Styled | Goober | Styled Components | Emotion |
-| ----------- | -------------------------- | ------------------ | ------ | ----------------- | ------- |
-| **Library** |                            |                    |        |                   |         |
-|             | Bundle size (approx. kB)   | 4                  | 2      | 13                | 8       |
-|             | Zero dependencies          | 🟢                 | 🟢     | 🔴                | 🔴      |
-|             | Typescript native          | 🟢                 | 🟢     | 🔴                | 🟢      |
-| **API**     |                            |                    |        |                   |         |
-|             | Tagged template styles     | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | Object styles              | 🔴                 | 🟢     | 🟢                | 🟢      |
-|             | Global styles              | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | Polymorphism (`as`)        | 🔴                 | 🟢     | 🟢                | 🟢      |
-|             | Property mapping (`attrs`) | 🔴                 | 🔴     | 🟢                | 🔴      |
-|             | Theming [1]                | 🟢                 | 🟡     | 🟡                | 🟡      |
-|             | SSR                        | 🟢                 | 🟢     | 🟢                | 🟢      |
-| **Style**   |                            |                    |        |                   |         |
-|             | CSS `@media`               | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | CSS `@keyframes`           | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | CSS `@font-face`           | 🟢                 | ⭕     | ⭕                | 🟢      |
-|             | CSS `@import`              | 🟢                 | ⭕     | 🔴                | 🟢      |
-|             | Other CSS `@` rules        | 🟢                 | ⭕     | ⭕                | ⭕      |
-|             | Vendor prefixing [2]       | 🔴                 | 🟡     | 🟢                | 🟢      |
-|             | Rule nesting               | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | Parent selectors (`&`)     | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | Style mixins [3]           | 🟢                 | 🟡     | 🟢                | 🟢      |
-|             | Styled component selectors | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Feature                     | React Micro-Styled | Goober | Styled Components | Emotion |
+| ----------- | --------------------------- | ------------------ | ------ | ----------------- | ------- |
+| **Library** |                             |                    |        |                   |         |
+|             | Bundle size (approx. kB)[1] | 2.8                | 1.2    | 13.3              | 9.1     |
+|             | Zero dependencies           | 🟢                 | 🟢     | 🔴                | 🔴      |
+|             | Typescript native           | 🟢                 | 🟢     | 🔴                | 🟢      |
+| **API**     |                             |                    |        |                   |         |
+|             | Tagged template styles      | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Dynamic styles              | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Object styles               | 🔴                 | 🟢     | 🟢                | 🟢      |
+|             | Global styles               | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Polymorphism (`as`)         | 🔴                 | 🟢     | 🟢                | 🟢      |
+|             | Property mapping (`attrs`)  | 🔴                 | 🔴     | 🟢                | 🔴      |
+|             | Theming [2]                 | 🟢                 | 🟡     | 🟡                | 🟡      |
+|             | SSR                         | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Snapshot testing            | 🟢                 | 🔴     | 🟢                | 🟢      |
+| **Style**   |                             |                    |        |                   |         |
+|             | CSS `@media`                | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | CSS `@keyframes`            | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | CSS `@font-face`            | 🟢                 | ⭕     | ⭕                | 🟢      |
+|             | CSS `@import`               | 🟢                 | ⭕     | 🔴                | 🟢      |
+|             | Other CSS `@` rules         | 🟢                 | ⭕     | ⭕                | ⭕      |
+|             | Vendor prefixing [3]        | 🔴                 | 🟡     | 🟢                | 🟢      |
+|             | Rule nesting                | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Parent selectors (`&`)      | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Styled component selectors  | 🟢                 | 🟢     | 🟢                | 🟢      |
 
 &nbsp;
 
-- [1] Goober, Styled Components, and Emotion, all support only a single theme, which must be typed using declaration merging.
-- [2] Goober provides vendor prefixing as an additional package.
-- [3] Goober doesn't provide a `css` utility for creating mixins, but it does support function values in tagged templates.
+- [1] Bundle size is of the `styled` export (after tree-shaking, minification, and gzip) calculated using the Webpack bundle analyzer.
+- [2] Goober, Styled Components, and Emotion, all support only a single theme, which must be typed using declaration merging.
+- [3] Goober provides vendor prefixing as an additional package.
+
+Goober's style compiler is not very robust. It does not do bracket matching for instance. Instead, it relies on simple regular expressions to compile style strings to CSS. Goober has made shrinking the library size their highest priority, at the expense of the design.
+
+Conversely, styled-components and Emotion use compilers that are over-engineered for CSS-in-JS, which is necessary to support Stylis for vendor prefixing.
+
+React Micro-Styled uses a fast 0(n) compiler that does not compromise on correctness. Any valid style _will_ be correctly compiled to CSS.
+
+### Benchmarks
+
+See the [benchmark.js](benchmark.js) script for the benchmark implementation.
+
+| Library            | Op/s    |
+| ------------------ | ------- |
+| React Micro-Styled | 144,970 |
+| Goober             | 142,028 |
+| Emotion            | 124,681 |
+| Styled Components  | 118,072 |
+
+## Release Notes
+
+- v2.0.0
+  - New Features
+    - Faster and more reliable style compiler
+    - Tag name method support (eg. `styled.div` alternative to `styled('div')`)
+    - Using React's `useInsertionEffect` when available
+    - Added `styled.string` helper for building static style strings
+    - Added `StyledProvider`
+      - Improved SSR support (`createSsrStyledManager`)
+      - Improved snapshot testing support (`StyledTest`)
+  - Breaking Changes
+    - `getId` no longer accepts an argument
+    - Supported ECMA version changed to ES2021
+    - Removed `styled.mixin`
+    - Removed `renderStylesToString`
