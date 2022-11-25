@@ -2,7 +2,7 @@
 
 A small, fast, and simple CSS-in-JS styled components solution for React, written in Typescript.
 
-- **Small**: ~3.1kB (minified and gzipped) with zero dependencies.
+- **Small**: ~2.8kB with zero dependencies.
 - **Fast**: Similar in speed to other styled component solutions.
 - **Simple**: Minimal/Opinionated API creates a great developer experience.
 - **Typed**: Written in Typescript. Designed for Typescript.
@@ -19,7 +19,7 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
 - [Style syntax](#style-syntax)
   - [Styling self](#styling-self)
   - [Styling children](#styling-children)
-  - [Selecting styled components](#selecting-styled-components)
+  - [Targeting other styled components](#targeting-other-styled-components)
   - [Nesting rules](#nesting-rules)
   - [Using parent selector references](#using-parent-selector-references)
   - [Using at-rules](#using-at-rules)
@@ -36,15 +36,16 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
 
 ## Goals
 
-- Small bundle size and zero dependencies
-- Simple and opinionated API, with high quality types.
-- Type-safe themes without declaration merging
-- Future-proof CSS support
+- Reasonably small bundle size
+- Zero dependencies
+- Simple and opinionated API
+- Strong type safety
+- No declaration merging for theme typing
+- Full and future-proof CSS support
 - Server side rendering
-- Compatibility
+- Compatible
   - React (Strict Mode) >= 16.14.0
   - ES2021 (eg. recent versions of Chrome, Edge, Safari, and Firefox)
-  - Webpack tree-shakable
 
 There are also some things that are non-goals.
 
@@ -187,7 +188,7 @@ const ThemedComponent = styled('div')`
 
 ## Style syntax
 
-Style syntax is CSS-like, and all CSS properties, selectors, and at-rules are supported. In addition, SCSS-like nesting is supported with parent selector references (`&`).
+All of CSS plus nesting is supported.
 
 ### Styling self
 
@@ -227,7 +228,7 @@ The styled dynamic class will be automatically prepended to all selectors to mak
 }
 ```
 
-### Selecting styled components
+### Targeting other styled components
 
 Every styled component (except global styles) can be used as a selector for that specific styled component.
 
@@ -453,6 +454,8 @@ render(
 
 The `StyledTest` component is actually a `StyledProvider` which injects test versions of all three resources to replace class names and capture styles.
 
+**Note:** The provided cache, manager, and renderer must not change over the lifetime of a styled component. An error will be thrown (or logged in production) if they mutate.
+
 ### Server-side rendering (SSR)
 
 Use `createSsrStyledManager` and the `StyledProvider` to capture styles when rendering the application on the server.
@@ -493,37 +496,38 @@ React Micro-Styled compared to other styled component solutions.
 - 🔴 Not supported
 - ⭕ Not documented
 
-|             | Feature                    | React Micro-Styled | Goober | Styled Components | Emotion |
-| ----------- | -------------------------- | ------------------ | ------ | ----------------- | ------- |
-| **Library** |                            |                    |        |                   |         |
-|             | Bundle size (approx. kB)   | 3.1                | 1.3    | 12.7              | 11.2    |
-|             | Zero dependencies          | 🟢                 | 🟢     | 🔴                | 🔴      |
-|             | Typescript native          | 🟢                 | 🟢     | 🔴                | 🟢      |
-| **API**     |                            |                    |        |                   |         |
-|             | Tagged template styles     | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | Dynamic styles             | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | Object styles              | 🔴                 | 🟢     | 🟢                | 🟢      |
-|             | Global styles              | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | Polymorphism (`as`)        | 🔴                 | 🟢     | 🟢                | 🟢      |
-|             | Property mapping (`attrs`) | 🔴                 | 🔴     | 🟢                | 🔴      |
-|             | Theming [1]                | 🟢                 | 🟡     | 🟡                | 🟡      |
-|             | SSR                        | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | Snapshot testing           | 🟢                 | 🔴     | 🟢                | 🟢      |
-| **Style**   |                            |                    |        |                   |         |
-|             | CSS `@media`               | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | CSS `@keyframes`           | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | CSS `@font-face`           | 🟢                 | ⭕     | ⭕                | 🟢      |
-|             | CSS `@import`              | 🟢                 | ⭕     | 🔴                | 🟢      |
-|             | Other CSS `@` rules        | 🟢                 | ⭕     | ⭕                | ⭕      |
-|             | Vendor prefixing [2]       | 🔴                 | 🟡     | 🟢                | 🟢      |
-|             | Rule nesting               | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | Parent selectors (`&`)     | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | Styled component selectors | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Feature                     | React Micro-Styled | Goober | Styled Components | Emotion |
+| ----------- | --------------------------- | ------------------ | ------ | ----------------- | ------- |
+| **Library** |                             |                    |        |                   |         |
+|             | Bundle size (approx. kB)[1] | 2.8                | 1.2    | 13.3              | 9.1     |
+|             | Zero dependencies           | 🟢                 | 🟢     | 🔴                | 🔴      |
+|             | Typescript native           | 🟢                 | 🟢     | 🔴                | 🟢      |
+| **API**     |                             |                    |        |                   |         |
+|             | Tagged template styles      | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Dynamic styles              | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Object styles               | 🔴                 | 🟢     | 🟢                | 🟢      |
+|             | Global styles               | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Polymorphism (`as`)         | 🔴                 | 🟢     | 🟢                | 🟢      |
+|             | Property mapping (`attrs`)  | 🔴                 | 🔴     | 🟢                | 🔴      |
+|             | Theming [2]                 | 🟢                 | 🟡     | 🟡                | 🟡      |
+|             | SSR                         | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Snapshot testing            | 🟢                 | 🔴     | 🟢                | 🟢      |
+| **Style**   |                             |                    |        |                   |         |
+|             | CSS `@media`                | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | CSS `@keyframes`            | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | CSS `@font-face`            | 🟢                 | ⭕     | ⭕                | 🟢      |
+|             | CSS `@import`               | 🟢                 | ⭕     | 🔴                | 🟢      |
+|             | Other CSS `@` rules         | 🟢                 | ⭕     | ⭕                | ⭕      |
+|             | Vendor prefixing [3]        | 🔴                 | 🟡     | 🟢                | 🟢      |
+|             | Rule nesting                | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Parent selectors (`&`)      | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Styled component selectors  | 🟢                 | 🟢     | 🟢                | 🟢      |
 
 &nbsp;
 
-- [1] Goober, Styled Components, and Emotion, all support only a single theme, which must be typed using declaration merging.
-- [2] Goober provides vendor prefixing as an additional package.
+- [1] Bundle size is of the `styled` export (after tree-shaking, minification, and gzip) calculated using the Webpack bundle analyzer.
+- [2] Goober, Styled Components, and Emotion, all support only a single theme, which must be typed using declaration merging.
+- [3] Goober provides vendor prefixing as an additional package.
 
 Goober's style compiler is not very robust. It does not do bracket matching for instance. Instead, it relies on simple regular expressions to compile style strings to CSS. Goober has made shrinking the library size their highest priority, at the expense of the design.
 
@@ -533,7 +537,7 @@ React Micro-Styled uses a fast 0(n) compiler that does not compromise on correct
 
 ### Benchmarks
 
-See the [perf.js](perf.js) script for the benchmark implementation.
+See the [benchmark.js](benchmark.js) script for the benchmark implementation.
 
 | Library            | Op/s    |
 | ------------------ | ------- |
@@ -548,7 +552,7 @@ See the [perf.js](perf.js) script for the benchmark implementation.
   - New Features
     - Faster and more reliable style compiler
     - Tag name method support (eg. `styled.div` alternative to `styled('div')`)
-    - Using React's `useLayoutEffect` when available
+    - Using React's `useInsertionEffect` when available
     - Added `styled.string` helper for building static style strings
     - Added `StyledProvider`
       - Improved SSR support (`createSsrStyledManager`)
