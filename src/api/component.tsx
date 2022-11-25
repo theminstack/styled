@@ -7,7 +7,6 @@ import {
   forwardRef,
 } from 'react';
 
-import { useStyleEffect } from '../util/effect.js';
 import { getId } from '../util/id.js';
 import { getAttributes } from './attributes.js';
 import { type StyledCache } from './cache.js';
@@ -82,6 +81,7 @@ const createStyledComponent = <TProps, TTheme>(
   const Styled = forwardRef((props: TProps & { children?: unknown; className?: string }, ref) => {
     const { className, children, ...rest } = props;
     const { cache, manager, renderer } = useStyledContext();
+    const useEffect = manager.useEffect;
     const styleString = useStyleString(props);
     const [dynamicClasses, staticClasses] = getClasses(cache, className);
     // XXX: The cache has to be pre-populated so that we can render the
@@ -98,10 +98,11 @@ const createStyledComponent = <TProps, TTheme>(
       ref,
     };
 
-    useStyleEffect(() => {
+    useEffect(() => {
       manager.addComponentStyle(dynamicClass, cssText);
       return () => manager.unref(dynamicClass);
-    }, [manager, dynamicClass, cssText]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dynamicClass]);
 
     return renderer.render(type, styledProps, ...(children ? [children] : []));
   });

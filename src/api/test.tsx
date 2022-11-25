@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { type ReactNode, useLayoutEffect, useMemo, useRef } from 'react';
 
 import { type StyledCache, createStyledCache } from './cache.js';
@@ -65,6 +66,7 @@ const createTestCache = (replacer: TestReplacer): StyledCache => {
 
   return {
     has: (className) => base.has(replacer.restore(className)),
+    reset: () => base.reset(),
     resolve: (styleString, classNames) => {
       classNames = classNames && replacer.restore(classNames);
       const [cssText, className] = base.resolve(styleString, classNames);
@@ -124,10 +126,15 @@ const createTestManager = (): TestStyledManager => {
         ),
       ];
     },
+    reset: () => {
+      globals.clear();
+      components.clear();
+    },
     unref: (dynamicClass) => {
       const value = components.get(dynamicClass);
       if (value) --value.refCount;
     },
+    useEffect: useLayoutEffect,
   };
 
   return self;
@@ -150,7 +157,8 @@ const StyleView = (props: { manager: TestStyledManager }) => {
     update();
 
     () => void (props.manager.onChange = undefined);
-  }, [props.manager]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return <style ref={style}>{'/* no styles */'}</style>;
 };

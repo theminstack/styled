@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 type StyleElement = {
   readonly remove: () => void;
   textContent: string | null;
@@ -6,7 +8,9 @@ type StyleElement = {
 type StyledManager = {
   readonly addComponentStyle: (dynamicClass: string, cssText: string) => void;
   readonly addGlobalStyle: () => StyleElement;
+  readonly reset: () => void;
   readonly unref: (dynamicClass: string) => void;
+  readonly useEffect: typeof React.useEffect;
 };
 
 type SsrStyledManager = StyledManager & {
@@ -46,10 +50,12 @@ const createStyledManager = (): StyledManager => {
       document.head.insertBefore(style, document.querySelector('style[data-styled="rms"]'));
       return style;
     },
+    reset: () => cache.clear(),
     // XXX: Only used (currently) for testing purposes. It may be used for
     //      other optimizations in the future, like garbage collecting unused
     //      style sheets.
     unref: () => undefined,
+    useEffect: React.useInsertionEffect || React.useLayoutEffect,
   };
 };
 
@@ -97,7 +103,12 @@ const createSsrStyledManager = (): SsrStyledManager => {
         .map((cssText) => '<style data-styled-ssr="rms">' + cssText + '</style>')
         .join('\n');
     },
+    reset: () => {
+      globals.length = 0;
+      components.clear();
+    },
     unref: () => undefined,
+    useEffect: (callback) => callback(),
   };
 
   return manager;

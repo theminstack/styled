@@ -1,6 +1,5 @@
 import { type FC, type ReactNode, useRef } from 'react';
 
-import { useStyleEffect } from '../util/effect.js';
 import { useStyledContext } from './context.js';
 import { type StyleElement } from './manager.js';
 import { type StyledStringValue, getStyleStringHook } from './string.js';
@@ -17,22 +16,21 @@ const createStyledGlobal = <TTheme,>(useTheme: () => TTheme): StyledGlobal<TThem
     const useStyleString = getStyleStringHook(template.raw, values, useTheme);
     const StyledGlobal = (props: TProps & { children?: ReactNode }): JSX.Element => {
       const styleElement = useRef<StyleElement | undefined>();
-      const { cache, manager } = useStyledContext();
       const styleString = useStyleString(props);
+      const { cache, manager } = useStyledContext();
+      const useEffect = manager.useEffect;
 
-      useStyleEffect(() => {
+      useEffect(() => {
         const style = (styleElement.current = manager.addGlobalStyle());
         return () => style.remove();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, []);
 
-      useStyleEffect(() => {
+      useEffect(() => {
         if (styleElement.current) {
-          // Not using a cache (aside from the effect deps) because...
-          // - Large numbers of global styles are not expected.
-          // - Frequent global styles changes are not expected.
-          // - Parallel instances of one global style are not expected.
           styleElement.current.textContent = cache.resolveGlobal(styleString);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [styleString]);
 
       return <>{props.children}</>;

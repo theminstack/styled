@@ -1,21 +1,46 @@
+/* eslint-disable max-lines */
 /* eslint-disable unicorn/consistent-function-scoping */
-import { type RenderOptions, getByTestId, render as renderBase } from '@testing-library/react';
+import { type RenderOptions, getByTestId, render } from '@testing-library/react';
 import { htmlTagNames } from 'html-tag-names';
 import { type ReactElement } from 'react';
 
 import { styled, StyledTest } from '../index.js';
 
-const render = (ui: ReactElement, options?: RenderOptions) => {
-  return renderBase(ui, { ...options, wrapper: StyledTest });
+const renderTest = (ui: ReactElement, options?: RenderOptions) => {
+  return render(ui, { ...options, wrapper: StyledTest });
 };
 
 describe('styled', () => {
+  test('inject into head', () => {
+    const A = styled.div`
+      color: red;
+    `;
+    expect(render(<A />).container).toMatchInlineSnapshot(`
+      <div>
+        <div
+          class="_rmsd58sss8_ _rmsswo5o5a_"
+        />
+      </div>
+    `);
+    expect(document.head).toMatchInlineSnapshot(`
+      <head>
+        <style
+          data-styled="rms"
+        >
+          ._rmsd58sss8_ {
+        color: red;
+      }
+        </style>
+      </head>
+    `);
+  });
+
   test('styled div', () => {
     const A = styled.div`
       display: flex;
     `;
     expect(
-      render(
+      renderTest(
         <A>
           <div>foo</div>
         </A>,
@@ -46,7 +71,7 @@ describe('styled', () => {
       color: red;
     `;
     expect(
-      render(
+      renderTest(
         <B>
           <span>foo</span>
         </B>,
@@ -78,7 +103,7 @@ describe('styled', () => {
     const B = styled(A)`
       color: blue;
     `;
-    expect(render(<B />).container).toMatchInlineSnapshot(`
+    expect(renderTest(<B />).container).toMatchInlineSnapshot(`
       <div>
         <div
           class="_test-dynamic-0_ _test-static-0_ _test-static-1_"
@@ -105,7 +130,7 @@ describe('styled', () => {
     const C = styled(B)<any>`
       color: ${(props) => props.$color};
     `;
-    expect(render(<A $color="red" />).container).toMatchInlineSnapshot(`
+    expect(renderTest(<A $color="red" />).container).toMatchInlineSnapshot(`
       <div>
         <div
           class="_test-dynamic-0_ _test-static-0_"
@@ -119,7 +144,7 @@ describe('styled', () => {
         </style>
       </div>
     `);
-    expect(render(<C $color="blue" />).container).toMatchInlineSnapshot(`
+    expect(renderTest(<C $color="blue" />).container).toMatchInlineSnapshot(`
       <div>
         {"$color":"blue","className":"_test-dynamic-0_ _test-static-0_"}
         <style>
@@ -141,7 +166,7 @@ describe('styled', () => {
     const C = styled(B)`
       color: blue;
     `;
-    expect(render(<C />).container).toMatchInlineSnapshot(`
+    expect(renderTest(<C />).container).toMatchInlineSnapshot(`
       <div>
         <div
           class="_test-dynamic-1_ _test-static-1_ _test-static-0_"
@@ -169,7 +194,7 @@ describe('styled', () => {
       }
     `;
     expect(
-      render(
+      renderTest(
         <B>
           <A />
         </B>,
@@ -198,7 +223,7 @@ describe('styled', () => {
     const A = styled.div<any>`
       color: ${(props) => props.$color};
     `;
-    const { container, rerender } = render(<A $color={'red'} />);
+    const { container, rerender } = renderTest(<A $color={'red'} />);
     expect(container).toMatchInlineSnapshot(`
       <div>
         <div
@@ -255,13 +280,13 @@ describe('styled', () => {
     htmlTagNames.forEach((tagName) => {
       test('styled("' + tagName + '")', () => {
         const Test = styled(tagName)``;
-        const { container } = render(<Test data-testid="test" />);
+        const { container } = renderTest(<Test data-testid="test" />);
         expect(getByTestId(container, 'test').tagName.toLocaleLowerCase()).toBe(tagName.toLocaleLowerCase());
       });
 
       test('styled.' + tagName, () => {
         const Test = (styled[tagName as keyof JSX.IntrinsicElements] as any)``;
-        const { container } = render(<Test data-testid="test" />);
+        const { container } = renderTest(<Test data-testid="test" />);
         expect(getByTestId(container, 'test').tagName.toLocaleLowerCase()).toBe(tagName.toLocaleLowerCase());
       });
     });
@@ -269,5 +294,125 @@ describe('styled', () => {
 });
 
 describe('styled.global', () => {
-  //
+  test('mount order', () => {
+    const A = styled.global`
+      color: red;
+    `;
+    const B = styled.global`
+      color: blue;
+    `;
+    expect(
+      render(
+        <>
+          <B />
+          <A />
+        </>,
+      ).container,
+    ).toMatchInlineSnapshot(`<div />`);
+    expect(document.head).toMatchInlineSnapshot(`
+      <head>
+        <style
+          data-styled-global="rms"
+        >
+          :root {
+        color: blue;
+      }
+        </style>
+        <style
+          data-styled-global="rms"
+        >
+          :root {
+        color: red;
+      }
+        </style>
+      </head>
+    `);
+  });
+
+  test('remove on unmount', () => {
+    const A = styled.global`
+      color: red;
+    `;
+    const { unmount } = render(<A />);
+    expect(document.head).toMatchInlineSnapshot(`
+      <head>
+        <style
+          data-styled-global="rms"
+        >
+          :root {
+        color: red;
+      }
+        </style>
+      </head>
+    `);
+    unmount();
+    expect(document.head).toMatchInlineSnapshot(`<head />`);
+  });
+
+  test('before component styles', () => {
+    const A = styled.div`
+      color: red;
+    `;
+    const B = styled.global`
+      color: blue;
+    `;
+    const { rerender } = render(
+      <>
+        <A />
+      </>,
+    );
+    expect(document.head).toMatchInlineSnapshot(`
+      <head>
+        <style
+          data-styled="rms"
+        >
+          ._rmsd58sss8_ {
+        color: red;
+      }
+        </style>
+      </head>
+    `);
+    rerender(
+      <>
+        <A />
+        <B />
+      </>,
+    );
+    expect(document.head).toMatchInlineSnapshot(`
+      <head>
+        <style
+          data-styled-global="rms"
+        >
+          :root {
+        color: blue;
+      }
+        </style>
+        <style
+          data-styled="rms"
+        >
+          ._rmsd58sss8_ {
+        color: red;
+      }
+        </style>
+      </head>
+    `);
+  });
+});
+
+describe('styled.string', () => {
+  test('blank values', () => {
+    expect(styled.string`
+      color: ${null};
+      color: ${undefined};
+      color: ${false};
+      color: ${0};
+    `).toMatchInlineSnapshot(`
+      "
+            color: ;
+            color: ;
+            color: ;
+            color: 0;
+          "
+    `);
+  });
 });

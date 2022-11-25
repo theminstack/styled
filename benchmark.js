@@ -17,9 +17,8 @@ Object.assign(globalThis, {
   await appendFile('out/benchmark.md', `| Library | Op/s |\n|-|-|\n`);
 
   const tests = [
-    // ['no-op', async () => () => () => () => null],
-    ['React Micro-Styled', () => import('./lib/cjs/index.js').then((exports) => exports.styled)],
     ['Styled Components', () => import('styled-components').then((exports) => exports.default.default)],
+    ['Emotion', () => import('@emotion/styled').then((exports) => exports.default.default)],
     [
       'Goober',
       () =>
@@ -29,7 +28,7 @@ Object.assign(globalThis, {
           return exports.styled;
         }),
     ],
-    ['Emotion', () => import('@emotion/styled').then((exports) => exports.default.default)],
+    ['React Micro-Styled', () => import('./lib/cjs/index.js').then((exports) => exports.styled)],
   ];
 
   for (const [framework, load] of tests) {

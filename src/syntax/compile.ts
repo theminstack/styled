@@ -100,12 +100,12 @@ const compile = (styleString: string): AstNode => {
     throw new Error(`Styled parsing error (expected: ${terminators.join(' ')} )`);
   };
 
-  const node = (): AstNode => {
+  const node = (depth = 0): AstNode => {
     const current: AstNode = { children: [] };
     const csv: string[] = [];
 
     const block = () => {
-      const child = node();
+      const child = node(depth + 1);
 
       if (child.children.length) {
         child.condition =
@@ -142,11 +142,10 @@ const compile = (styleString: string): AstNode => {
           break;
         case '}':
           declaration();
-          return current;
+          if (depth > 0) return current;
+          break;
       }
     }
-
-    if (i < styleString.length - 1) throw new Error(`Styled parsing error (unexpected: } )`);
 
     return current;
   };
