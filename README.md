@@ -203,7 +203,7 @@ const StyledComponent = styled('div')`
 Top-level CSS properties will be wrapped in a dynamic styled class selector
 
 ```css
-._rmsds7y13d {
+._rmsds7y13d_ {
   color: red;
 }
 ```
@@ -223,7 +223,7 @@ const StyledComponent = styled('div')`
 The styled dynamic class will be automatically prepended to all selectors to make them "scoped".
 
 ```css
-._rmsds7y13d .child {
+._rmsds7y13d_ .child {
   color: blue;
 }
 ```
@@ -247,7 +247,7 @@ const StyledComponentB = styled('div')`
 The styled component's `toString()` method returns a unique selector string (eg. `"._rmsss7y13d_"`) which matches that specific styled component.
 
 ```css
-._rmsds7y13d ._rmsss7y13d_ {
+._rmsds7y13d_ ._rmsss7y13d_ {
   color: red;
 }
 ```
@@ -271,10 +271,10 @@ const StyledComponent = styled('div')`
 Just like the styled dynamic class is prepended to top-level selectors, so too are parent selectors prepended to child selectors.
 
 ```css
-._rmsds7y13d .child {
+._rmsds7y13d_ .child {
   color: blue;
 }
-._rmsds7y13d .child .grandchild {
+._rmsds7y13d_ .child .grandchild {
   color: green;
 }
 ```
@@ -323,15 +323,15 @@ At-rules will be hoisted as necessary, and parent selectors will be handled the 
 
 ```css
 @media screen and (min-width: 900px) {
-  ._rmsds7y13d {
+  ._rmsds7y13d_ {
     color: red;
   }
 }
 @media screen and (min-width: 600px) {
-  ._rmsds7y13d .child .grandchild {
+  ._rmsds7y13d_ .child .grandchild {
     color: blue;
   }
-  .adopted ._rmsds7y13d .child .grandchild {
+  .adopted ._rmsds7y13d_ .child .grandchild {
     color: green;
   }
 }
@@ -351,7 +351,7 @@ const StyledComponent = styled('div')`
 The color property is not included because it has no value.
 
 ```css
-._rmsds7y13d {
+._rmsds7y13d_ {
   background-color: red;
 }
 ```
@@ -533,7 +533,7 @@ Goober's style compiler is not very robust. It does not do bracket matching for 
 
 Conversely, styled-components and Emotion use compilers that are over-engineered for CSS-in-JS, which is necessary to support Stylis for vendor prefixing.
 
-React Micro-Styled uses a fast 0(n) compiler that does not compromise on correctness. Any valid style _will_ be correctly compiled to CSS.
+React Micro-Styled uses a fast O(n) compiler that does not compromise on correctness. Any valid style _will_ be correctly compiled to CSS.
 
 ### Benchmarks
 
