@@ -1,4 +1,4 @@
-# @minstack/styled
+# MinStack Styled
 
 Minimal CSS-in-JS styled components solution for React.
 
@@ -31,7 +31,6 @@ Minimal CSS-in-JS styled components solution for React.
   - [Server-side rendering (SSR)](#server-side-rendering-ssr)
   - [Nonce](#nonce)
 - [Comparison](#comparison)
-  - [Features](#features)
   - [Why not Goober?](#why-not-goober)
   - [Benchmarks](#benchmarks)
 - [Release Notes](#release-notes)
@@ -255,7 +254,7 @@ Each styled component has a unique static class which is generated on creation. 
 }
 ```
 
-The static class is generated from the component's display name, the static part of the style template, inherited static classes (when extending another styled component), and the number of previously created components that share the same "thumbprint". In most cases, this should make static classes stable across SSR and client renders. If static class SSR problems occur, it's probably due to an unstable creation order and components with the same fingerprint. Try changing the `displayName` using the `.withConfig()` method to make the problematic component's fingerprint unique.
+The static class is generated from the component's display name, the static part of the style template, inherited static classes (when extending another styled component), and the number of previously created components that share the same "thumbprint". In most cases, this should make static classes stable across SSR and client renders. If static class SSR problems occur, it's probably due to components with the same fingerprint having an unstable creation order. Try changing the `displayName` using the `.withConfig()` method to make the problematic component's fingerprint unique.
 
 ```tsx
 const StyledComponent = styled.div.withConfig({ displayName: 'StyledComponent' })`
@@ -381,7 +380,7 @@ const StyledComponent = styled('div')`
 
 ## Style helpers
 
-The `styled.string` tagged template function returns a simple style string with all values interpolated. Only static values are allowed (no functions). Empty property values (`null`, `undefined`, and `false`) work the same way they do in styled components, and cause the property to be omitted.
+The `styled.string` tagged template function returns a simple style string with all values interpolated. Only static values are allowed (no functions). Empty property values (`null`, `undefined`, `false`, and `""`) work the same way they do in styled components, and cause the property to be omitted.
 
 ```tsx
 const fontHelper = styled.string`
@@ -463,7 +462,7 @@ render(
 );
 ```
 
-The `StyledTest` component is actually a `StyledProvider` which injects test versions of all three resources to replace class names and capture styles.
+The `StyledTest` component is a pre-configured `StyledProvider` which injects test versions of all three resources to replace class names and capture styles.
 
 **Note:** The provided cache, manager, and renderer must not change over the lifetime of a styled component. An error will be thrown (or logged in production) if they mutate.
 
@@ -512,16 +511,12 @@ render(
 
 ## Comparison
 
-React Micro-Styled compared to other styled component solutions.
-
-### Features
-
 - 🟢 Supported
 - 🟡 Partially supported
 - 🔴 Not supported
 - ⭕ Not documented
 
-|             | Feature                        | React Micro-Styled | Goober | Styled Components | Emotion |
+|             | Feature                        | MinStack Styled | Goober | Styled Components | Emotion |
 | ----------- | ------------------------------ | ------------------ | ------ | ----------------- | ------- |
 | **Library** |                                |                    |        |                   |         |
 |             | Bundle size (approx. kB)[1]    | 2.8                | 1.2    | 13.3              | 9.1     |
@@ -582,15 +577,17 @@ This library is opinionated and leaves out some features that Goober supports. T
 
 See the [benchmark.js](benchmark.js) script for the benchmark implementation.
 
-| Library            | Op/s    |
-| ------------------ | ------- |
-| React Micro-Styled | 144,970 |
-| Goober             | 142,028 |
-| Emotion            | 124,681 |
-| Styled Components  | 118,072 |
+| Library           | Op/s    |
+| ----------------- | ------- |
+| MinStack Styled   | 144,970 |
+| Goober            | 142,028 |
+| Emotion           | 124,681 |
+| Styled Components | 118,072 |
 
 ## Release Notes
 
+- v1.0.1
+  - Readme update
 - v1.0.0
   - Renamed to @minstack/styled
 - react-micro-styled

@@ -28,7 +28,7 @@ Object.assign(globalThis, {
           return exports.styled;
         }),
     ],
-    ['React Micro-Styled', () => import('./lib/cjs/index.js').then((exports) => exports.styled)],
+    ['MinStack Styled', () => import('./lib/cjs/index.js').then((exports) => exports.styled)],
   ];
 
   for (const [framework, load] of tests) {
