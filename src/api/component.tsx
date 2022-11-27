@@ -7,11 +7,12 @@ import {
   forwardRef,
 } from 'react';
 
+import { getHashString, hash } from '../util/hash.js';
 import { getId } from '../util/id.js';
 import { getAttributes } from './attributes.js';
 import { type StyledCache } from './cache.js';
 import { useStyledContext } from './context.js';
-import { type StyledStringValue, getStyleStringHook } from './string.js';
+import { type StyledStringValue, getSimplifiedTemplateData, getStyleStringHook } from './string.js';
 
 type StyledRefAttributes<TProps> = TProps extends { readonly ref?: LegacyRef<infer TRef> }
   ? RefAttributes<TRef>
@@ -78,12 +79,20 @@ const createStyledComponent = <TProps, TTheme>(
     ];
   }
 
+  const templateData = getSimplifiedTemplateData(templateRaw, templateValues);
   const displayName = config?.displayName || getDisplayName(type);
-  const newStaticClass = getId('$$rms/staticClass/' + displayName + '/' + baseStaticClass);
+  const newStaticClass = getId(
+    '$$rms/staticClass/' +
+      getHashString(hash(JSON.stringify(templateData))) +
+      '/' +
+      baseStaticClass +
+      '/' +
+      displayName,
+  );
   const staticClass = (newStaticClass + ' ' + baseStaticClass).trim();
   const selector = '.' + newStaticClass;
   const filterProps = typeof type === 'string' ? getAttributes : (value: Record<string, unknown>) => value;
-  const useStyleString = getStyleStringHook(templateRaw, templateValues, useTheme);
+  const useStyleString = getStyleStringHook(templateData, useTheme);
 
   const Styled = forwardRef((props: TProps & { children?: unknown; className?: string }, ref) => {
     const { className, children, ...rest } = props;

@@ -46,12 +46,9 @@ const getSimplifiedTemplateData = <TProps, TTheme>(
 };
 
 const getStyleStringHook = <TProps, TTheme>(
-  raw: readonly string[],
-  values: readonly StyledStringValue<TProps, TTheme>[],
+  data: (StyledStringCallback<TProps, TTheme> | string)[],
   useTheme: () => TTheme,
 ): StyledStringHook<TProps> => {
-  const data = getSimplifiedTemplateData(raw, values);
-
   if (isStaticTemplateData(data)) {
     const value = data[0];
     return () => value;
@@ -79,6 +76,7 @@ export {
   type StyledStringPrimitive,
   type StyledStringSelectable,
   type StyledStringValue,
+  getSimplifiedTemplateData,
   getStyleStringHook,
   string,
 };

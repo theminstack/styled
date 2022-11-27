@@ -2,7 +2,7 @@ import { type FC, type ReactNode, useRef } from 'react';
 
 import { useStyledContext } from './context.js';
 import { type StyleElement } from './manager.js';
-import { type StyledStringValue, getStyleStringHook } from './string.js';
+import { type StyledStringValue, getSimplifiedTemplateData, getStyleStringHook } from './string.js';
 
 type StyledGlobalComponent<TProps extends {}> = FC<TProps>;
 
@@ -13,7 +13,8 @@ type StyledGlobal<TTheme> = <TProps extends {}>(
 
 const createStyledGlobal = <TTheme,>(useTheme: () => TTheme): StyledGlobal<TTheme> => {
   const global = <TProps,>(template: TemplateStringsArray, ...values: StyledStringValue<TProps, TTheme>[]) => {
-    const useStyleString = getStyleStringHook(template.raw, values, useTheme);
+    const templateData = getSimplifiedTemplateData(template.raw, values);
+    const useStyleString = getStyleStringHook(templateData, useTheme);
     const StyledGlobal = (props: TProps & { children?: ReactNode }): JSX.Element => {
       const styleElement = useRef<StyleElement | undefined>();
       const styleString = useStyleString(props);

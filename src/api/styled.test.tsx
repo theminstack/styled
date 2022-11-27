@@ -19,7 +19,7 @@ describe('styled', () => {
     expect(render(<A />).container).toMatchInlineSnapshot(`
       <div>
         <div
-          class="_rmsdp54ux1_ _rmssltrpip_"
+          class="_rmsdp54ux1_ _rmssp5w12l_"
         />
       </div>
     `);

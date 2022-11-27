@@ -255,7 +255,7 @@ Each styled component has a unique static class which is generated on creation. 
 }
 ```
 
-The static class is generated from the component display name, and inherited static classes from extended styled components. Setting a custom display name for the component can help resolve SSR problems if your component creation order is unstable.
+The static class is generated from the component's display name, the static part of the style template, inherited static classes (when extending another styled component), and the number of previously created components that share the same "thumbprint". In most cases, this should make static classes stable across SSR and client renders. If static class SSR problems occur, it's probably due to an unstable creation order and components with the same fingerprint. Try changing the `displayName` using the `.withConfig()` method to make the problematic component's fingerprint unique.
 
 ```tsx
 const StyledComponent = styled.div.withConfig({ displayName: 'StyledComponent' })`
@@ -350,7 +350,7 @@ At-rules will be hoisted as necessary, and parent selectors will be handled the 
 
 ### Using empty values
 
-If a CSS property value is "empty" (empty string, `false`, `null` or `undefined`), then the whole property will be omitted from the style.
+If a CSS property value is "empty" (empty string, `false`, `null`, `undefined`, or `""`), then the whole property will be omitted from the style.
 
 ```tsx
 const StyledComponent = styled('div')`
@@ -521,33 +521,33 @@ React Micro-Styled compared to other styled component solutions.
 - 🔴 Not supported
 - ⭕ Not documented
 
-|             | Feature                     | React Micro-Styled | Goober | Styled Components | Emotion |
-| ----------- | --------------------------- | ------------------ | ------ | ----------------- | ------- |
-| **Library** |                             |                    |        |                   |         |
-|             | Bundle size (approx. kB)[1] | 2.8                | 1.2    | 13.3              | 9.1     |
-|             | Zero dependencies           | 🟢                 | 🟢     | 🔴                | 🔴      |
-|             | Typescript native           | 🟢                 | 🟢     | 🔴                | 🟢      |
-| **API**     |                             |                    |        |                   |         |
-|             | Tagged template styles      | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | Dynamic styles              | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | Object styles               | 🔴                 | 🟢     | 🟢                | 🟢      |
-|             | Global styles               | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | Polymorphism (`as`)         | 🔴                 | 🟢     | 🟢                | 🟢      |
-|             | Property mapping (`attrs`)  | 🔴                 | 🔴     | 🟢                | 🔴      |
-|             | Theming [2]                 | 🟢                 | 🟡     | 🟡                | 🟡      |
-|             | SSR                         | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | Snapshot testing            | 🟢                 | 🔴     | 🟢                | 🟢      |
-| **Style**   |                             |                    |        |                   |         |
-|             | Basic CSS syntax [3]        | 🟢                 | 🟡     | 🟢                | 🟢      |
-|             | CSS `@media`                | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | CSS `@keyframes`            | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | CSS `@font-face`            | 🟢                 | ⭕     | ⭕                | 🟢      |
-|             | CSS `@import`               | 🟢                 | ⭕     | 🔴                | 🟢      |
-|             | Other CSS `@` rules         | 🟢                 | ⭕     | ⭕                | ⭕      |
-|             | Vendor prefixing [4]        | 🔴                 | 🟡     | 🟢                | 🟢      |
-|             | Rule nesting                | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | Parent selectors (`&`)      | 🟢                 | 🟢     | 🟢                | 🟢      |
-|             | Styled component selectors  | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Feature                        | React Micro-Styled | Goober | Styled Components | Emotion |
+| ----------- | ------------------------------ | ------------------ | ------ | ----------------- | ------- |
+| **Library** |                                |                    |        |                   |         |
+|             | Bundle size (approx. kB)[1]    | 2.8                | 1.2    | 13.3              | 9.1     |
+|             | Zero dependencies              | 🟢                 | 🟢     | 🔴                | 🔴      |
+|             | Typescript native              | 🟢                 | 🟢     | 🔴                | 🟢      |
+| **API**     |                                |                    |        |                   |         |
+|             | Tagged template styles         | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Dynamic styles                 | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Object styles                  | 🔴                 | 🟢     | 🟢                | 🟢      |
+|             | Global styles                  | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Polymorphism (`as`)            | 🔴                 | 🟢     | 🟢                | 🟢      |
+|             | Property mapping (`attrs`)     | 🔴                 | 🔴     | 🟢                | 🔴      |
+|             | Theming [2]                    | 🟢                 | 🟡     | 🟡                | 🟡      |
+|             | SSR                            | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Snapshot testing               | 🟢                 | 🔴     | 🟢                | 🟢      |
+| **Style**   |                                |                    |        |                   |         |
+|             | Basic CSS syntax [3]           | 🟢                 | 🟡     | 🟢                | 🟢      |
+|             | CSS `@media`                   | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | CSS `@keyframes`               | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | CSS `@font-face`               | 🟢                 | ⭕     | ⭕                | 🟢      |
+|             | CSS `@import`                  | 🟢                 | ⭕     | 🔴                | 🟢      |
+|             | Other CSS `@` rules            | 🟢                 | ⭕     | ⭕                | ⭕      |
+|             | Vendor prefixing [4]           | 🔴                 | 🟡     | 🟢                | 🟢      |
+|             | Rule nesting                   | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Parent selectors (`&`)         | 🟢                 | 🟢     | 🟢                | 🟢      |
+|             | Styled component selectors [5] | 🟢                 | 🟡     | 🟢                | 🟢      |
 
 &nbsp;
 
@@ -555,6 +555,7 @@ React Micro-Styled compared to other styled component solutions.
 - [2] Goober, Styled Components, and Emotion, all support only a single theme, which must be typed using declaration merging.
 - [3] Goober's tagged template compiler will incorrectly parse CSS in some (rare) cases.
 - [4] Goober provides vendor prefixing as an additional package.
+- [5] Goober's component selectors are not always unique per component.
 
 ### Why not Goober?
 
@@ -566,7 +567,7 @@ Goober is very similar to this solution. It's just as fast, smaller, and has sup
 - Goober uses a `setup()` function which configures the _single global instance of the API_, and this does not change the theme type. Extending the theme type can be accomplished with declaration merging, but this is again global and not very type safe. This library provides the `createStyled()` factory that _returns a new API instance_, which has a strongly typed theme.
 - Goober injects the theme into component props which could collide with an existing theme property. This library passes the theme to template function values as a second argument.
 - Goober requires a Babel plugin to enable the tag name method syntax (ie. `styled.div` instead of `styled('div')`). This library supports `styled.<tag>` without compile time support.
-- Goober targets Preact as it's primary JSX framework, requiring a call to `setup()` when using React. This library targets React and requires `preact/compat` when using Preact.
+- Goober targets Preact as its primary JSX framework, requiring a call to `setup()` when using React. This library targets React and requires `preact/compat` when using Preact.
 
 This library is opinionated and leaves out some features that Preact supports. This is to reduce the number of alternative ways that styled components can be designed, which increases code consistency, and provides an overall better developer experience (DX). Removing support for two different ways to accomplish the same thing also means the library size and runtime overhead are reduced and/or allocated to improved core features.
 
@@ -590,6 +591,9 @@ See the [benchmark.js](benchmark.js) script for the benchmark implementation.
 
 ## Release Notes
 
+- v2.0.5
+  - Readme update
+  - Improved static class stability
 - v2.0.4
   - `getId` accepts an optional namespace argument (re-added)
   - Added `.withConfig()` static method to styled templates
