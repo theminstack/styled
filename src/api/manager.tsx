@@ -19,7 +19,7 @@ type SsrStyledManager = StyledManager & {
   readonly getStyleTags: () => string;
 };
 
-const createStyledManager = (): StyledManager => {
+const createStyledManager = (nonce?: string): StyledManager => {
   const cache = new Set<string>();
 
   let initialized = false;
@@ -38,6 +38,7 @@ const createStyledManager = (): StyledManager => {
         init();
         cache.add(dynamicClass);
         const style = document.createElement('style');
+        if (nonce) style.nonce = nonce;
         style.setAttribute('data-styled', 'rms');
         style.textContent = cssText;
         document.head.appendChild(style);
@@ -46,6 +47,7 @@ const createStyledManager = (): StyledManager => {
     addGlobalStyle: () => {
       init();
       const style = document.createElement('style');
+      if (nonce) style.nonce = nonce;
       style.setAttribute('data-styled-global', 'rms');
       document.head.insertBefore(style, document.querySelector('style[data-styled="rms"]'));
       return style;
@@ -67,7 +69,7 @@ const createSsrStyleElement = (): StyleElement => {
   };
 };
 
-const createSsrStyledManager = (): SsrStyledManager => {
+const createSsrStyledManager = (nonce?: string): SsrStyledManager => {
   const globals: StyleElement[] = [];
   const components = new Map<string, StyleElement>();
 
@@ -92,7 +94,7 @@ const createSsrStyledManager = (): SsrStyledManager => {
     },
     getStyleElement: () => {
       return manager.getCss().map((cssText, i) => (
-        <style key={i} data-styled-ssr="rms">
+        <style key={i} data-styled-ssr="rms" nonce={nonce}>
           {cssText}
         </style>
       ));
@@ -100,7 +102,10 @@ const createSsrStyledManager = (): SsrStyledManager => {
     getStyleTags: () => {
       return manager
         .getCss()
-        .map((cssText) => '<style data-styled-ssr="rms">' + cssText + '</style>')
+        .map(
+          (cssText) =>
+            '<style data-styled-ssr="rms"' + (nonce ? ' nonce="' + nonce + '"' : '') + '>' + cssText + '</style>',
+        )
         .join('\n');
     },
     reset: () => {

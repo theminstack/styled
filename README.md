@@ -29,8 +29,10 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
 - [Snapshot testing](#snapshot-testing)
 - [Styled provider](#styled-provider)
   - [Server-side rendering (SSR)](#server-side-rendering-ssr)
+  - [Nonce](#nonce)
 - [Comparison](#comparison)
   - [Features](#features)
+  - [Why not Goober?](#why-not-goober)
   - [Benchmarks](#benchmarks)
 - [Release Notes](#release-notes)
 
@@ -485,6 +487,20 @@ const html = `
 
 The SSR manager's `getStyleTags()` method returns a single html string containing only `<style>` tags. There are also `getStyleElement()` (React elements array) and `getCss()` (css strings array) methods.
 
+### Nonce
+
+Use `createStyledManager` (or `createSsrStyledManager`) and the `StyledProvider` to set a `nonce` on all injected styles.
+
+```tsx
+const manager = createStyledManager(nonce);
+
+render(
+  <StyledProvider manager={manager}>
+    <App />
+  </StyledProvider>,
+);
+```
+
 ## Comparison
 
 React Micro-Styled compared to other styled component solutions.
@@ -529,11 +545,25 @@ React Micro-Styled compared to other styled component solutions.
 - [2] Goober, Styled Components, and Emotion, all support only a single theme, which must be typed using declaration merging.
 - [3] Goober provides vendor prefixing as an additional package.
 
-Goober's style compiler is not very robust. It does not do bracket matching for instance. Instead, it relies on simple regular expressions to compile style strings to CSS. Goober has made shrinking the library size their highest priority, at the expense of the design.
+### Why not Goober?
 
-Conversely, styled-components and Emotion use compilers that are over-engineered for CSS-in-JS, which is necessary to support Stylis for vendor prefixing.
+Goober is very similar to this solution, it's just as fast, it's smaller, and it has support for a few extra feature (object styles, and the `as` property). So what are Goober's downsides, and why would I use this instead?
 
-React Micro-Styled uses a fast O(n) compiler that does not compromise on correctness. Any valid style _will_ be correctly compiled to CSS.
+- Goober's tagged template compiler uses regular expressions to match some sequences in a way that is not foolproof. This is likely not a difference that will be noticeable except in some very specific cases where escape sequences, quotes, and brackets are used. But, it’s a risk I don’t really like. This library uses a real tokenizer/parser (no regular expressions) to correctly match escapes, quotes, and brackets in all cases. This compiler works in O(n) time and is just as fast, if not faster. This compiler (and more readable/maintainable code) account for most of the difference in size between the libraries.
+- Goober does not provide a way to stabilize class names and render styles for snapshot testing. This library provides the `StyledTest` wrapper component which not only enables snapshot testing, but does it in a way that is test framework agnostic.
+- Goober uses a `setup()` function which configures the _single global instance of the API_, and this does not change the theme type. Extending the theme type can be accomplished with declaration merging, but this is again global and not very type safe. This library provides the `createStyled()` factory that _returns a new API instance_, which has a strongly typed theme.
+- Goober injects the theme into component props which could collide with an existing theme property. This library passes the theme to template function values as a second argument.
+- Goober requires a Babel plugin to enable the tag name method syntax (ie. `styled.div` instead of `styled('div')`). This library supports `styled.<tag>` without compile time support.
+- Goober targets Preact as it's primary JSX framework, requiring a call to `setup()` when using React. This library targets React and requires `preact/compat` when using Preact.
+
+This library is opinionated and leaves out some features that Preact supports. This is to reduce the number of alternative ways that styled components can be designed, which increases code consistency, and provides an overall better developer experience (DX). Removing support for two different ways to accomplish the same thing also means the library size and runtime overhead are reduced and/or allocated to improved core features.
+
+- Goober supports object styles. This library exclusively uses tagged templates because...
+  - They can be copied more easily than objects, including to and from CSS/LESS text files.
+  - They provide better intellisense, completion, highlighting, and linting when using VS Code (with the styled-components extension).
+  - They are more readable, less verbose, and require fewer escapes.
+  - They provide better support for duplicate CSS declarations (the same CSS property name with different values), which allows for values which may still require vendor prefixing.
+- Goober supports the `as` property for changing the underlying component type of the styled component. This library does not because it is inherently type unsafe, and using style helpers (eg. the `styled.string` utility) provides a better way to reuse styles.
 
 ### Benchmarks
 

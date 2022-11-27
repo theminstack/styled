@@ -1,9 +1,63 @@
+import { render } from '@testing-library/react';
 import { renderToString } from 'react-dom/server';
 
-import { createSsrStyledManager, styled, StyledProvider } from '../index.js';
+import { createSsrStyledManager, createStyledManager, styled, StyledProvider } from '../index.js';
 
-describe('createSsrStyledManager', () => {
-  test('capture styles', async () => {
+describe('StyledManager', () => {
+  test('nonce', () => {
+    const A = styled.div`
+      color: red;
+    `;
+    const manager = createStyledManager('123');
+    render(
+      <StyledProvider manager={manager}>
+        <A />
+      </StyledProvider>,
+    );
+    expect(document.head).toMatchInlineSnapshot(`
+      <head>
+        <style
+          data-styled="rms"
+          nonce="123"
+        >
+          ._rmsd58sss8_ {
+        color: red;
+      }
+        </style>
+      </head>
+    `);
+  });
+
+  test('SSR nonce', () => {
+    const A = styled.div`
+      color: red;
+    `;
+    const manager = createSsrStyledManager('123');
+    render(
+      <StyledProvider manager={manager}>
+        <A />
+      </StyledProvider>,
+    );
+    expect(manager.getStyleElement()).toMatchInlineSnapshot(`
+      [
+        <style
+          data-styled-ssr="rms"
+          nonce="123"
+        >
+          ._rmsd58sss8_ {
+        color: red;
+      }
+        </style>,
+      ]
+    `);
+    expect(manager.getStyleTags()).toMatchInlineSnapshot(`
+      "<style data-styled-ssr="rms" nonce="123">._rmsd58sss8_ {
+        color: red;
+      }</style>"
+    `);
+  });
+
+  test('createSsrStyledManager', async () => {
     const A = styled.div`
       color: red;
     `;

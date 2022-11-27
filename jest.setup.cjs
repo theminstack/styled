@@ -2,6 +2,7 @@
 require('@testing-library/jest-dom/extend-expect');
 const { defaultStyledManager } = require('./src/api/manager.tsx');
 const { defaultStyledCache } = require('./src/api/cache.tsx');
+const { resetIds } = require('./src/util/id.ts');
 const { TextEncoder } = require('node:util');
 
 window.TextEncoder = TextEncoder;
@@ -10,4 +11,5 @@ beforeEach(() => {
   document.head.innerHTML = '';
   defaultStyledManager.reset();
   defaultStyledCache.reset();
+  resetIds();
 });
