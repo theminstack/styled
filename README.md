@@ -40,11 +40,12 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
 
 - Reasonably small bundle size
 - Zero dependencies
-- Simple and opinionated API
 - Strong type safety
 - No declaration merging for theme typing
+- Simple and opinionated API
 - Full and future-proof CSS support
 - Server side rendering
+- Usable in libraries
 - Compatible
   - React (Strict Mode) >= 16.14.0
   - ES2021 (eg. recent versions of Chrome, Edge, Safari, and Firefox)
@@ -529,12 +530,13 @@ React Micro-Styled compared to other styled component solutions.
 |             | SSR                         | 🟢                 | 🟢     | 🟢                | 🟢      |
 |             | Snapshot testing            | 🟢                 | 🔴     | 🟢                | 🟢      |
 | **Style**   |                             |                    |        |                   |         |
+|             | Basic CSS syntax [3]        | 🟢                 | 🟡     | 🟢                | 🟢      |
 |             | CSS `@media`                | 🟢                 | 🟢     | 🟢                | 🟢      |
 |             | CSS `@keyframes`            | 🟢                 | 🟢     | 🟢                | 🟢      |
 |             | CSS `@font-face`            | 🟢                 | ⭕     | ⭕                | 🟢      |
 |             | CSS `@import`               | 🟢                 | ⭕     | 🔴                | 🟢      |
 |             | Other CSS `@` rules         | 🟢                 | ⭕     | ⭕                | ⭕      |
-|             | Vendor prefixing [3]        | 🔴                 | 🟡     | 🟢                | 🟢      |
+|             | Vendor prefixing [4]        | 🔴                 | 🟡     | 🟢                | 🟢      |
 |             | Rule nesting                | 🟢                 | 🟢     | 🟢                | 🟢      |
 |             | Parent selectors (`&`)      | 🟢                 | 🟢     | 🟢                | 🟢      |
 |             | Styled component selectors  | 🟢                 | 🟢     | 🟢                | 🟢      |
@@ -543,13 +545,14 @@ React Micro-Styled compared to other styled component solutions.
 
 - [1] Bundle size is of the `styled` export (after tree-shaking, minification, and gzip) calculated using the Webpack bundle analyzer.
 - [2] Goober, Styled Components, and Emotion, all support only a single theme, which must be typed using declaration merging.
-- [3] Goober provides vendor prefixing as an additional package.
+- [3] Goober's tagged template compiler will incorrectly parse CSS in some (rare) cases.
+- [4] Goober provides vendor prefixing as an additional package.
 
 ### Why not Goober?
 
-Goober is very similar to this solution, it's just as fast, it's smaller, and it has support for a few extra feature (object styles, and the `as` property). So what are Goober's downsides, and why would I use this instead?
+Goober is very similar to this solution. It's just as fast, smaller, and has support for a few extra feature (object styles, and the `as` property). So what are Goober's downsides, and why would I use this instead?
 
-- Goober's tagged template compiler uses regular expressions to match some sequences in a way that is not foolproof. This is likely not a difference that will be noticeable except in some very specific cases where escape sequences, quotes, and brackets are used. But, it’s a risk I don’t really like. This library uses a real tokenizer/parser (no regular expressions) to correctly match escapes, quotes, and brackets in all cases. This compiler works in O(n) time and is just as fast, if not faster. This compiler (and more readable/maintainable code) account for most of the difference in size between the libraries.
+- Goober's tagged template compiler uses regular expressions to match some sequences in a way that is not foolproof. This is likely not a difference that will be noticeable except in some very specific cases where escape sequences, quotes, and brackets are used. But, it cannot be said to fully support all CSS syntax. This library uses a real tokenizer/parser (no regular expressions) to correctly match escapes, quotes, and brackets in all cases. This compiler works in O(n) time and is just as fast, if not faster. This compiler (and more readable/maintainable code) account for most of the difference in size between the libraries.
 - Goober does not provide a way to stabilize class names and render styles for snapshot testing. This library provides the `StyledTest` wrapper component which not only enables snapshot testing, but does it in a way that is test framework agnostic.
 - Goober uses a `setup()` function which configures the _single global instance of the API_, and this does not change the theme type. Extending the theme type can be accomplished with declaration merging, but this is again global and not very type safe. This library provides the `createStyled()` factory that _returns a new API instance_, which has a strongly typed theme.
 - Goober injects the theme into component props which could collide with an existing theme property. This library passes the theme to template function values as a second argument.
@@ -578,6 +581,13 @@ See the [benchmark.js](benchmark.js) script for the benchmark implementation.
 
 ## Release Notes
 
+- v2.0.3
+  - Readme update
+- v2.0.2
+  - Readme update
+  - Nonce support
+- v2.0.1
+  - Readme update
 - v2.0.0
   - New Features
     - Faster and more reliable style compiler
