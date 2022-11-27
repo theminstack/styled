@@ -1,6 +1,7 @@
 import { type AstNode, compile } from '../syntax/compile.js';
 import { format } from '../syntax/format.js';
 import { getHashString, hash } from '../util/hash.js';
+import { VERSION } from '../util/version.js';
 
 type StyledCache = {
   readonly has: (className: string) => boolean;
@@ -10,7 +11,7 @@ type StyledCache = {
 };
 
 const getClassName = (ast: AstNode): string => {
-  return '_rmsd' + getHashString(hash(JSON.stringify(ast))) + '_';
+  return '_rmsd' + getHashString(hash(VERSION + '/' + JSON.stringify(ast))) + '_';
 };
 
 const createAstCache = () => {

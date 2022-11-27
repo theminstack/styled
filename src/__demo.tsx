@@ -30,7 +30,7 @@ const B = styled(A)<{ $foo: string }>`
   margin: ${null};
 `;
 
-const C = styled.div`
+const C = styled.div.withConfig({ displayName: 'Foo' })`
   ${B} {
     /* test */
     // test

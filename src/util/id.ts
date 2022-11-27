@@ -1,28 +1,22 @@
 /* eslint-disable no-var */
 
 import { getHashString, hash } from './hash.js';
+import { VERSION } from './version.js';
 
 declare global {
   var $$rmsId: string;
 }
 
-const SEED = getHashString(hash('$$rmsId'));
+const cache = new Map<string, { current: string }>();
 
-if (!('$$rmsId' in globalThis)) {
-  Object.defineProperty(globalThis, '$$rmsId', {
-    configurable: false,
-    enumerable: false,
-    value: SEED,
-    writable: true,
-  });
-}
-
-const getId = () => {
-  return '_rmss' + (globalThis.$$rmsId = getHashString(hash(globalThis.$$rmsId))) + '_';
+const getId = (namespace = '') => {
+  let entry = cache.get(namespace);
+  if (!entry) cache.set(namespace, (entry = { current: getHashString(hash(VERSION + '/' + namespace)) }));
+  return '_rmss' + (entry.current = getHashString(hash(entry.current))) + '_';
 };
 
 const resetIds = () => {
-  Object.assign(globalThis, { $$rmsId: SEED });
+  cache.clear();
 };
 
 export { getId, resetIds };

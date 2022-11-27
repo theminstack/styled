@@ -19,7 +19,7 @@ A small, fast, and simple CSS-in-JS styled components solution for React, writte
 - [Style syntax](#style-syntax)
   - [Styling self](#styling-self)
   - [Styling children](#styling-children)
-  - [Targeting other styled components](#targeting-other-styled-components)
+  - [Component selectors](#component-selectors)
   - [Nesting rules](#nesting-rules)
   - [Using parent selector references](#using-parent-selector-references)
   - [Using at-rules](#using-at-rules)
@@ -141,8 +141,8 @@ const GlobalStyle = styled.global<GlobalStyleProps>`
 Defining keyframes or font-faces is the same as defining any other style. Since they are not scoped to any particular component, they should probably only be used in global styles. To prevent name collisions, use the included `getId` utility to generate CSS-safe unique names.
 
 ```tsx
-const openSansFont = getId();
-const slideInAnimation = getId();
+const openSansFont = getId('font/open-sans');
+const slideInAnimation = getId('keyframes/slide-in');
 
 const GlobalStyle = styled.global`
   @font-face {
@@ -231,9 +231,9 @@ The styled dynamic class will be automatically prepended to all selectors to mak
 }
 ```
 
-### Targeting other styled components
+### Component selectors
 
-Every styled component (except global styles) can be used as a selector for that specific styled component.
+Every styled component (except global styles) can be used as a selector.
 
 ```tsx
 const StyledComponentA = styled('div')`
@@ -247,12 +247,20 @@ const StyledComponentB = styled('div')`
 `;
 ```
 
-The styled component's `toString()` method returns a unique selector string (eg. `"._rmsss7y13d_"`) which matches that specific styled component.
+Each styled component has a unique static class which is generated on creation. The styled component's `toString()` method returns a selector string (eg. `"._rmsss7y13d_"`) for that static class.
 
 ```css
 ._rmsds7y13d_ ._rmsss7y13d_ {
   color: red;
 }
+```
+
+The static class is generated from the component display name, and inherited static classes from extended styled components. Setting a custom display name for the component can help resolve SSR problems if your component creation order is unstable.
+
+```tsx
+const StyledComponent = styled.div.withConfig({ displayName: 'StyledComponent' })`
+  color: red;
+`;
 ```
 
 ### Nesting rules
@@ -554,6 +562,7 @@ Goober is very similar to this solution. It's just as fast, smaller, and has sup
 
 - Goober's tagged template compiler uses regular expressions to match some sequences in a way that is not foolproof. This is likely not a difference that will be noticeable except in some very specific cases where escape sequences, quotes, and brackets are used. But, it cannot be said to fully support all CSS syntax. This library uses a real tokenizer/parser (no regular expressions) to correctly match escapes, quotes, and brackets in all cases. This compiler works in O(n) time and is just as fast, if not faster. This compiler (and more readable/maintainable code) account for most of the difference in size between the libraries.
 - Goober does not provide a way to stabilize class names and render styles for snapshot testing. This library provides the `StyledTest` wrapper component which not only enables snapshot testing, but does it in a way that is test framework agnostic.
+- Goober's "component selectors" use the dynamic class generated from the component style, which is the cause of several open bugs. This library uses a separate static class, generated when the styled component is defined, based on the component's display name and static classes inherited from extending other styled components.
 - Goober uses a `setup()` function which configures the _single global instance of the API_, and this does not change the theme type. Extending the theme type can be accomplished with declaration merging, but this is again global and not very type safe. This library provides the `createStyled()` factory that _returns a new API instance_, which has a strongly typed theme.
 - Goober injects the theme into component props which could collide with an existing theme property. This library passes the theme to template function values as a second argument.
 - Goober requires a Babel plugin to enable the tag name method syntax (ie. `styled.div` instead of `styled('div')`). This library supports `styled.<tag>` without compile time support.
@@ -581,6 +590,11 @@ See the [benchmark.js](benchmark.js) script for the benchmark implementation.
 
 ## Release Notes
 
+- v2.0.4
+  - `getId` accepts an optional namespace argument (re-added)
+  - Added `.withConfig()` static method to styled templates
+  - Use major version in `getId` and dynamic class hashes
+  - Component static class generation is namespaced by display name and inherited static classes
 - v2.0.3
   - Readme update
 - v2.0.2

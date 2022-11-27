@@ -20,7 +20,7 @@ describe('StyledManager', () => {
           data-styled="rms"
           nonce="123"
         >
-          ._rmsd58sss8_ {
+          ._rmsdp54ux1_ {
         color: red;
       }
         </style>
@@ -44,14 +44,14 @@ describe('StyledManager', () => {
           data-styled-ssr="rms"
           nonce="123"
         >
-          ._rmsd58sss8_ {
+          ._rmsdp54ux1_ {
         color: red;
       }
         </style>,
       ]
     `);
     expect(manager.getStyleTags()).toMatchInlineSnapshot(`
-      "<style data-styled-ssr="rms" nonce="123">._rmsd58sss8_ {
+      "<style data-styled-ssr="rms" nonce="123">._rmsdp54ux1_ {
         color: red;
       }</style>"
     `);
@@ -71,7 +71,7 @@ describe('StyledManager', () => {
         <B />
       </StyledProvider>,
     );
-    expect(html).toMatchInlineSnapshot(`"<div class="_rmsd58sss8_ _rmsswo5o5a_"></div>"`);
+    expect(html).toMatchInlineSnapshot(`"<div class="_rmsdp54ux1_ _rmssltrpip_"></div>"`);
     expect(manager.getStyleElement()).toMatchInlineSnapshot(`
       [
         <style
@@ -84,7 +84,7 @@ describe('StyledManager', () => {
         <style
           data-styled-ssr="rms"
         >
-          ._rmsd58sss8_ {
+          ._rmsdp54ux1_ {
         color: red;
       }
         </style>,
@@ -94,7 +94,7 @@ describe('StyledManager', () => {
       "<style data-styled-ssr="rms">:root {
         padding: 1rem;
       }</style>
-      <style data-styled-ssr="rms">._rmsd58sss8_ {
+      <style data-styled-ssr="rms">._rmsdp54ux1_ {
         color: red;
       }</style>"
     `);
@@ -103,7 +103,7 @@ describe('StyledManager', () => {
         ":root {
         padding: 1rem;
       }",
-        "._rmsd58sss8_ {
+        "._rmsdp54ux1_ {
         color: red;
       }",
       ]

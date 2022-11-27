@@ -3,7 +3,7 @@
   "description": "A small, fast, and simple CSS-in-JS styled components solution for React, written in Typescript.",
   "author": "Chris Ackerman <chris@topher.land>",
   "license": "ISC",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "files": [
     "lib/**"
   ],

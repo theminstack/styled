@@ -5,6 +5,7 @@ import { htmlTagNames } from 'html-tag-names';
 import { type ReactElement } from 'react';
 
 import { styled, StyledTest } from '../index.js';
+import { resetIds } from '../util/id.js';
 
 const renderTest = (ui: ReactElement, options?: RenderOptions) => {
   return render(ui, { ...options, wrapper: StyledTest });
@@ -18,7 +19,7 @@ describe('styled', () => {
     expect(render(<A />).container).toMatchInlineSnapshot(`
       <div>
         <div
-          class="_rmsd58sss8_ _rmsswo5o5a_"
+          class="_rmsdp54ux1_ _rmssltrpip_"
         />
       </div>
     `);
@@ -27,7 +28,7 @@ describe('styled', () => {
         <style
           data-styled="rms"
         >
-          ._rmsd58sss8_ {
+          ._rmsdp54ux1_ {
         color: red;
       }
         </style>
@@ -270,6 +271,25 @@ describe('styled', () => {
     `);
   });
 
+  test('displayName', () => {
+    resetIds();
+    const A = styled.div.withConfig({ displayName: 'Foo' })`
+      color: red;
+    `;
+    resetIds();
+    const B = styled.div`
+      color: red;
+    `;
+    resetIds();
+    const C = styled.div`
+      color: red;
+    `;
+    expect(A.displayName).toEqual('Foo');
+    expect(B.displayName).toEqual('Styled(div)');
+    expect(A.toString()).not.toEqual(B.toString());
+    expect(B.toString()).toEqual(C.toString());
+  });
+
   describe('HTML element types', () => {
     beforeEach(() => {
       jest.spyOn(console, 'error').mockImplementation((message) => {
@@ -366,7 +386,7 @@ describe('styled.global', () => {
         <style
           data-styled="rms"
         >
-          ._rmsd58sss8_ {
+          ._rmsdp54ux1_ {
         color: red;
       }
         </style>
@@ -390,7 +410,7 @@ describe('styled.global', () => {
         <style
           data-styled="rms"
         >
-          ._rmsd58sss8_ {
+          ._rmsdp54ux1_ {
         color: red;
       }
         </style>

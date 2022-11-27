@@ -11,14 +11,11 @@ import { getId } from '../util/id.js';
 import { getAttributes } from './attributes.js';
 import { type StyledCache } from './cache.js';
 import { useStyledContext } from './context.js';
-import { type StyledStringSelectable, type StyledStringValue, getStyleStringHook } from './string.js';
+import { type StyledStringValue, getStyleStringHook } from './string.js';
 
 type StyledRefAttributes<TProps> = TProps extends { readonly ref?: LegacyRef<infer TRef> }
   ? RefAttributes<TRef>
   : RefAttributes<unknown>;
-
-type StyledComponent<TProps> = ForwardRefExoticComponent<PropsWithoutRef<TProps> & StyledRefAttributes<TProps>> &
-  StyledStringSelectable;
 
 type StyledBase = {
   readonly staticClass: string;
@@ -27,9 +24,15 @@ type StyledBase = {
   readonly type: string | (JSXElementConstructor<any> & { readonly displayName?: string; readonly name?: string });
 };
 
-const isStyledComponent = (
-  type: JSXElementConstructor<any> | string,
-): type is JSXElementConstructor<any> & { readonly $$rms: StyledBase } => {
+type StyledComponent<TProps> = ForwardRefExoticComponent<PropsWithoutRef<TProps> & StyledRefAttributes<TProps>> & {
+  readonly $$rms: StyledBase;
+};
+
+type StyledComponentConfig = {
+  readonly displayName?: string;
+};
+
+const isStyledComponent = (type: JSXElementConstructor<any> | string): type is StyledComponent<any> => {
   return typeof type !== 'string' && '$$rms' in type;
 };
 
@@ -40,8 +43,8 @@ const getDisplayName = (
   return original ? 'Styled(' + original + ')' : 'Styled';
 };
 
-const getClasses = (cache: StyledCache, className?: string): [dynamicClasses: string, staticClasses: string] => {
-  const staticClasses: string[] = [];
+const getClasses = (cache: StyledCache, className?: string): [dynamicClasses: string, otherClasses: string] => {
+  const otherClasses: string[] = [];
   const dynamicClasses: string[] = [];
 
   if (typeof className === 'string') {
@@ -49,12 +52,12 @@ const getClasses = (cache: StyledCache, className?: string): [dynamicClasses: st
       if (cache.has(value)) {
         dynamicClasses.push(value);
       } else if (value) {
-        staticClasses.push(value);
+        otherClasses.push(value);
       }
     });
   }
 
-  return [dynamicClasses.join(' '), staticClasses.join(' ')];
+  return [dynamicClasses.join(' '), otherClasses.join(' ')];
 };
 
 const createStyledComponent = <TProps, TTheme>(
@@ -62,28 +65,32 @@ const createStyledComponent = <TProps, TTheme>(
   templateRaw: readonly string[],
   templateValues: readonly StyledStringValue<TProps, TTheme>[],
   useTheme: () => TTheme,
-): StyledComponent<TProps> & { readonly $$rms: StyledBase } => {
-  let staticClass: string;
+  config: StyledComponentConfig | undefined,
+): StyledComponent<TProps> => {
+  let baseStaticClass = '';
 
-  [type, templateRaw, templateValues, staticClass] = isStyledComponent(type)
-    ? [
-        type.$$rms.type,
-        [...type.$$rms.templateRaw, ...templateRaw],
-        [...type.$$rms.templateValues, '', ...templateValues],
-        getId() + ' ' + type.$$rms.staticClass,
-      ]
-    : [type, templateRaw, templateValues, getId()];
+  if (isStyledComponent(type)) {
+    [type, templateRaw, templateValues, baseStaticClass] = [
+      type.$$rms.type,
+      [...type.$$rms.templateRaw, ...templateRaw],
+      [...type.$$rms.templateValues, '', ...templateValues],
+      type.$$rms.staticClass,
+    ];
+  }
 
+  const displayName = config?.displayName || getDisplayName(type);
+  const newStaticClass = getId('$$rms/staticClass/' + displayName + '/' + baseStaticClass);
+  const staticClass = (newStaticClass + ' ' + baseStaticClass).trim();
+  const selector = '.' + newStaticClass;
   const filterProps = typeof type === 'string' ? getAttributes : (value: Record<string, unknown>) => value;
   const useStyleString = getStyleStringHook(templateRaw, templateValues, useTheme);
-  const selector = '.' + staticClass;
 
   const Styled = forwardRef((props: TProps & { children?: unknown; className?: string }, ref) => {
     const { className, children, ...rest } = props;
     const { cache, manager, renderer } = useStyledContext();
     const useEffect = manager.useEffect;
     const styleString = useStyleString(props);
-    const [dynamicClasses, staticClasses] = getClasses(cache, className);
+    const [dynamicClasses, otherClasses] = getClasses(cache, className);
     // XXX: The cache has to be pre-populated so that we can render the
     //      generated class name immediately, and so that styled children
     //      can extend the cached styles. This a side effect, but it's an
@@ -94,7 +101,7 @@ const createStyledComponent = <TProps, TTheme>(
     const [cssText, dynamicClass] = cache.resolve(styleString, dynamicClasses);
     const styledProps = {
       ...filterProps(rest),
-      className: (dynamicClass + ' ' + staticClass + ' ' + staticClasses).trim(),
+      className: (dynamicClass + ' ' + staticClass + ' ' + otherClasses).trimEnd(),
       ref,
     };
 
@@ -107,12 +114,12 @@ const createStyledComponent = <TProps, TTheme>(
     return renderer.render(type, styledProps, ...(children ? [children] : []));
   });
 
-  Styled.displayName = getDisplayName(type);
+  Styled.displayName = displayName;
   Styled.toString = () => selector;
 
-  return Object.assign(Styled as StyledComponent<TProps>, {
+  return Object.assign(Styled as ForwardRefExoticComponent<PropsWithoutRef<TProps> & StyledRefAttributes<TProps>>, {
     $$rms: { staticClass, templateRaw, templateValues, type },
   });
 };
 
-export { type StyledComponent, createStyledComponent };
+export { type StyledComponent, type StyledComponentConfig, createStyledComponent };
