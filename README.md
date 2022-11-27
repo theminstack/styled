@@ -569,7 +569,7 @@ Goober is very similar to this solution. It's just as fast, smaller, and has sup
 - Goober requires a Babel plugin to enable the tag name method syntax (ie. `styled.div` instead of `styled('div')`). This library supports `styled.<tag>` without compile time support.
 - Goober targets Preact as its primary JSX framework, requiring a call to `setup()` when using React. This library targets React and requires `preact/compat` when using Preact.
 
-This library is opinionated and leaves out some features that Preact supports. This is to reduce the number of alternative ways that styled components can be designed, which increases code consistency, and provides an overall better developer experience (DX). Removing support for two different ways to accomplish the same thing also means the library size and runtime overhead are reduced and/or allocated to improved core features.
+This library is opinionated and leaves out some features that Goober supports. This is to reduce the number of alternative ways that styled components can be designed, which increases code consistency, and provides an overall better developer experience (DX). Removing support for two different ways to accomplish the same thing also means the library size and runtime overhead are reduced and/or allocated to improved core features, and that the library is more maintainable overall.
 
 - Goober supports object styles. This library exclusively uses tagged templates because...
   - They can be copied more easily than objects, including to and from CSS/LESS text files.
@@ -591,6 +591,8 @@ See the [benchmark.js](benchmark.js) script for the benchmark implementation.
 
 ## Release Notes
 
+- v2.0.6
+  - Readme update
 - v2.0.5
   - Readme update
   - Improved static class stability
