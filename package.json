@@ -1,9 +1,9 @@
 {
-  "name": "react-micro-styled",
+  "name": "@minstack/styled",
   "description": "A small, fast, and simple CSS-in-JS styled components solution for React, written in Typescript.",
   "author": "Chris Ackerman <chris@topher.land>",
   "license": "ISC",
-  "version": "2.0.7",
+  "version": "1.0.0",
   "files": [
     "lib/**"
   ],
@@ -68,7 +68,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Shakeskeyboarde/react-micro-styled.git"
+    "url": "git+https://github.com/theminstack/styled.git"
   },
   "keywords": [
     "component",

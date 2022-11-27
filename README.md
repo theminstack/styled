@@ -1,14 +1,14 @@
-# React Micro-Styled
+# @minstack/styled
 
-A small, fast, and simple CSS-in-JS styled components solution for React, written in Typescript.
+Minimal CSS-in-JS styled components solution for React.
 
 - **Small**: ~2.8kB with zero dependencies.
 - **Fast**: Similar in speed to other styled component solutions.
-- **Simple**: Minimal/Opinionated API creates a great developer experience.
+- **Simple**: Opinionated API creates a great developer experience.
 - **Typed**: Written in Typescript. Designed for Typescript.
 
-[![build](https://github.com/Shakeskeyboarde/react-micro-styled/actions/workflows/build.yml/badge.svg)](https://github.com/Shakeskeyboarde/react-micro-styled/actions/workflows/build.yml)
-[![codecov](https://codecov.io/gh/Shakeskeyboarde/react-micro-styled/branch/main/graph/badge.svg?token=Y9CEQA8D4O)](https://codecov.io/gh/Shakeskeyboarde/react-micro-styled)
+[![build](https://github.com/theminstack/styled/actions/workflows/build.yml/badge.svg)](https://github.com/theminstack/styled/actions/workflows/build.yml)
+[![codecov](https://codecov.io/gh/theminstack/styled/branch/main/graph/badge.svg?token=Y9CEQA8D4O)](https://codecov.io/gh/theminstack/styled)
 
 - [Goals](#goals)
 - [Getting started](#getting-started)
@@ -66,7 +66,7 @@ There are also some things that are non-goals.
 ## Getting started
 
 ```tsx
-import { styled } from 'react-micro-styled';
+import { styled } from '@minstack/styled';
 ```
 
 Style any HTML element type by using the tag name. The styled component supports all of the same props (included refs, which are forwarded) that the HTML element supports.
@@ -173,7 +173,7 @@ Pass a theme hook (or any function) which returns a theme to the `createStyled` 
 
 ```tsx
 // File: styled-with-theme.ts
-import { createStyled } from 'react-micro-styled';
+import { createStyled } from '@minstack/styled';
 
 export const styled = createStyled(useTheme);
 ```
@@ -591,36 +591,39 @@ See the [benchmark.js](benchmark.js) script for the benchmark implementation.
 
 ## Release Notes
 
-- v2.0.7
-  - Internal compiler speed/size improvements
-- v2.0.6
-  - Readme update
-- v2.0.5
-  - Readme update
-  - Improved static class stability
-- v2.0.4
-  - `getId` accepts an optional namespace argument (re-added)
-  - Added `.withConfig()` static method to styled templates
-  - Use major version in `getId` and dynamic class hashes
-  - Component static class generation is namespaced by display name and inherited static classes
-- v2.0.3
-  - Readme update
-- v2.0.2
-  - Readme update
-  - Nonce support
-- v2.0.1
-  - Readme update
-- v2.0.0
-  - New Features
-    - Faster and more reliable style compiler
-    - Tag name method support (eg. `styled.div` alternative to `styled('div')`)
-    - Using React's `useInsertionEffect` when available
-    - Added `styled.string` helper for building static style strings
-    - Added `StyledProvider`
-      - Improved SSR support (`createSsrStyledManager`)
-      - Improved snapshot testing support (`StyledTest`)
-  - Breaking Changes
-    - `getId` no longer accepts an argument
-    - Supported ECMA version changed to ES2021
-    - Removed `styled.mixin`
-    - Removed `renderStylesToString`
+- v1.0.0
+  - Renamed to @minstack/styled
+- react-micro-styled
+  - v2.0.7
+    - Internal compiler speed/size improvements
+  - v2.0.6
+    - Readme update
+  - v2.0.5
+    - Readme update
+    - Improved static class stability
+  - v2.0.4
+    - `getId` accepts an optional namespace argument (re-added)
+    - Added `.withConfig()` static method to styled templates
+    - Use major version in `getId` and dynamic class hashes
+    - Component static class generation is namespaced by display name and inherited static classes
+  - v2.0.3
+    - Readme update
+  - v2.0.2
+    - Readme update
+    - Nonce support
+  - v2.0.1
+    - Readme update
+  - v2.0.0
+    - New Features
+      - Faster and more reliable style compiler
+      - Tag name method support (eg. `styled.div` alternative to `styled('div')`)
+      - Using React's `useInsertionEffect` when available
+      - Added `styled.string` helper for building static style strings
+      - Added `StyledProvider`
+        - Improved SSR support (`createSsrStyledManager`)
+        - Improved snapshot testing support (`StyledTest`)
+    - Breaking Changes
+      - `getId` no longer accepts an argument
+      - Supported ECMA version changed to ES2021
+      - Removed `styled.mixin`
+      - Removed `renderStylesToString`
