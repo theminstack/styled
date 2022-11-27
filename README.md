@@ -591,6 +591,8 @@ See the [benchmark.js](benchmark.js) script for the benchmark implementation.
 
 ## Release Notes
 
+- v2.0.7
+  - Internal compiler speed/size improvements
 - v2.0.6
   - Readme update
 - v2.0.5

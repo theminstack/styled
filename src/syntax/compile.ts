@@ -6,27 +6,32 @@ type AstNode = {
 };
 
 const compile = (styleString: string): AstNode => {
-  styleString = styleString.replaceAll('\0', '');
-
   let i = 0;
 
-  const comment = (terminator: '*/' | '\n'): void => {
-    const index = styleString.indexOf(terminator, (i += 2));
-    i = index < 0 ? styleString.length + 1 : index + terminator.length;
+  const next = () => {
+    const char = styleString[i++] ?? '';
+    if (char === '/' && (styleString[i] === '*' || styleString[i] === '/')) return char + styleString[i++] ?? '';
+    if (char === '\\') return i < styleString.length ? char + styleString[i++] : '';
+    if (char === '\0') return '';
+    return char;
   };
 
-  const quoted = (terminator: '"' | "'"): string => {
-    for (const start = i, length = styleString.length; i < length; ++i) {
-      const char = styleString[i] ?? '';
-
-      if (char === '\\') {
-        ++i;
-        continue;
-      }
-      if (char === '\r' || char === '\n') break;
-      if (char === terminator) return styleString.slice(start, i + 1);
+  const comment = (terminator: '*/' | '\n'): void => {
+    while (i < styleString.length) {
+      let char = next();
+      if (char === '*') char += next();
+      if (char === terminator) break;
     }
+  };
 
+  const quote = (terminator: '"' | "'"): string => {
+    let slice = '';
+    while (i < styleString.length) {
+      const char = next();
+      slice += char;
+      if (char === '\r' || char === '\n') break;
+      if (char === terminator) return slice;
+    }
     throw new Error(`Styled parsing error (expected: ${terminator} )`);
   };
 
@@ -36,62 +41,44 @@ const compile = (styleString: string): AstNode => {
     let slice = '';
     let space = '';
 
-    for (const length = styleString.length; i <= length; ++i) {
-      const char = styleString[i] ?? '';
+    while (i <= styleString.length) {
+      const char = next();
 
-      // Escape sequence. Can't be terminators, brackets, or quotes.
-      if (char === '\\') {
-        // Only add the escape sequence if it's two characters long.
-        if (++i < styleString.length) {
-          slice += space + char + (styleString[i] ?? '');
-        }
-      } else {
-        if (terminators.includes(char as TTerminator)) {
-          return [slice, char as TTerminator];
-        }
+      if (terminators.includes(char as TTerminator)) {
+        return [slice, char as TTerminator];
+      }
 
-        switch (char) {
-          case ' ':
-          case '\t':
-          case '\r':
-          case '\n':
-            space = slice ? ' ' : '';
-            continue;
-          case '&':
-            slice += space + '\0&\0';
-            break;
-          case '/':
-            switch (styleString[i + 1]) {
-              case '/':
-                space = ' ';
-                comment('\n');
-                break;
-              case '*':
-                space = ' ';
-                comment('*/');
-                break;
-              default:
-                slice += space + char;
-                break;
-            }
-            break;
-          case '(':
-            ++i;
-            slice += space + char + statement(')').join('');
-            break;
-          case '[':
-            ++i;
-            slice += space + char + statement(']').join('');
-            break;
-          case '"':
-          case "'":
-            ++i;
-            slice += space + char + quoted(char);
-            break;
-          default:
-            slice += space + char;
-            break;
-        }
+      switch (char) {
+        case ' ':
+        case '\t':
+        case '\r':
+        case '\n':
+          space = slice ? ' ' : '';
+          continue;
+        case '&':
+          slice += space + '\0&\0';
+          break;
+        case '//':
+          space = ' ';
+          comment('\n');
+          break;
+        case '/*':
+          space = ' ';
+          comment('*/');
+          break;
+        case '(':
+          slice += space + char + statement(')').join('');
+          break;
+        case '[':
+          slice += space + char + statement(']').join('');
+          break;
+        case '"':
+        case "'":
+          slice += space + char + quote(char);
+          break;
+        default:
+          slice += space + char;
+          break;
       }
 
       space = '';
@@ -129,7 +116,6 @@ const compile = (styleString: string): AstNode => {
     while (i <= styleString.length) {
       const [slice, terminator] = statement(',', ';', '{', '}', '');
 
-      ++i;
       slice && csv.push(slice);
 
       switch (terminator) {

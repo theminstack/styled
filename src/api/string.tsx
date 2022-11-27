@@ -56,19 +56,18 @@ const getStyleStringHook = <TProps, TTheme>(
 
   return (props) => {
     const theme = useTheme();
-    let styleString = '';
-    data.forEach((value) => (styleString += typeof value === 'string' ? value : value(props, theme)));
-    return styleString;
+    return data.reduce<string>(
+      (result, value) => result + (typeof value === 'string' ? value : value(props, theme)),
+      '',
+    );
   };
 };
 
 const string: StyledString = (template, ...values) =>
-  ('raw' in template ? template.raw : template)
-    .reduce((result, str, i) => {
-      const value = values[i];
-      return result + str + (!value && typeof value !== 'number' ? '' : value);
-    }, '')
-    .replaceAll('\0', '');
+  ('raw' in template ? template.raw : template).reduce((result, str, i) => {
+    const value = values[i];
+    return result + str + (!value && typeof value !== 'number' ? '' : value);
+  }, '');
 
 export {
   type StyledString,
