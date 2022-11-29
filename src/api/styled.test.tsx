@@ -18,7 +18,7 @@ describe('styled', () => {
     expect(render(<A />).container).toMatchInlineSnapshot(`
       <div>
         <div
-          class="_rmsdp54ux1_ _rmssp5w12l_"
+          class="_rmsdp54ux1_ _rmssqw9b37_"
         />
       </div>
     `);
@@ -284,7 +284,7 @@ describe('styled', () => {
       color: red;
     `;
     expect(A.displayName).toEqual('Foo');
-    expect(B.displayName).toEqual('Styled(div)');
+    expect(B.displayName).toEqual('Styled.div');
     expect(A.toString()).not.toEqual(B.toString());
     expect(B.toString()).toEqual(C.toString());
   });

@@ -71,7 +71,7 @@ describe('StyledManager', () => {
         <B />
       </StyledProvider>,
     );
-    expect(html).toMatchInlineSnapshot(`"<div class="_rmsdp54ux1_ _rmssp5w12l_"></div>"`);
+    expect(html).toMatchInlineSnapshot(`"<div class="_rmsdp54ux1_ _rmssqw9b37_"></div>"`);
     expect(manager.getStyleElement()).toMatchInlineSnapshot(`
       [
         <style
