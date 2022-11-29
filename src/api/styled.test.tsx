@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-/* eslint-disable unicorn/consistent-function-scoping */
 import { type RenderOptions, getByTestId, render } from '@testing-library/react';
 import { htmlTagNames } from 'html-tag-names';
 import { type ReactElement } from 'react';

@@ -38,11 +38,11 @@ const C = styled.div.withConfig({ displayName: 'Foo' })`
   }
 `;
 
-const D = (props: { children?: ReactNode; className?: string }) => {
+const ComponentBase = (props: { children?: ReactNode; className?: string }) => {
   return <A className={props.className}>{props.children}</A>;
 };
 
-const E = styled(D)`
+const E = styled(ComponentBase)`
   color: purple;
 `;
 

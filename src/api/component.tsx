@@ -40,8 +40,9 @@ const isStyledComponent = (type: JSXElementConstructor<any> | string): type is S
 const getDisplayName = (
   type: string | (JSXElementConstructor<any> & { readonly displayName?: string; readonly name?: string }),
 ): string => {
-  const original = typeof type === 'string' ? type : type.displayName || type.name;
-  return original ? 'Styled(' + original + ')' : 'Styled';
+  if (typeof type === 'string') return 'Styled.' + type;
+  const displayName = type.displayName || type.name;
+  return displayName.endsWith('Base') ? displayName.slice(0, -4) : 'Styled(' + displayName + ')';
 };
 
 const getClasses = (cache: StyledCache, className?: string): [dynamicClasses: string, otherClasses: string] => {
